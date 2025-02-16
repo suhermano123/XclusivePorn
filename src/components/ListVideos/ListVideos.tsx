@@ -7,10 +7,11 @@ import { VideosState } from '@/redux/videosSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, ListItem, ListItemText, TextField, Button, Paper, Typography, IconButton, Skeleton } from '@mui/material'; // Importamos Skeleton
 import FooterComponent from '../footer/Footer';
+import { CSSProperties } from 'react';
 
 const VideoGrid: React.FC = () => {
   const { GetItems } = useDynamoDB('list_videos');
-  const [videoL, setVideoL] = useState<VideoItem[]>([]);
+  const [videoL, setVideoL] = useState<any>([]);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true); // Nuevo estado para el loading
@@ -27,7 +28,11 @@ const VideoGrid: React.FC = () => {
     if (videos.length === 0) {
       setLoading(false);
       GetItems().then((tables) => {
-        setVideoL(tables);
+        if (tables) {
+          setVideoL(tables);  // Solo se llama si tables no es undefined
+        } else {
+          setVideoL([]);  // Si es undefined, se establece un arreglo vacío
+        }
       });
     } else {
       setVideoL(videos);
@@ -49,7 +54,7 @@ const VideoGrid: React.FC = () => {
         setCurrentPreview((prev) => ({
           ...prev,
           [hoveredVideo]:
-            (prev[hoveredVideo] + 1) % videoL.find((v) => v.id_video.S === hoveredVideo)!.video_thumsnail.S.split(',').length,
+            (prev[hoveredVideo] + 1) % videoL.find((v: any) => v.id_video.S === hoveredVideo)!.video_thumsnail.S.split(',').length,
         }));
       }, 1000);
     }
@@ -75,8 +80,8 @@ const VideoGrid: React.FC = () => {
               <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
             </div>
           ))
-          : videoL.map((video) => {
-              const previewImages = video.video_thumsnail.S.split(',').map((url) => url.trim()).filter(Boolean);
+          : videoL.map((video: any) => {
+              const previewImages = video.video_thumsnail.S.split(',').map((url: any) => url.trim()).filter(Boolean);
 
               return (
                 <div
@@ -129,7 +134,7 @@ const VideoGrid: React.FC = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } =  {
   container: {
     display: 'flex',
     flexDirection: 'column',

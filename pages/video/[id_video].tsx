@@ -11,11 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { VideosState } from '@/redux/videosSlice';
 import FooterComponent from '@/components/footer/Footer';
 import TagIcon from '@mui/icons-material/Tag'; // Icono de tag
+import { CSSProperties } from 'react';
 
 const VideoPage: React.FC = () => {
   const { getItem } = useDynamoDB('list_videos');
   const router = useRouter();
-  const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
+  const [hoveredVideo, setHoveredVideo] = useState<string>('');
   const { vid, reference, id_video } = router.query;
   const videoUrl = vid?.toString();
   const videoTags = reference?.toString();
@@ -105,7 +106,7 @@ const VideoPage: React.FC = () => {
   };
 
   const handleMouseLeave = () => {
-    setHoveredVideo(null);
+    setHoveredVideo('');
     setCurrentPreview({}); // Resetea el preview
   };
 
@@ -115,7 +116,7 @@ const VideoPage: React.FC = () => {
     if (hoveredVideo) {
       interval = setInterval(() => {
         const video = relatedVideos.find((v) => v.id_video.S === hoveredVideo);
-        const previewImages = video?.video_thumsnail.S.split(',').map((url) => url.trim());
+        const previewImages = video?.video_thumsnail.S.split(',').map((url: any) => url.trim());
         if (previewImages && previewImages.length > 0) {
           setCurrentPreview((prev) => ({
             ...prev,
@@ -276,7 +277,7 @@ const VideoPage: React.FC = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   tagIcon: {
     marginRight: '1px',
     color: '#E91E63', // Color del icono

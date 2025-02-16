@@ -56,7 +56,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar(props: any) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -161,7 +161,7 @@ export default function PrimarySearchAppBar() {
         backgroundColor: '#e91ec4', 
         height: 60, 
         boxShadow: "0px 4px 10px rgba(0,0,0,0.2)" 
-      }}>
+      }} {...props}>
         <Toolbar>
           <IconButton
             size="large"

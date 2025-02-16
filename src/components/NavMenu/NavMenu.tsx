@@ -6,7 +6,7 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { useRouter } from 'next/router'; // Importa el hook useRouter
 import { Typography } from '@mui/material';
 
-export default function NavMenu() {
+export default function NavMenu(props: any) {
   const [open, setOpen] = React.useState(false);
   const router = useRouter(); // Inicializa el hook useRouter
 

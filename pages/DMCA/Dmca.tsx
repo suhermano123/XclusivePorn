@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Button } from '@mui/material';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
+import { CSSProperties } from 'react';
 
 const DmcaPage: React.FC = () => {
   return (
@@ -77,7 +78,7 @@ const DmcaPage: React.FC = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   dmcaContainer: {
     backgroundImage: 'url("https://cdn2.imgpog.com/67b1697889411a038f23f488.jpg")',
     backgroundSize: 'cover',
