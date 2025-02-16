@@ -1,5 +1,5 @@
 # Fase de construcción
-FROM node:18 AS build  # Cambié a node:18 o node:20
+FROM node:18 AS build   # Asegúrate de que el espacio y los dos puntos estén presentes
 
 # Establecer el directorio de trabajo
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Fase de producción
-FROM node:18 AS production  # Cambié a node:18 o node:20
+FROM node:18 AS production   # Asegúrate de que el espacio y los dos puntos estén presentes
 
 # Establecer el directorio de trabajo para producción
 WORKDIR /app
