@@ -21,7 +21,6 @@ FROM node:18 AS production
 WORKDIR /app
 
 # Copiar los archivos de la fase de construcción
-COPY --from=build /app/package*.json ./
 COPY --from=builder /app/package.json ./
 COPY --from=build /app/.next ./
 COPY --from=build /app/public ./public
