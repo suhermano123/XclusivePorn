@@ -41,7 +41,7 @@ COPY --from=builder /app/next.config.js ./next.config.js
 # Crear y usar un usuario no root para mayor seguridad
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
-ENV PORT=4200
+
 
 # Cambiar al usuario no root
 USER nextjs
