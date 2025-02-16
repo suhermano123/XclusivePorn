@@ -1,0 +1,15 @@
+/* styles/globals.css */
+
+/* Reiniciar márgenes y rellenos predeterminados */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Estilos globales */
+  body {
+    background-color: #020202 ; /* Color de fondo deseado */
+    font-family: Arial, Helvetica, sans-serif; /* Fuente deseada */
+  }
+
