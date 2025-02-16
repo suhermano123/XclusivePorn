@@ -1,52 +1,35 @@
-# Etapa 1: Construcción
-FROM node:18-alpine AS builder
+# Fase de construcción
+FROM node:18 AS build
 
-# Establecer la variable de entorno para producción
-ENV NODE_ENV=production
-
-# Crear el directorio de trabajo
 WORKDIR /app
 
-# Configurar npm para evitar problemas de dependencias heredadas
-RUN npm config set legacy-peer-deps true
+# Copiar el package.json y package-lock.json (o yarn.lock)
+COPY package*.json ./
 
-# Copiar los archivos necesarios
-COPY package.json yarn.lock ./
+# Instalar dependencias
+RUN npm install
+
+# Copiar todos los archivos
 COPY . .
 
-# Instalar las dependencias y construir la aplicación de Next.js
-RUN yarn install --frozen-lockfile
+# Construir la aplicación Next.js
+RUN npm run build
 
-# Eliminar caché de Next.js para evitar problemas de cache
-RUN rm -rf .next
+# Fase de producción
+FROM node:18 AS production
 
-RUN yarn build
-
-# Etapa 2: Servir la aplicación con Next.js
-FROM node:18-alpine AS runner
-
-# Crear el directorio de trabajo
 WORKDIR /app
 
-# Establecer la variable de entorno de producción
-ENV NODE_ENV=production
+# Copiar los archivos de la fase de construcción
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/.next ./
+COPY --from=build /app/public ./public
 
-# Copiar solo los archivos necesarios desde la etapa de construcción
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/next.config.js ./next.config.js
+# Instalar solo las dependencias de producción
+RUN npm install --only=production
 
-# Crear y usar un usuario no root para mayor seguridad
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
-
-
-# Cambiar al usuario no root
-USER nextjs
-
-# Exponer el puerto en el que se ejecutará la aplicación
+# Exponer el puerto 3000
 EXPOSE 3000
+
 # Iniciar la aplicación Next.js en modo producción
 CMD ["npm", "start"]
