@@ -1,20 +1,29 @@
-# Usar una imagen base de Node.js
-FROM node:18
+# Fase de construcción
+FROM node:18 AS build
 
-# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar el package.json y package-lock.json
 COPY package*.json ./
 
-# Instalar las dependencias
 RUN npm install
 
-# Copiar el resto de la aplicación
 COPY . .
 
-# Exponer el puerto en el que la app corre
+# Construir la aplicación Next.js
+RUN npm run build
+
+# Fase de producción
+FROM node:18 AS production
+
+WORKDIR /app
+
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/.next ./
+COPY --from=build /app/public ./public
+
+RUN npm install --only=production
+
 EXPOSE 3000
 
-# Comando para correr la app
+# Iniciar la aplicación Next.js en modo producción
 CMD ["npm", "start"]
