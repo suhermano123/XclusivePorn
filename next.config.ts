@@ -1,10 +1,10 @@
 // next.config.js
 module.exports = {
-  // Otras configuraciones...
+  output: 'standalone',
   experimental: {
     srcDir: 'src',
   },
   eslint: {
     ignoreDuringBuilds: true, // Ignorar los errores de ESLint durante la construcción
-  },
+  }
 };
