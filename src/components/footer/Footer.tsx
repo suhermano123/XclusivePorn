@@ -1,90 +1,142 @@
-import React from 'react';
-import { Button, Typography, Link } from '@mui/material';
-import { useRouter } from 'next/router'; // Importa useRouter de Next.js
+import React, { useEffect } from "react";
+import { Typography, Link } from "@mui/material";
+import { useRouter } from "next/router";
 
 const FooterComponent: React.FC = () => {
-  const router = useRouter(); // Utilizamos useRouter para navegar
+  const router = useRouter();
 
-  // Función para manejar las redirecciones
   const handleRedirect = (path: string) => {
     router.push(path);
   };
 
+  useEffect(() => {
+    const loadAdScript = (adZoneId: string, containerId: string, width: string, height: string) => {
+      const adContainer = document.getElementById(containerId);
+      
+      if (adContainer) {
+        adContainer.innerHTML = "";
+
+        if (!document.querySelector(`script[src="https://poweredby.jads.co/js/jads.js"]`)) {
+          const script1 = document.createElement("script");
+          script1.type = "text/javascript";
+          script1.setAttribute("data-cfasync", "false");
+          script1.async = true;
+          script1.src = "https://poweredby.jads.co/js/jads.js";
+          document.body.appendChild(script1);
+        }
+
+        const ins = document.createElement("ins");
+        ins.id = adZoneId;
+        ins.setAttribute("data-width", width);
+        ins.setAttribute("data-height", height);
+        adContainer.appendChild(ins);
+
+        const script2 = document.createElement("script");
+        script2.type = "text/javascript";
+        script2.setAttribute("data-cfasync", "false");
+        script2.async = true;
+        script2.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone': ${adZoneId}});`;
+        adContainer.appendChild(script2);
+      }
+    };
+
+    loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
+    loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
+    loadAdScript("1081331", "juicy-ads-1081331", "300", "250");
+  }, []);
+
   return (
     <div>
-    <div style={{
-      width: '100%',
-      height: '100px',  // Ajusta la altura según el espacio necesario para el anuncio
-      backgroundColor: '#f1f1f1',  // Color de fondo para resaltar el área del anuncio
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: '20px',  // Espacio entre el NavMenu y el anuncio
-    }}>
-      <Typography variant="h6" style={{ textAlign: 'center', color: '#333' }}>
-      <script type="text/javascript">
-var juicy_tags = ['a', 'img'];
-</script>
-<script type="text/javascript" src="https://js.juicyads.com/jp.php?c=44540333s284u4r2o2a463c484&u=http%3A%2F%2Fwww.juicyads.rocks"></script>
-      </Typography>
-    </div>
-    <footer
-      style={{
-        backgroundColor: '#e91ec4',
-        color: 'white',
-        textAlign: 'center',
-        padding: '20px 10px',
-        width: '100%',
-        position: 'relative', // Asegura que el footer quede dentro del flujo normal de la página
-      }}
-    >
-      <Typography variant="body2" color="inherit" paragraph>
-        {'© '} {new Date().getFullYear()} XclusivePorn All rights reserved.
-      </Typography>
-      
-      {/* Enlaces en la parte inferior */}
-      <Typography variant="body2" color="inherit" paragraph>
-        <Link
-          href="#"
-          color="inherit"
-          style={{ margin: '0 15px' }}
-          onClick={() => handleRedirect('/DMCA/Dmca')}
+      <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+        {/* Contenedor del nuevo anuncio izquierdo */}
+        <div
+          id="juicy-ads-1081330"
+          style={{
+            width: "300px",
+            height: "250px",
+            backgroundColor: "#f1f1f1",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+          }}
         >
-          DMCA
-        </Link>
-        <Link
-          href="#"
-          color="inherit"
-          style={{ margin: '0 15px' }}
-          onClick={() => handleRedirect('/TERMS/TermsUse')}
-        >
-          Terms of Use
-        </Link>
-        <Link
-          href="#"
-          color="inherit"
-          style={{ margin: '0 15px' }}
-          onClick={() => handleRedirect('/Privacy-policy/policy')}
-        >
-          Privacy Policy
-        </Link>
-        <Link
-          href="#"
-          color="inherit"
-          style={{ margin: '0 15px' }}
-          onClick={() => handleRedirect('/faq')}
-        >
-          FAQ
-        </Link>
-      </Typography>
+          <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
+            Advertisement
+          </Typography>
+        </div>
 
-      {/* Disclaimer */}
-      <Typography variant="body2" color="inherit" paragraph>
-        This site does not store any files on your servers. PornoBae only indexes and links to content provided by other non-affiliated sites. All models appearing on this website are 18 years or older.
-      </Typography>
+        {/* Contenedor del anuncio principal */}
+        <div
+          id="juicy-ads-1081329"
+          style={{
+            width: "908px",
+            height: "258px",
+            backgroundColor: "#f1f1f1",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+          }}
+        >
+          <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
+            Advertisement
+          </Typography>
+        </div>
 
-      {/* Contact Us Button */}
-    </footer>
+        {/* Contenedor del nuevo anuncio derecho */}
+        <div
+          id="juicy-ads-1081331"
+          style={{
+            width: "300px",
+            height: "250px",
+            backgroundColor: "#f1f1f1",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+          }}
+        >
+          <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
+            Advertisement
+          </Typography>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer
+        style={{
+          backgroundColor: "#e91ec4",
+          color: "white",
+          textAlign: "center",
+          padding: "20px 10px",
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        <Typography variant="body2" color="inherit" paragraph>
+          {"© "} {new Date().getFullYear()} XclusivePorn All rights reserved.
+        </Typography>
+
+        <Typography variant="body2" color="inherit" paragraph>
+          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/DMCA/Dmca")}>
+            DMCA
+          </Link>
+          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/TERMS/TermsUse")}>
+            Terms of Use
+          </Link>
+          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/Privacy-policy/policy")}>
+            Privacy Policy
+          </Link>
+          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/faq")}>
+            FAQ
+          </Link>
+        </Typography>
+
+        <Typography variant="body2" color="inherit" paragraph>
+          This site does not store any files on your servers. PornoBae only indexes and links to content provided by other non-affiliated sites. All models appearing on this website are 18 years or older.
+        </Typography>
+      </footer>
     </div>
   );
 };
