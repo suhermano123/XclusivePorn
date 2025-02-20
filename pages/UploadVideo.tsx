@@ -14,6 +14,7 @@ import clsx from "clsx";
 import useDynamoDB from "@/hooks/UseDynamoDB";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
+import FooterComponent from "@/components/footer/Footer";
 
 export default function UploadVideo() {
   const { putItem } = useDynamoDB("list_videos");
@@ -249,6 +250,7 @@ export default function UploadVideo() {
         </Alert>
       </Snackbar>
     </Box>
+    <FooterComponent />
     </>
   );
 }
