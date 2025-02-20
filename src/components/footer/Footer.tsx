@@ -22,7 +22,10 @@ const FooterComponent: React.FC = () => {
       marginTop: '20px',  // Espacio entre el NavMenu y el anuncio
     }}>
       <Typography variant="h6" style={{ textAlign: 'center', color: '#333' }}>
-        ad here 
+      <script type="text/javascript">
+var juicy_tags = ['a', 'img'];
+</script>
+<script type="text/javascript" src="https://js.juicyads.com/jp.php?c=44540333s284u4r2o2a463c484&u=http%3A%2F%2Fwww.juicyads.rocks"></script>
       </Typography>
     </div>
     <footer
