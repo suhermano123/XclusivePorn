@@ -69,7 +69,7 @@ const VideoPage: React.FC = () => {
     });
     setRelatedVideos(related); // Establecer los videos recomendados
   };
-
+  const videoDescription = videos[0]?.video_description?.S;
   const handleLike = () => {
     setLiked(!liked);
     setLikes(likes + (liked ? -1 : 1));
@@ -172,6 +172,9 @@ const VideoPage: React.FC = () => {
             >
               DOWNLOAD VIDEO
             </Button>
+          </div>
+          <div style={styles.likeDislikeContainer} >
+              {videoDescription}
           </div>
 
           <Paper elevation={3} style={styles.commentBox}>
@@ -299,6 +302,8 @@ const styles: { [key: string]: CSSProperties } = {
     borderRadius: '15px'
   },
   likeDislikeContainer: {
+    marginTop: '5px',
+    fontFamily: 'revert',
     display: 'flex',
     alignItems: 'center',
     gap: '1px',

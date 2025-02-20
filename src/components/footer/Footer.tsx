@@ -11,6 +11,20 @@ const FooterComponent: React.FC = () => {
   };
 
   return (
+    <div>
+    <div style={{
+      width: '100%',
+      height: '100px',  // Ajusta la altura según el espacio necesario para el anuncio
+      backgroundColor: '#f1f1f1',  // Color de fondo para resaltar el área del anuncio
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: '20px',  // Espacio entre el NavMenu y el anuncio
+    }}>
+      <Typography variant="h6" style={{ textAlign: 'center', color: '#333' }}>
+        Anuncio Aquí
+      </Typography>
+    </div>
     <footer
       style={{
         backgroundColor: '#e91ec4',
@@ -39,7 +53,7 @@ const FooterComponent: React.FC = () => {
           href="#"
           color="inherit"
           style={{ margin: '0 15px' }}
-          onClick={() => handleRedirect('/terms-of-use')}
+          onClick={() => handleRedirect('/TERMS/TermsUse')}
         >
           Terms of Use
         </Link>
@@ -47,7 +61,7 @@ const FooterComponent: React.FC = () => {
           href="#"
           color="inherit"
           style={{ margin: '0 15px' }}
-          onClick={() => handleRedirect('/privacy-policy')}
+          onClick={() => handleRedirect('/Privacy-policy/policy')}
         >
           Privacy Policy
         </Link>
@@ -68,6 +82,7 @@ const FooterComponent: React.FC = () => {
 
       {/* Contact Us Button */}
     </footer>
+    </div>
   );
 };
 

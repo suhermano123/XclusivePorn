@@ -5,9 +5,10 @@ import { VideoItem } from '@/api/types/videoTypes';
 import { addVideos } from '@/redux/videosSlice'; 
 import { VideosState } from '@/redux/videosSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { List, ListItem, ListItemText, TextField, Button, Paper, Typography, IconButton, Skeleton } from '@mui/material'; // Importamos Skeleton
+import { List, ListItem, ListItemText, TextField, Button, Paper, Typography, IconButton, Skeleton, Pagination } from '@mui/material'; // Importamos Pagination
 import FooterComponent from '../footer/Footer';
 import { CSSProperties } from 'react';
+import AgeVerification from '../OlderVerify/OlderVerify';
 
 const VideoGrid: React.FC = () => {
   const { GetItems } = useDynamoDB('list_videos');
@@ -22,6 +23,13 @@ const VideoGrid: React.FC = () => {
 
   const handleAddVideo = (newVideos: any) => {
     dispatch(addVideos(newVideos));  
+  };
+
+  const [currentPage, setCurrentPage] = useState(1); // Estado de la página actual
+  const videosPerPage = 19; // Limitar a 20 videos por página
+
+  const handlePageChange = (event: any, value: number) => {
+    setCurrentPage(value);
   };
 
   useEffect(() => {
@@ -69,7 +77,14 @@ const VideoGrid: React.FC = () => {
     });
   };
 
+  // Calcular el índice de inicio y fin de los videos a mostrar según la página actual
+  const indexOfLastVideo = currentPage * videosPerPage;
+  const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
+  const currentVideos = videoL.slice(indexOfFirstVideo, indexOfLastVideo); // Seleccionar los videos de la página actual
+
   return (
+    <div>
+    <AgeVerification />
     <div style={styles.container}>
       <div style={styles.gridContainer}>
         {loading 
@@ -80,7 +95,7 @@ const VideoGrid: React.FC = () => {
               <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
             </div>
           ))
-          : videoL.map((video: any) => {
+          : currentVideos.map((video: any) => {
               const previewImages = video.video_thumsnail.S.split(',').map((url: any) => url.trim()).filter(Boolean);
 
               return (
@@ -103,7 +118,7 @@ const VideoGrid: React.FC = () => {
 
                     {/* Preview dinámico sobre la imagen */}
                     {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
-                      <img src={previewImages[currentPreview[video.id_video.S] || 0]} alt={`Preview`} style={styles.previewOverlay} />
+                      <img src={previewImages[currentPreview[video.id_video.S] || 0]} style={styles.previewOverlay} />
                     )}
 
                     {/* 🆕 Contenedor flotante para tiempo y likes */}
@@ -129,7 +144,32 @@ const VideoGrid: React.FC = () => {
         }
       </div>
 
+      {/* Paginador */}
+     <Pagination
+  count={Math.ceil(videoL.length / videosPerPage)} // Total de páginas
+  page={currentPage} // Página actual
+  onChange={handlePageChange} // Controlador del cambio de página
+  color="secondary"
+  sx={{
+    marginTop: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+    '& .MuiPaginationItem-icon': {
+      color: 'white', // Cambia el color de las flechas a blanco
+    },
+    '& .MuiPaginationItem-text': {
+      color: 'rgba(255, 255, 255, 0.6)', // Cambia el color de los números a un blanco más suave
+    },
+    '& .MuiPaginationItem-root.Mui-selected': {
+      color: 'white', // Asegura que la página seleccionada se vea en blanco
+    },
+  }}
+
+/>
+
+
       <FooterComponent />
+    </div>
     </div>
   );
 };
