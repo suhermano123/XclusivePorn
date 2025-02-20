@@ -8,8 +8,8 @@ export default function HomeIndex() {
   
   return (
     <div>
-      <NavBar sx={{ backgroundColor: "#E91E63" }} />
-      <NavMenu sx={{ backgroundColor: "#E91E63" }} />
+      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
+      <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <VideoGrid />
     </div>
   );

@@ -74,7 +74,7 @@ export default function NavMenu(props: any) {
         marginTop: '20px',  // Espacio entre el NavMenu y el anuncio
       }}>
         <Typography variant="h6" style={{ textAlign: 'center', color: '#333' }}>
-          Anuncio Aquí
+          ad here
         </Typography>
       </div>
     </div>

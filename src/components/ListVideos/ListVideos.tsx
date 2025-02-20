@@ -84,6 +84,7 @@ const VideoGrid: React.FC = () => {
 
   return (
     <div>
+      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d"></meta>
     <AgeVerification />
     <div style={styles.container}>
       <div style={styles.gridContainer}>
@@ -183,8 +184,8 @@ const styles: { [key: string]: CSSProperties } =  {
   gridContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '10px',
-    padding: '10px',
+    gap: '14px',
+    paddingTop: '17px',
     marginBottom: '60px', // Espacio entre el contenido y el footer
   },
   videoCard: {

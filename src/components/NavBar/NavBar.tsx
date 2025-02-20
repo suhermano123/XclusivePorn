@@ -178,7 +178,7 @@ export default function PrimarySearchAppBar(props: any) {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            Xclusive Porn
           </Typography>
           <Search >
             <SearchIconWrapper>

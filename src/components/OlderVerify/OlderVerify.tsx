@@ -72,10 +72,10 @@ const AgeVerification: React.FC = () => {
           }}
         >
           <DialogTitle sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-            ¿Eres mayor de 18 años?
+            Are you over 18 years old?
           </DialogTitle>
           <DialogContent>
-            <p>Por favor, confirma si eres mayor de 18 años para continuar.</p>
+            <p>Please confirm if you are over 18 years old to continue.</p>
           </DialogContent>
           <DialogActions sx={{ justifyContent: "center" }}>
             <Button onClick={handleYes} variant="contained" color="success">
