@@ -42,7 +42,7 @@ const FooterComponent: React.FC = () => {
 
     loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
     loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
-    loadAdScript("1081331", "juicy-ads-1081331", "300", "250");
+    loadAdScript("1081332", "juicy-ads-1081332", "300", "250");
   }, []);
 
   return (
@@ -86,7 +86,7 @@ const FooterComponent: React.FC = () => {
 
         {/* Contenedor del nuevo anuncio derecho */}
         <div
-          id="juicy-ads-1081331"
+          id="juicy-ads-1081332"
           style={{
             width: "300px",
             height: "250px",
