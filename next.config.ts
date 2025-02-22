@@ -6,5 +6,13 @@ module.exports = {
   },
   eslint: {
     ignoreDuringBuilds: true, // Ignorar los errores de ESLint durante la construcción
-  }
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/proxy/video/:id_video",
+        destination: "https://mxdrop.to/e/:id_video",
+      },
+    ];
+  },
 };

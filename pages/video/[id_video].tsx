@@ -141,7 +141,7 @@ const VideoPage: React.FC = () => {
       <div style={styles.videoLayout}>
         <div style={styles.videoContainer}>
           <iframe
-            width="100%"
+            width="600"
             height="480"
             src={videoUrl}
             scrolling="no"
@@ -149,7 +149,7 @@ const VideoPage: React.FC = () => {
             allowFullScreen
             style={styles.videoFrame}
           ></iframe>
-
+          
           <div style={styles.likeDislikeContainer}>
             <IconButton onClick={handleLike} color={liked ? "secondary" : "default"}>
               {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
