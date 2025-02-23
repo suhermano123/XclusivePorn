@@ -20,6 +20,29 @@ export default function UploadVideo() {
   const { putItem } = useDynamoDB("list_videos");
   const id = uuidv4();
 
+  const images = [
+    "/assets/bg1.jpg",
+    "/assets/bg2.jpg",
+    "/assets/bg3.jpg",
+    "/assets/bg4.jpg",
+    "/assets/bg5.jpg",
+    "/assets/bg6.jpg",
+    "/assets/bg7.jpg",
+    "/assets/backGround.png",
+  ]; // Agrega más imágenes según necesites
+
+  const [currentImage, setCurrentImage] = React.useState(images[0]);
+
+  React.useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      index = (index + 1) % images.length; // Avanza cíclicamente en el array
+      setCurrentImage(images[index]);
+    }, 5000); // Cambia cada 5 segundos
+
+    return () => clearInterval(interval); // Limpia el intervalo cuando el componente se desmonta
+  }, []);
+
   // Estado para almacenar los valores de los inputs
   const [formData, setFormData] = React.useState({
     videoName: "",
@@ -113,7 +136,7 @@ export default function UploadVideo() {
         alignItems: "center",
         minHeight: "100vh",
         backgroundColor: "#000000",
-        backgroundImage: "url('/assets/bg.jpg')", // Ruta de la imagen
+        backgroundImage: `url(${currentImage})`, // Imagen dinámica
         backgroundSize: "cover", // Hace que la imagen cubra todo el fondo
         backgroundPosition: "center",
         position: "relative", // Necesario para posicionar el filtro de oscuridad
@@ -127,8 +150,8 @@ export default function UploadVideo() {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(10, 0, 0, 0.5)", // Fondo oscuro con opacidad
-          zIndex: -1, // Asegura que la capa de oscuridad esté detrás del Card
+          backgroundColor: "rgba(231, 20, 20, 0.5)", // Oscurece la imagen
+          zIndex: -1,
         }}
       />
       

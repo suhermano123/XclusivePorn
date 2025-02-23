@@ -9,6 +9,7 @@ import { List, ListItem, ListItemText, TextField, Button, Paper, Typography, Ico
 import FooterComponent from '../footer/Footer';
 import { CSSProperties } from 'react';
 import AgeVerification from '../OlderVerify/OlderVerify';
+import Image from "next/image";
 
 const VideoGrid: React.FC = () => {
   const { GetItems } = useDynamoDB('list_videos');
@@ -115,11 +116,11 @@ const VideoGrid: React.FC = () => {
                     <p style={styles.videoTitle}>{video.video_name.S}</p>
 
                     {/* Imagen oficial grande */}
-                    <img src={video.oficial_thumb.S} alt={video.video_name.S} style={styles.thumbnail} />
+                    <Image priority height={'300'} width='300' src={video.oficial_thumb.S} alt={video.video_name.S} style={styles.thumbnail} />
 
                     {/* Preview dinámico sobre la imagen */}
                     {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
-                      <img src={previewImages[currentPreview[video.id_video.S] || 0]} style={styles.previewOverlay} />
+                      <Image priority height={'300'} width={'300'} alt={video.video_name.S} src={previewImages[currentPreview[video.id_video.S] || 0]} style={styles.previewOverlay} />
                     )}
 
                     {/* 🆕 Contenedor flotante para tiempo y likes */}

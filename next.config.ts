@@ -15,4 +15,26 @@ module.exports = {
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pornobae.com",
+        pathname: "/wp-content/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+        pathname: "/wp-content/uploads/**",
+      },
+
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+        pathname: "/**",
+      },
+  
+  
+    ],
+  },
 };
