@@ -82,21 +82,7 @@ export default function NavMenu(props: any) {
         <Grid item>
           <ClickAwayListener onClickAway={handleTooltipClose}>
             <div>
-              <Tooltip
-                onClose={handleTooltipClose}
-                open={open}
-                disableFocusListener
-                disableHoverListener
-                disableTouchListener
-                title="Add"
-                slotProps={{
-                  popper: {
-                    disablePortal: true,
-                  },
-                }}
-              >
-                
-              </Tooltip>
+              
             </div>
           </ClickAwayListener>
         </Grid>
