@@ -1,57 +1,57 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Button } from '@mui/material'; // Agregar si quieres botones
+import * as React from "react";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import Badge from "@mui/material/Badge";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useRouter } from "next/router";
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: '#e91ec4',
-  '&:hover': {
-    backgroundColor: '#bb199d',
+  backgroundColor: "#e91ec4",
+  "&:hover": {
+    backgroundColor: "#bb199d",
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    width: "auto",
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
+  color: "inherit",
+  "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
 }));
@@ -60,7 +60,7 @@ export default function PrimarySearchAppBar(props: any) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-
+  const router = useRouter();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -81,19 +81,19 @@ export default function PrimarySearchAppBar(props: any) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
@@ -103,19 +103,19 @@ export default function PrimarySearchAppBar(props: any) {
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
@@ -155,39 +155,48 @@ export default function PrimarySearchAppBar(props: any) {
     </Menu>
   );
 
-React.useEffect(() => {
-  const loadAdScript = () => {
-    if (!document.querySelector(`script[src="https://poweredby.jads.co/js/jads.js"]`)) {
-      const script1 = document.createElement("script");
-      script1.type = "text/javascript";
-      script1.setAttribute("data-cfasync", "false");
-      script1.async = true;
-      script1.src = "https://poweredby.jads.co/js/jads.js";
-      document.body.appendChild(script1);
-    }
+  React.useEffect(() => {
+    const loadAdScript = () => {
+      if (
+        !document.querySelector(
+          `script[src="https://poweredby.jads.co/js/jads.js"]`
+        )
+      ) {
+        const script1 = document.createElement("script");
+        script1.type = "text/javascript";
+        script1.setAttribute("data-cfasync", "false");
+        script1.async = true;
+        script1.src = "https://poweredby.jads.co/js/jads.js";
+        document.body.appendChild(script1);
+      }
 
-    const adContainer = document.getElementById("juicy-ads-banner");
-    if (adContainer) {
-      adContainer.innerHTML = '<ins id="1081333" data-width="468" data-height="60"></ins>';
-      const script2 = document.createElement("script");
-      script2.type = "text/javascript";
-      script2.setAttribute("data-cfasync", "false");
-      script2.async = true;
-      script2.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1081333});`;
-      adContainer.appendChild(script2);
-    }
-  };
+      const adContainer = document.getElementById("juicy-ads-banner");
+      if (adContainer) {
+        adContainer.innerHTML =
+          '<ins id="1081333" data-width="468" data-height="60"></ins>';
+        const script2 = document.createElement("script");
+        script2.type = "text/javascript";
+        script2.setAttribute("data-cfasync", "false");
+        script2.async = true;
+        script2.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1081333});`;
+        adContainer.appendChild(script2);
+      }
+    };
 
-  loadAdScript();
-}, []);
+    loadAdScript();
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static"  sx={{ 
-        backgroundColor: '#e91ec4', 
-        height: 60, 
-        boxShadow: "0px 4px 10px rgba(0,0,0,0.2)" 
-      }} {...props}>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "#e91ec4",
+          height: 60,
+          boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+        }}
+        {...props}
+      >
         <Toolbar>
           <IconButton
             size="large"
@@ -202,17 +211,28 @@ React.useEffect(() => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{
+              display: { xs: "none", sm: "block" },
+              cursor: "pointer",
+            }}
+            onClick={() => router.push("/")}
           >
             Xclusive Porn
+            <Typography
+              variant="caption"
+              sx={{ fontStyle: "italic", display: "block", textAlign: 'center' }}
+            >
+              Daily updates
+            </Typography>
           </Typography>
-          <Search >
+
+          <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
+              inputProps={{ "aria-label": "search" }}
             />
           </Search>
         </Toolbar>
@@ -221,7 +241,6 @@ React.useEffect(() => {
       {renderMenu}
 
       {/* FOOTER */}
-     
     </Box>
   );
 }

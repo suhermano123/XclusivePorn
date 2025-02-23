@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Link } from "@mui/material";
 import { useRouter } from "next/router";
 
@@ -8,6 +8,7 @@ const FooterComponent: React.FC = () => {
   const handleRedirect = (path: string) => {
     router.push(path);
   };
+  const [renderCount, setRenderCount] = useState(0);
 
   useEffect(() => {
     const loadAdScript = (adZoneId: string, containerId: string, width: string, height: string) => {
@@ -43,7 +44,12 @@ const FooterComponent: React.FC = () => {
     loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
     loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
     loadAdScript("1081332", "juicy-ads-1081332", "300", "250");
-  }, []);
+
+    // 🔄 Forzar una segunda ejecución después de un pequeño delay
+    if (renderCount < 1) {
+      setTimeout(() => setRenderCount(renderCount + 1), 100); // Retraso de 100ms para evitar conflictos
+    }
+  }, [renderCount]);
 
   return (
     <div>

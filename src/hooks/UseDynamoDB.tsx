@@ -1,4 +1,4 @@
-import { PutItemCommand, ListTablesCommand, ScanCommand, GetItemCommand   } from "@aws-sdk/client-dynamodb";
+import { PutItemCommand, ListTablesCommand, ScanCommand, GetItemCommand, UpdateItemCommand   } from "@aws-sdk/client-dynamodb";
 import { dynamoClient } from "../api/dynamoClient";
 
 interface PutItemInput {
@@ -79,10 +79,32 @@ const useDynamoDB = (tableName: string) => {
         return [];
       }
     };
+
+    const addComment = async (id_video, comment) => {
+      const formattedComment = `[${comment}]`;
+      const params = {
+        TableName: tableName,
+        Key: {
+          id_video: { S: id_video },
+        },
+        UpdateExpression: "SET video_comments = :comment",
+        ExpressionAttributeValues: {
+          ":comment": { S: formattedComment },
+        },
+      };
   
+      try {
+        await dynamoClient.send(new UpdateItemCommand(params));
+        console.log(`Comentario agregado a ${id_video}: ${formattedComment}`);
+      } catch (err) {
+        console.error(`Error al agregar comentario a ${id_video}:`, err);
+      }
+    };
+    
+    
    
 
-  return { putItem, listItems, GetItems, getItem, getVideosByTag };
+  return { putItem, listItems, GetItems, getItem, getVideosByTag, addComment };
 };
 
 export default useDynamoDB;
