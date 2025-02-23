@@ -80,7 +80,7 @@ const useDynamoDB = (tableName: string) => {
       }
     };
 
-    const addComment = async (id_video, comment) => {
+    const addComment = async (id_video: any, comment: any) => {
       const formattedComment = `[${comment}]`;
       const params = {
         TableName: tableName,
