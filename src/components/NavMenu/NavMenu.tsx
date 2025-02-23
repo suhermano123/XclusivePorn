@@ -95,7 +95,7 @@ export default function NavMenu(props: any) {
                   },
                 }}
               >
-                <Button style={{color: 'white'}} onClick={handleUploadClick}>Upload Video</Button>
+                
               </Tooltip>
             </div>
           </ClickAwayListener>
