@@ -217,7 +217,7 @@ export default function PrimarySearchAppBar(props: any) {
             }}
             onClick={() => router.push("/")}
           >
-            Xclusive Porn
+            XclusivePorn
             <Typography
               variant="caption"
               sx={{ fontStyle: "italic", display: "block", textAlign: 'center' }}

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import useDynamoDB from "@/hooks/UseDynamoDB";
+import LoyaltyIcon from "@mui/icons-material/Loyalty";
 import {
   List,
   ListItem,
@@ -30,7 +31,10 @@ const VideoPage: React.FC = () => {
   const [hoveredVideo, setHoveredVideo] = useState<string>("");
   const { vid, reference, id_video } = router.query;
   const videoUrl = vid?.toString();
-  const videoTags = reference?.toString();
+  const videoTagsArray = Array.isArray(reference)
+    ? reference.flatMap((tag) => tag.split(",").map((t) => t.trim()))
+    : reference?.split(",").map((tag) => tag.trim()) || [];
+
   const idVideo = id_video?.toString();
 
   const [currentPreview, setCurrentPreview] = useState<{
@@ -42,7 +46,7 @@ const VideoPage: React.FC = () => {
   const [likes, setLikes] = useState(videoData?.video_likes?.S);
   const oldComment = videoData?.video_comments?.S;
   const [comments, setComments] = useState<string[]>([oldComment]);
-  const [formData, setFormData] = useState({ name: "", email: ""});
+  const [formData, setFormData] = useState({ name: "", email: "" });
   const [dislikes, setDislikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
@@ -111,11 +115,13 @@ const VideoPage: React.FC = () => {
     return related;
   };
 
-  const videoDescription = videos[0]?.video_description?.S || relatedVideos?.map((videos) => {
-    if(videos?.id_video?.S == idVideo){
-      return videos?.video_description?.S
-    }
-  });
+  const videoDescription =
+    videos[0]?.video_description?.S ||
+    relatedVideos?.map((videos) => {
+      if (videos?.id_video?.S == idVideo) {
+        return videos?.video_description?.S;
+      }
+    });
   const handleLike = () => {
     setLiked(!liked);
     setLikes(likes + (liked ? -1 : 1));
@@ -136,22 +142,22 @@ const VideoPage: React.FC = () => {
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !formData.name.trim()) return; // Evita comentarios sin texto o sin nombre
-  
+
     // Concatenar el nombre al comentario
     const formattedComment = `${formData.name}: ${newComment}`;
-  
+
     // Agregar el nuevo comentario al array existente
     const updatedComments = [...comments, formattedComment];
-  
+
     console.log("Nuevo comentario agregado:", updatedComments);
-  
+
     // Convierte el array actualizado a un JSON string válido
     const updatedCommentString = JSON.stringify(updatedComments);
-  
+
     try {
       // Guarda los comentarios actualizados en DynamoDB
       await addComment(idVideo, updatedCommentString);
-  
+
       // Actualiza el estado local con el nuevo array de comentarios
       setComments(updatedComments);
       setNewComment(""); // Limpia el campo de entrada
@@ -159,7 +165,6 @@ const VideoPage: React.FC = () => {
       console.error("Error al guardar el comentario:", error);
     }
   };
-  
 
   const handleDownloadVideo = () => {
     window.open(videoData.video_download.S, "_blank");
@@ -244,7 +249,6 @@ const VideoPage: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   console.log(comments);
   return (
     <div>
@@ -266,25 +270,42 @@ const VideoPage: React.FC = () => {
               onClick={handleLike}
               color={liked ? "secondary" : "default"}
             >
-              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              {liked ? <FavoriteIcon style={{ color: 'rgb(233, 30, 196)'}} /> : <FavoriteBorderIcon />}
             </IconButton>
-            <span>{likes}</span>
+            <span>{videoData?.video_likes?.S}</span>
             <IconButton
               onClick={handleDislike}
               color={disliked ? "error" : "default"}
             >
-              <ThumbDownIcon />
+              <ThumbDownIcon style={{ color: 'rgb(233, 30, 196)'}} />
             </IconButton>
-            <span>{dislikes} </span>
-            <TagIcon style={styles.tagIcon} />
-            <span style={{ marginLeft: "2px", width: "100%" }}>
-              {videoTags}
+            <span >{dislikes} </span>
+            
+            <span
+              style={{
+                marginLeft: "50px",
+                width: "100%",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "3px",
+              }}
+            >
+              {videoTagsArray?.map((tag, index) => (
+                <span
+                  key={index}
+                  style={{ display: "flex", alignItems: "center", gap: "3px" }}
+                >
+                  <LoyaltyIcon style={{color: 'rgb(233, 30, 196)'}} fontSize="small" />
+                  {tag}
+                </span>
+              ))}
             </span>
+
             <Button
               variant="contained"
               sx={{
                 marginLeft: "10%",
-                backgroundColor: "#E91E63",
+                backgroundColor: "rgb(233, 30, 196)",
                 color: "white",
                 width: "490px",
                 "&:hover": { backgroundColor: "#C2185B" },
@@ -297,34 +318,42 @@ const VideoPage: React.FC = () => {
           <div style={styles.likeDislikeContainer}>{videoDescription}</div>
 
           <Paper elevation={3} style={styles.commentBox}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "15px", marginTop: "10px", marginBottom: '15px' }}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          size="small"
-          label="Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          sx={{ background: "white", borderRadius: "5px" }}
-        />
-        <TextField
-          fullWidth
-          variant="outlined"
-          size="small"
-          label="e-mail"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          sx={{ background: "white", borderRadius: "5px" }}
-        />
-        <Typography variant="body2" color="textSecondary">
-              Fro comment please fill the form
-        </Typography>
-      </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+                marginTop: "10px",
+                marginBottom: "15px",
+              }}
+            >
+              <TextField
+                fullWidth
+                variant="outlined"
+                size="small"
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                sx={{ background: "white", borderRadius: "5px" }}
+              />
+              <TextField
+                fullWidth
+                variant="outlined"
+                size="small"
+                label="e-mail"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                sx={{ background: "white", borderRadius: "5px" }}
+              />
+              <Typography variant="body2" color="textSecondary">
+                Fro comment please fill the form
+              </Typography>
+            </div>
             <Typography variant="h6" gutterBottom>
-            Comments
+              Comments
             </Typography>
             <List>
               {comments.flat().length === 0 ? (
@@ -354,7 +383,7 @@ const VideoPage: React.FC = () => {
                 variant="contained"
                 sx={{
                   marginLeft: "10px",
-                  backgroundColor: "#E91E63",
+                  backgroundColor: "rgb(233, 30, 196)",
                   color: "white",
                   "&:hover": { backgroundColor: "#C2185B" },
                 }}
@@ -372,7 +401,7 @@ const VideoPage: React.FC = () => {
             variant="h6"
             style={{
               color: "white",
-              backgroundColor: "#C2185B",
+              backgroundColor: "rgb(233, 30, 196)",
               width: "100%",
               borderRadius: "5px",
               display: "flex",
@@ -493,6 +522,7 @@ const styles: { [key: string]: CSSProperties } = {
     fontFamily: "revert",
     display: "flex",
     alignItems: "center",
+    
     gap: "1px",
     background: "rgba(255, 255, 255, 0.8)",
     padding: "3px",

@@ -7,14 +7,14 @@ import { CSSProperties } from 'react';
 const DmcaPage: React.FC = () => {
   return (
     <div>
-      <NavBar sx={{ backgroundColor: "#E91E63" }} />
+      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
     <div style={styles.dmcaContainer}>
       <div style={styles.dmcaContent}>
         <Typography variant="h5" style={styles.title}>
           Legal Disclaimer
         </Typography>
         <Typography variant="body1" style={styles.text}>
-          The owners and operators of Pornobae.com are not the producers (as that term is defined in 18 U.S.C. Section 2257) of any of the visual content contained in the site.
+          The owners and operators of Xclusiveporn.com are not the producers (as that term is defined in 18 U.S.C. Section 2257) of any of the visual content contained in the site.
           <br />
           <br />
           The owners and operators of Pornobae.com are not U.S. citizens. Pornobae.com doesn’t host any content.

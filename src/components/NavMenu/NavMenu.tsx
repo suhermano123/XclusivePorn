@@ -1,10 +1,13 @@
-import * as React from 'react';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import { useRouter } from 'next/router'; // Importa el hook useRouter
-import { Typography } from '@mui/material';
+import * as React from "react";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { useRouter } from "next/router"; // Importa el hook useRouter
+import { Typography } from "@mui/material";
+import LiveTvIcon from "@mui/icons-material/LiveTv";
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 export default function NavMenu(props: any) {
   const [open, setOpen] = React.useState(false);
@@ -18,13 +21,17 @@ export default function NavMenu(props: any) {
     setOpen(true);
   };
 
-  const handleUploadClick = () => {
-    router.push('/UploadVideo'); // Redirige a la ruta de subida de videos
+  const handleMoviesClick = () => {
+    router.push("/Downloads/PornMovies"); // Redirige a la ruta de subida de videos
   };
 
   React.useEffect(() => {
     const loadAdScript = () => {
-      if (!document.querySelector(`script[src="https://poweredby.jads.co/js/jads.js"]`)) {
+      if (
+        !document.querySelector(
+          `script[src="https://poweredby.jads.co/js/jads.js"]`
+        )
+      ) {
         const script = document.createElement("script");
         script.type = "text/javascript";
         script.setAttribute("data-cfasync", "false");
@@ -36,7 +43,8 @@ export default function NavMenu(props: any) {
       // Insertar el primer banner de anuncios
       const adContainer1 = document.getElementById("juicy-ads-banner-1");
       if (adContainer1) {
-        adContainer1.innerHTML = '<ins id="1081333" data-width="468" data-height="60"></ins>';
+        adContainer1.innerHTML =
+          '<ins id="1081333" data-width="468" data-height="60"></ins>';
         const script1 = document.createElement("script");
         script1.type = "text/javascript";
         script1.setAttribute("data-cfasync", "false");
@@ -48,7 +56,8 @@ export default function NavMenu(props: any) {
       // Insertar el segundo banner de anuncios
       const adContainer2 = document.getElementById("juicy-ads-banner-2");
       if (adContainer2) {
-        adContainer2.innerHTML = '<ins id="1081335" data-width="468" data-height="60"></ins>';
+        adContainer2.innerHTML =
+          '<ins id="1081335" data-width="468" data-height="60"></ins>';
         const script2 = document.createElement("script");
         script2.type = "text/javascript";
         script2.setAttribute("data-cfasync", "false");
@@ -63,41 +72,66 @@ export default function NavMenu(props: any) {
 
   return (
     <div>
-      <Grid container sx={{ justifyContent: 'center' }}>
+      <Grid container sx={{ justifyContent: "center" }}>
         <Grid item>
-          <Tooltip disableFocusListener title="Add">
-            <Button style={{color: 'white'}}>Channels</Button>
+          <Tooltip disableFocusListener title="Channels">
+            <Button
+              style={{
+                color: "white",
+                display: "flex",
+                alignItems: "center", // Asegura la alineación vertical
+                justifyContent: "center", // Centra el contenido horizontalmente
+                gap: "5px", // Espaciado entre el icono y el texto
+              }}
+            >
+              <LiveTvIcon sx={{ fontSize: 20, verticalAlign: "middle" }} />
+              <span style={{ display: "flex", alignItems: "center" }}>
+                Channels
+              </span>
+            </Button>
           </Tooltip>
         </Grid>
         <Grid item>
-          <Tooltip disableHoverListener title="Add">
-            <Button style={{color: 'white'}}>Tags</Button>
+          <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
+            <Button style={{
+                color: "white",
+                display: "flex",
+                alignItems: "center", // Asegura la alineación vertical
+                justifyContent: "center", // Centra el contenido horizontalmente
+                gap: "5px", // Espaciado entre el icono y el texto
+              }} onClick={ handleMoviesClick}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
           </Tooltip>
         </Grid>
         <Grid item>
-          <Tooltip disableFocusListener disableTouchListener title="Add">
-            <Button style={{color: 'white'}}>Porn Stars</Button>
+          <Tooltip disableFocusListener disableTouchListener title="Porn stars">
+            <Button style={{
+                color: "white",
+                display: "flex",
+                alignItems: "center", // Asegura la alineación vertical
+                justifyContent: "center", // Centra el contenido horizontalmente
+                gap: "5px", // Espaciado entre el icono y el texto
+              }}> <FavoriteIcon />Porn Stars</Button>
           </Tooltip>
         </Grid>
         <Grid item>
           <ClickAwayListener onClickAway={handleTooltipClose}>
-            <div>
-              
-            </div>
+            <div></div>
           </ClickAwayListener>
         </Grid>
       </Grid>
 
       {/* Espacio para anuncios, ahora en línea (uno al lado del otro) */}
-      <div style={{
-        width: '100%',
-        height: '60px',  // Ajusta la altura según el espacio necesario para el anuncio
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: '20px',  // Espacio entre el NavMenu y los anuncios
-        gap: '20px' // Espaciado entre anuncios
-      }}>
+      <div
+        style={{
+          width: "100%",
+          height: "60px", // Ajusta la altura según el espacio necesario para el anuncio
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "20px", // Espacio entre el NavMenu y los anuncios
+          gap: "20px", // Espaciado entre anuncios
+        }}
+      >
         <div id="juicy-ads-banner-1" style={{ width: "468px", height: "60px" }}>
           <Typography variant="h6" align="center" color="textSecondary">
             Ad here 1

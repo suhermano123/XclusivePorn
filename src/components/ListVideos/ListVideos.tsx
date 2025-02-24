@@ -20,6 +20,8 @@ const VideoGrid: React.FC = () => {
   const dispatch = useDispatch();
   const videos = useSelector((state: { videos: VideosState }) => state.videos.videos); 
 
+  
+
   const router = useRouter();
 
   const handleAddVideo = (newVideos: any) => {
@@ -85,93 +87,76 @@ const VideoGrid: React.FC = () => {
 
   return (
     <div>
-      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d"></meta>
-    <AgeVerification />
-    <div style={styles.container}>
-      <div style={styles.gridContainer}>
-        {loading 
-          ? Array(8).fill(0).map((_, index) => ( // Muestra 8 Skeletons (puedes ajustar este número según sea necesario)
-            <div key={index} style={styles.videoCard}>
-              <Skeleton variant="rectangular" width="100%" height={200} style={styles.thumbnail} />
-              <Skeleton variant="text" width="60%" style={{ marginTop: '5px', marginLeft: '20px' }} />
-              <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
-            </div>
-          ))
-          : currentVideos.map((video: any) => {
-              const previewImages = video.video_thumsnail.S.split(',').map((url: any) => url.trim()).filter(Boolean);
-
-              return (
-                <div
-                  key={video.id_video.S}
-                  style={styles.videoCard}
-                  onMouseEnter={() => {
-                    setHoveredVideo(video.id_video.S);
-                    setCurrentPreview((prev) => ({ ...prev, [video.id_video.S]: 0 }));
-                  }}
-                  onMouseLeave={() => setHoveredVideo(null)}
-                  onClick={() => handleClick(video)}
-                >
-                  <div style={styles.thumbnailContainer}>
-                    {/* Título del video flotante sobre la imagen */}
-                    <p style={styles.videoTitle}>{video.video_name.S}</p>
-
-                    {/* Imagen oficial grande */}
-                    <Image priority height={'300'} width='300' src={video.oficial_thumb.S} alt={video.video_name.S} style={styles.thumbnail} />
-
-                    {/* Preview dinámico sobre la imagen */}
-                    {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
-                      <Image priority height={'300'} width={'300'} alt={video.video_name.S} src={previewImages[currentPreview[video.id_video.S] || 0]} style={styles.previewOverlay} />
-                    )}
-
-                    {/* 🆕 Contenedor flotante para tiempo y likes */}
-                    <div style={styles.videoInfo}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {/* Barra oscura detrás del tiempo y likes */}
-                        <div
-                          style={{
-                            ...styles.overlay,
-                            opacity: hoveredVideo === video.id_video.S ? 0 : 1,
-                          }}
-                        >
-                          <span>⏳ {video.video_time.S}</span>
-                          |
-                          <span>❤️ {video.video_likes.S}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-        }
+      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
+      <AgeVerification />
+      <div style={styles.container}>
+        <div style={styles.gridContainer}>
+        {currentVideos?.length == 0
+  ? Array(8).fill(0).map((_, index) => (
+      <div key={index} style={{ ...styles.videoCard, backgroundColor: 'rgba(240, 236, 236, 0.3)', minHeight: '230px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Skeleton variant="rectangular" width="100%" height={200} style={styles.thumbnail} />
+        <Skeleton variant="text" width="60%" style={{ marginTop: '10px', marginLeft: '20px' }} />
+        <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
+        <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
+        <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
+        <Skeleton variant="text" width="40%" style={{ marginTop: '5px', marginLeft: '20px' }} />
       </div>
+    ))
+  : currentVideos.map((video: any) => {
+      const previewImages = video.video_thumsnail?.S
+        ? video.video_thumsnail.S.split(',').map((url: any) => url.trim()).filter(Boolean)
+        : [];
 
-      {/* Paginador */}
-     <Pagination
-  count={Math.ceil(videoL.length / videosPerPage)} // Total de páginas
-  page={currentPage} // Página actual
-  onChange={handlePageChange} // Controlador del cambio de página
-  color="secondary"
-  sx={{
-    marginTop: '20px',
-    display: 'flex',
-    justifyContent: 'center',
-    '& .MuiPaginationItem-icon': {
-      color: 'white', // Cambia el color de las flechas a blanco
-    },
-    '& .MuiPaginationItem-text': {
-      color: 'rgba(255, 255, 255, 0.6)', // Cambia el color de los números a un blanco más suave
-    },
-    '& .MuiPaginationItem-root.Mui-selected': {
-      color: 'white', // Asegura que la página seleccionada se vea en blanco
-    },
-  }}
+      return (
+        <div
+          key={video.id_video?.S || `skeleton-${Math.random()}`}
+          style={styles.videoCard}
+          onMouseEnter={() => {
+            setHoveredVideo(video.id_video?.S);
+            setCurrentPreview((prev) => ({ ...prev, [video.id_video?.S]: 0 }));
+          }}
+          onMouseLeave={() => setHoveredVideo(null)}
+          onClick={() => handleClick(video)}
+        >
+          <div style={styles.thumbnailContainer}>
+            <p style={styles.videoTitle}>{video.video_name.S}</p>
+            <Image priority height={300} width={300} src={video.oficial_thumb.S} alt={video.video_name.S} style={styles.thumbnail} />
+            {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
+              <Image priority height={300} width={300} alt={video.video_name.S} src={previewImages[currentPreview[video.id_video.S] || 0]} style={styles.previewOverlay} />
+            )}
+            <div style={styles.videoInfo}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ ...styles.overlay, opacity: hoveredVideo === video.id_video.S ? 0 : 1 }}>
+                  <span>⏳ {video.video_time.S}</span> |
+                  <span>❤️ {video.video_likes.S}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
 
-/>
+        </div>
 
+        {/* Paginador */}
+        <Pagination
+          count={Math.ceil(videoL.length / videosPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="secondary"
+          sx={{
+            marginTop: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+            '& .MuiPaginationItem-icon': { color: 'white' },
+            '& .MuiPaginationItem-text': { color: 'rgba(255, 255, 255, 0.6)' },
+            '& .MuiPaginationItem-root.Mui-selected': { color: 'white' },
+          }}
+        />
 
-      <FooterComponent />
-    </div>
+        <FooterComponent />
+      </div>
     </div>
   );
 };
