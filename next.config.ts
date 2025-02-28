@@ -1,4 +1,3 @@
-// next.config.js
 module.exports = {
   output: 'standalone',
   experimental: {
@@ -25,16 +24,21 @@ module.exports = {
       {
         protocol: "https",
         hostname: "i.postimg.cc",
-        pathname: "/wp-content/uploads/**",
-      },
-
-      {
-        protocol: "https",
-        hostname: "i.postimg.cc",
         pathname: "/**",
       },
-  
-  
+      {
+        protocol: "https",
+        hostname: "t86.pixhost.to",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "img86.pixhost.to",
+        pathname: "/**",
+      },
+    ],
+    domains: ["t102.pixhost.to", "t86.pixhost.to", "img86.pixhost.to", "img102.pixhost.to", "img5.pixhost.to", "t5.pixhost.to", "t0.pixhost.to", "t100.pixhost.to", 
+    "img99.pixhost.to", "img100.pixhost.to", "img97.pixhost.to", "img101.pixhost.to"
     ],
   },
 };

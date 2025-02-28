@@ -128,7 +128,8 @@ export default function NavMenu(props: any) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "20px", // Espacio entre el NavMenu y los anuncios
+          marginTop: "6px", 
+          marginBottom: "6px",// Espacio entre el NavMenu y los anuncios
           gap: "20px", // Espaciado entre anuncios
         }}
       >
