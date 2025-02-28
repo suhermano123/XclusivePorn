@@ -19,7 +19,7 @@ const PornMovies = () => {
 
   // 🔹 Obtener datos de Redux
   const reduxMovies = useSelector((state: RootState) => state.postVideos.movies);
-  const [movies, setMovies] = useState<PostVideo[]>(reduxMovies || []);
+  const [movies, setMovies] = useState<any[]>(reduxMovies || []);
 
   useEffect(() => {
     // Si hay datos en Redux, los usamos y evitamos la consulta a DynamoDB
@@ -27,8 +27,8 @@ const PornMovies = () => {
       setMovies(reduxMovies);
     } else {
       GetItems().then((tables) => {
-        setMovies(tables);
-        dispatch(addPostVideos(tables)); // Guardar en Redux para futuras consultas
+        setMovies(tables || []);
+        dispatch(addPostVideos(tables || [])); // Guardar en Redux para futuras consultas
       });
     }
   }, [reduxMovies, GetItems, dispatch]);

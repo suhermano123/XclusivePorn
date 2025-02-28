@@ -18,7 +18,7 @@ export const videosPostSlice = createSlice({
   initialState,
   reducers: {
     // Acción para agregar un arreglo de videos
-    addPostVideos: (state, action: PayloadAction<PostVideo[]>) => {
+    addPostVideos: (state, action: PayloadAction<any[]>) => {
       state.movies = action.payload; // Establecer directamente el arreglo de videos
     },
     // Si necesitas agregar más videos a la lista existente, usa una acción de "append"
