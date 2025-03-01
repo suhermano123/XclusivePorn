@@ -8,7 +8,11 @@ import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import FooterComponent from "@/components/footer/Footer";
 import Image from "next/image";
-import { PostStyles } from "styles/postsStyles";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import DownloadIcon from "@mui/icons-material/Download";
+
+
 
 const VideoDetail = () => {
   const router = useRouter();
@@ -24,18 +28,22 @@ const VideoDetail = () => {
     }
   }, [id_post, movies]);
 
-  if (!movie) return <Typography align="center" sx={{ my: 4, color: "white" }}>Cargando...</Typography>;
+  if (!movie)
+    return (
+      <Typography align="center" sx={{ my: 4, color: "white" }}>
+        Cargando...
+      </Typography>
+    );
 
-  const downloadLinks = movie.downloads.S.split(',').map(link => link.trim());
+  const downloadLinks = movie.downloads.S.split(",").map((link) => link.trim());
 
   return (
     <>
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <NavMenu />
 
-      <Container maxWidth="md" sx={styles.container}>
+      <Container maxWidth="xl" sx={styles.container}>
         <Box sx={styles.postContainer}>
-
           {/* 📌 Título */}
           <Typography variant="h4" sx={styles.title}>
             {movie.tittle.S}
@@ -49,7 +57,10 @@ const VideoDetail = () => {
               width={550}
               height={600}
               layout="intrinsic"
-              style={{ borderRadius: "12px", boxShadow: "0px 4px 12px rgba(255, 255, 255, 0.2)" }}
+              style={{
+                borderRadius: "12px",
+                boxShadow: "0px 4px 12px rgba(255, 255, 255, 0.2)",
+              }}
             />
           </Box>
 
@@ -65,34 +76,80 @@ const VideoDetail = () => {
               alt={movie.tittle.S}
               width={900}
               height={1150}
-              style={{ borderRadius: "8px", boxShadow: "0px 4px 12px rgba(255, 255, 255, 0.2)" }}
+              style={{
+                borderRadius: "8px",
+                boxShadow: "0px 4px 12px rgba(255, 255, 255, 0.2)",
+              }}
             />
           </Box>
 
           {/* 📌 Botones de Descarga */}
           <Box sx={styles.downloadButtons}>
+            <Typography variant="body1" sx={styles.description}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{
+                  marginLeft: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+                onClick={() => window.open(movie.trailer.S, "_blank")}
+              >
+                <FavoriteIcon />
+                Watch Trailer
+              </Button>
+            </Typography>
             {downloadLinks.map((link, index) => {
+              // Verificar si es el último elemento y si termina con una coma
+              const isLast = index === downloadLinks.length - 1;
+              if (isLast && link.trim().endsWith(",")) return null;
+
               const isK2s = link.includes("k2s.cc");
               const isRapidGator = link.includes("rg.to");
               const qualityMatch = link.match(/(1080p|2160p|SD)/);
               const quality = qualityMatch ? qualityMatch[0] : "Desconocida";
 
               return (
-                <Button
-                  key={index}
-                  variant="contained"
-                  color={isK2s ? "primary" : "secondary"}
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={styles.button}
-                >
-                  {isK2s ? "Keep2Share" : isRapidGator ? "RapidGator" : "Otro"} - {quality}
-                </Button>
+                <div key={index}>
+                  
+                  <Button
+                    variant="contained"
+                    color={isK2s ? "primary" : "secondary"}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={styles.button}
+                  >
+                    <DownloadIcon sx={{ color: "white", fontSize: 30 }} />
+                    {isK2s
+                      ? "Keep2Share"
+                      : isRapidGator
+                      ? "RapidGator"
+                      : "Otro"}{" "}
+                    - {quality}
+                  </Button>
+                </div>
               );
             })}
+             <Typography variant="body1" sx={styles.description}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{
+                  marginLeft: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+                onClick={() => window.open("https://anydebrid.com/", "_blank")}
+              >
+                <RocketLaunchIcon sx={{ color: "white", fontSize: 30 }} />
+                Download for free Keep2Share and other servers
+              </Button>
+            </Typography>
           </Box>
-
         </Box>
       </Container>
 
@@ -117,7 +174,7 @@ const styles = {
     borderRadius: "12px",
     boxShadow: "0px 4px 12px rgba(255, 255, 255, 0.2)",
     textAlign: "center",
-    maxWidth: "800px",
+    maxWidth: "900px",
     width: "100%",
   },
   title: {
@@ -130,6 +187,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     mb: 3,
+    cursor: "pointer",
   },
   description: {
     fontSize: "18px",

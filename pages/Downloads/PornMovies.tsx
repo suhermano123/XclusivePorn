@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router"; 
-import { Card, CardContent, CardMedia, Typography, Container, Grid } from "@mui/material";
+import { Card, CardContent, CardMedia, Typography, Container, Grid, Pagination } from "@mui/material";
 import FooterComponent from "@/components/footer/Footer";
 import NavBar from "@/components/NavBar/NavBar";
 import useDynamoDB from "@/hooks/UseDynamoDB";
@@ -10,7 +10,6 @@ import NavMenu from "@/components/NavMenu/NavMenu";
 import { addPostVideos } from "@/redux/PostVideoSlice";
 import { useDispatch, useSelector } from "react-redux"; 
 import { RootState } from "@/redux/store"; // Asegúrate de importar el tipo RootState
-import { PostStyles } from "styles/postsStyles";
 
 const PornMovies = () => {
   const { GetItems } = useDynamoDB("post_videos");
@@ -20,18 +19,28 @@ const PornMovies = () => {
   // 🔹 Obtener datos de Redux
   const reduxMovies = useSelector((state: RootState) => state.postVideos.movies);
   const [movies, setMovies] = useState<any[]>(reduxMovies || []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const videosPerPage = 12;
 
   useEffect(() => {
-    // Si hay datos en Redux, los usamos y evitamos la consulta a DynamoDB
     if (reduxMovies.length > 0) {
       setMovies(reduxMovies);
     } else {
       GetItems().then((tables) => {
         setMovies(tables || []);
-        dispatch(addPostVideos(tables || [])); // Guardar en Redux para futuras consultas
+        dispatch(addPostVideos(tables || []));
       });
     }
   }, [reduxMovies, GetItems, dispatch]);
+
+  // Calcular los videos a mostrar en la página actual
+  const indexOfLastVideo = currentPage * videosPerPage;
+  const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
+  const currentVideos = movies.slice(indexOfFirstVideo, indexOfLastVideo);
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+  };
 
   return (
     <div style={{ backgroundColor: "#0a0a0a", minHeight: "100vh", color: "white" }}>
@@ -40,7 +49,7 @@ const PornMovies = () => {
       
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Grid container spacing={4} justifyContent="center">
-          {movies.map((movie, index) => (
+          {currentVideos.map((movie, index) => (
             <Grid item key={index} xs={12} sm={6} md={4} lg={4}>
               <Card
                 sx={{
@@ -85,6 +94,22 @@ const PornMovies = () => {
             </Grid>
           ))}
         </Grid>
+        
+        {/* Paginador */}
+        <Pagination
+          count={Math.ceil(movies.length / videosPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="secondary"
+          sx={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+            "& .MuiPaginationItem-icon": { color: "white" },
+            "& .MuiPaginationItem-text": { color: "rgba(255, 255, 255, 0.6)" },
+            "& .MuiPaginationItem-root.Mui-selected": { color: "white" },
+          }}
+        />
       </Container>
 
       <FooterComponent />

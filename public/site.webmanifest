@@ -1,0 +1,22 @@
+{
+    "name": "XclusivePorn - Premium HD Videos",
+    "short_name": "XclusivePorn",
+    "description": "A premium adult video platform where you can watch, download, and share high-definition videos daily.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#e91ec4",
+    "icons": [
+      {
+        "src": "/icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icons/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
