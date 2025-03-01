@@ -24,14 +24,8 @@ export default function UploadVideo() {
   const id = uuidv4();
 
   const images = [
-    "/assets/bg1.jpg",
-    "/assets/bg2.jpg",
-    "/assets/bg3.jpg",
-    "/assets/bg4.jpg",
-    "/assets/bg5.jpg",
-    "/assets/bg6.jpg",
-    "/assets/bg7.jpg",
-    "/assets/backGround.png",
+    
+    "/assets/backGround2.png",
   ]; // Agrega más imágenes según necesites
 
   const [currentImage, setCurrentImage] = React.useState(images[0]);
@@ -199,8 +193,8 @@ export default function UploadVideo() {
   console.log("dat", extraFormData);
   return (
     <>
-      <NavBar sx={{ backgroundColor: "#E91E63" }} />
-      <NavMenu sx={{ backgroundColor: "#E91E63" }} />
+      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
+      <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <Box
         sx={{
           display: "flex",

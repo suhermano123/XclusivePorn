@@ -35,6 +35,10 @@ module.exports = {
         hostname: "img86.pixhost.to",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.pixhost.to",
+      },
     ],
     domains: ["t102.pixhost.to", "t86.pixhost.to", "img86.pixhost.to", "img102.pixhost.to", "img5.pixhost.to", "t5.pixhost.to", "t0.pixhost.to", "t100.pixhost.to", 
     "img99.pixhost.to", "img100.pixhost.to", "img97.pixhost.to", "img101.pixhost.to", "t101.pixhost.to", "t12.pixhost.to", "img12.pixhost.to", "img98.pixhost.to"

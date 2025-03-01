@@ -74,8 +74,8 @@ const VideoDetail = () => {
             <Image
               src={movie.images.S}
               alt={movie.tittle.S}
-              width={900}
-              height={1150}
+              width={1000}
+              height={1450}
               style={{
                 borderRadius: "8px",
                 boxShadow: "0px 4px 12px rgba(255, 255, 255, 0.2)",
