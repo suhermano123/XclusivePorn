@@ -13,25 +13,26 @@ const FooterComponent: React.FC = () => {
   useEffect(() => {
     const loadAdScript = (adZoneId: string, containerId: string, width: string, height: string) => {
       const adContainer = document.getElementById(containerId);
-      
+  
       if (adContainer) {
         adContainer.innerHTML = "";
-
-        if (!document.querySelector(`script[src="https://poweredby.jads.co/js/jads.js"]`)) {
-          const script1 = document.createElement("script");
-          script1.type = "text/javascript";
-          script1.setAttribute("data-cfasync", "false");
-          script1.async = true;
-          script1.src = "https://poweredby.jads.co/js/jads.js";
-          document.body.appendChild(script1);
-        }
-
+  
+        // 🛑 Eliminar cualquier script anterior de JuicyAds para evitar duplicados
+        document.querySelectorAll(`script[src*="jads.js"]`).forEach((s) => s.remove());
+  
+        const script1 = document.createElement("script");
+        script1.type = "text/javascript";
+        script1.setAttribute("data-cfasync", "false");
+        script1.async = true;
+        script1.src = `https://poweredby.jads.co/js/jads.js?v=${new Date().getTime()}`; // 👈 Fuerza recarga con un timestamp único
+        document.body.appendChild(script1);
+  
         const ins = document.createElement("ins");
         ins.id = adZoneId;
         ins.setAttribute("data-width", width);
         ins.setAttribute("data-height", height);
         adContainer.appendChild(ins);
-
+  
         const script2 = document.createElement("script");
         script2.type = "text/javascript";
         script2.setAttribute("data-cfasync", "false");
@@ -40,16 +41,20 @@ const FooterComponent: React.FC = () => {
         adContainer.appendChild(script2);
       }
     };
-
+  
+    // 🔄 Eliminar anuncios viejos y recargar nuevamente
+    document.querySelectorAll("ins[id^='juicy-ads']").forEach((el) => el.remove());
+  
     loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
     loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
     loadAdScript("1081332", "juicy-ads-1081332", "300", "250");
-
-    // 🔄 Forzar una segunda ejecución después de un pequeño delay
+  
+    // 🔄 Asegurar doble renderizado para forzar la recarga
     if (renderCount < 1) {
-      setTimeout(() => setRenderCount(renderCount + 1), 100); // Retraso de 100ms para evitar conflictos
+      setTimeout(() => setRenderCount(renderCount + 1), 100);
     }
-  }, [renderCount]);
+  }, [renderCount, true]);
+  
 
   return (
     <div>
