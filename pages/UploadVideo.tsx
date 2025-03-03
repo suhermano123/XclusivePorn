@@ -23,10 +23,7 @@ export default function UploadVideo() {
   const { putItem: putItemPosting } = useDynamoDB("post_videos");
   const id = uuidv4();
 
-  const images = [
-    
-    "/assets/backGround2.png",
-  ]; // Agrega más imágenes según necesites
+  const images = ["/assets/backGround2.png"]; // Agrega más imágenes según necesites
 
   const [currentImage, setCurrentImage] = React.useState(images[0]);
 
@@ -116,20 +113,28 @@ export default function UploadVideo() {
         };
         await putItemPosting(item);
       } else {
-        item = {
+        const videoThumbsFormatted =Array.isArray(formData.videoThumbs)
+        ? formData.videoThumbs.join(", ")
+        : formData.videoThumbs.replace(/\s+/g, ", ");
+
+          const videoTagsFormatted = Array.isArray(formData.tags)
+          ? formData.tags.join(", ")
+          : formData.tags.replace(/\s+/g, ", "); // Reemplaza espacios con comas
+        
+        const item = {
           id_video: { S: id },
           video_name: { S: formData.videoName },
           video_embed_url: { S: formData.videoUrl },
           video_download: { S: formData.videoDownload },
           oficial_thumb: { S: formData.videoOfficialPhoto },
-          video_thumsnail: { S: formData.videoThumbs },
-          video_tags: { S: formData.tags },
+          video_thumsnail: { S: videoThumbsFormatted },
+          video_tags: { S: videoTagsFormatted },
           video_likes: { S: "0" },
           video_comments: { S: "" },
           video_time: { S: formData.videoTime },
           video_description: { S: formData.videoDescription },
         };
-
+        console.log('env', item)
         await putItem(item);
       }
 
@@ -387,7 +392,7 @@ export default function UploadVideo() {
                     <Label>Video Time</Label>
                     <CustomInput
                       placeholder="Write the time video"
-                      value={formData.tags}
+                      value={formData.videoTime}
                       onChange={handleInputChange("videoTime")}
                     />
                   </FormControl>
@@ -395,7 +400,7 @@ export default function UploadVideo() {
                     <Label>Video Description</Label>
                     <CustomInput
                       placeholder="Write the description"
-                      value={formData.tags}
+                      value={formData.videoDescription}
                       onChange={handleInputChange("videoDescription")}
                     />
                   </FormControl>
