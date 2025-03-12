@@ -52,14 +52,15 @@ const VideoPlayer = ({ videoEmbedUrl, poster }: { videoEmbedUrl: string, poster:
   const playerRef = useRef<any | null>(null);
   // Estado para controlar la visibilidad del overlay del anuncio
   const [showAd, setShowAd] = useState(true);
-
+  const firstThumbnail = poster?.split(",")[0].trim();
+  console.log(firstThumbnail)
   // Configuración del reproductor
   const options = {
     autoplay: false,
     controls: true,
     responsive: true,
     fluid: true,
-    poster: poster,
+    poster: firstThumbnail,
     sources: videoUrl ? [{ src: videoUrl, type: "video/mp4" }] : [],
   };
 
