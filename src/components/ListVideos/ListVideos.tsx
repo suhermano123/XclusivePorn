@@ -80,8 +80,7 @@ const VideoGrid: React.FC = () => {
 
   const handleClick = (video: VideoItem) => {
     router.push({
-      pathname: `/video/${video.id_video.S}`,
-      query: { vid: video.video_embed_url.S, reference: video.video_tags.S },
+      pathname: `/video/${video.id_video.S}`
     });
   };
 

@@ -21,19 +21,29 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useDispatch, useSelector } from "react-redux";
 import { VideosState } from "@/redux/videosSlice";
 import FooterComponent from "@/components/footer/Footer";
-import TagIcon from "@mui/icons-material/Tag"; // Icono de tag
 import { CSSProperties } from "react";
 import { AttributeValue } from "@aws-sdk/client-dynamodb";
+import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 
 const VideoPage: React.FC = () => {
   const { getItem, GetItems, addComment } = useDynamoDB("list_videos");
   const router = useRouter();
   const [hoveredVideo, setHoveredVideo] = useState<string>("");
-  const { vid, reference, id_video } = router.query;
-  const videoUrl = vid?.toString();
-  const videoTagsArray = Array.isArray(reference)
-    ? reference.flatMap((tag) => tag.split(",").map((t) => t.trim()))
-    : reference?.split(",").map((tag) => tag.trim()) || [];
+  const [relatedVideos, setRelatedVideos] = useState<any[]>([]);
+  const [videoData, setVideoData] = useState<any>(null);
+  const { url, downloadFile } = useWasabiObjectUrl(
+    videoData?.video_embed_url?.S
+  );
+  const { id_video } = router.query;
+  const videoUrl = url?.toString();
+  console.log("vids", relatedVideos, url);
+
+  const videoTagsArray = Array.isArray(videoData?.video_tags?.S)
+    ? videoData?.video_tags?.S.flatMap((tag: any) =>
+        tag.split(",").map((t: any) => t.trim())
+      )
+    : videoData?.video_tags?.S?.split(",").map((tag: any) => tag.trim()) || [];
 
   const idVideo = id_video?.toString();
 
@@ -41,8 +51,7 @@ const VideoPage: React.FC = () => {
     [key: string]: number;
   }>({}); // Preview dinámico
   const [newComment, setNewComment] = useState("");
-  const [videoData, setVideoData] = useState<any>(null);
-  const [relatedVideos, setRelatedVideos] = useState<any[]>([]);
+
   const [likes, setLikes] = useState(videoData?.video_likes?.S);
   const oldComment = videoData?.video_comments?.S;
   const [comments, setComments] = useState<string[]>([oldComment]);
@@ -50,6 +59,7 @@ const VideoPage: React.FC = () => {
   const [dislikes, setDislikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1); // Estado de la página actual
   const videosPerPage = 8;
@@ -256,31 +266,28 @@ const VideoPage: React.FC = () => {
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.videoLayout}>
         <div style={styles.videoContainer}>
-          <iframe
-            width="400"
-            height="380"
-            src={videoUrl}
-            scrolling="no"
-            frameBorder="0"
-            allowFullScreen
-            style={styles.videoFrame}
-          ></iframe>
+          <VideoPlayer videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.oficial_thumb?.S} />
+
           <div style={styles.likeDislikeContainer}>
             <IconButton
               onClick={handleLike}
               color={liked ? "secondary" : "default"}
             >
-              {liked ? <FavoriteIcon style={{ color: 'rgb(233, 30, 196)'}} /> : <FavoriteBorderIcon />}
+              {liked ? (
+                <FavoriteIcon style={{ color: "rgb(233, 30, 196)" }} />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
             </IconButton>
             <span>{videoData?.video_likes?.S}</span>
             <IconButton
               onClick={handleDislike}
               color={disliked ? "error" : "default"}
             >
-              <ThumbDownIcon style={{ color: 'rgb(233, 30, 196)'}} />
+              <ThumbDownIcon style={{ color: "rgb(233, 30, 196)" }} />
             </IconButton>
-            <span >{dislikes} </span>
-            
+            <span>{dislikes} </span>
+
             <span
               style={{
                 marginLeft: "50px",
@@ -290,12 +297,15 @@ const VideoPage: React.FC = () => {
                 gap: "3px",
               }}
             >
-              {videoTagsArray?.map((tag, index) => (
+              {videoTagsArray?.map((tag: any, index: any) => (
                 <span
                   key={index}
                   style={{ display: "flex", alignItems: "center", gap: "3px" }}
                 >
-                  <LoyaltyIcon style={{color: 'rgb(233, 30, 196)'}} fontSize="small" />
+                  <LoyaltyIcon
+                    style={{ color: "rgb(233, 30, 196)" }}
+                    fontSize="small"
+                  />
                   {tag}
                 </span>
               ))}
@@ -310,7 +320,7 @@ const VideoPage: React.FC = () => {
                 width: "490px",
                 "&:hover": { backgroundColor: "#C2185B" },
               }}
-              onClick={handleDownloadVideo}
+              onClick={downloadFile}
             >
               DOWNLOAD VIDEO
             </Button>
@@ -522,7 +532,7 @@ const styles: { [key: string]: CSSProperties } = {
     fontFamily: "revert",
     display: "flex",
     alignItems: "center",
-    
+
     gap: "1px",
     background: "rgba(255, 255, 255, 0.8)",
     padding: "3px",

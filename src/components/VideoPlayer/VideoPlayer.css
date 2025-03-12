@@ -1,0 +1,31 @@
+.custom-video-js {
+  border-radius: 10px !important; /* Esquinas redondeadas */
+  overflow: hidden; /* Asegura que los bordes no se desborden */
+}
+
+.custom-video-js video {
+  border-radius: 10px !important; /* Aplica a la etiqueta <video> */
+}
+
+.custom-video-js .vjs-control-bar {
+  background-color: rgba(233, 35, 206, 0.4) !important; /* Rosado transparente */
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.custom-video-js .vjs-button {
+  color: white !important; /* Color de los iconos */
+}
+
+.custom-video-js .vjs-big-play-button {
+  background-color: rgba(233, 35, 206, 0.3) !important; /* Botón de play más visible */
+  
+}
+
+.custom-video-js .vjs-play-progress {
+  background-color: #e923ce !important; /* Barra de progreso rosada */
+}
+
+.custom-video-js .vjs-volume-level {
+  background-color: #e923ce !important; /* Nivel de volumen */
+}

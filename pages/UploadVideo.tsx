@@ -356,14 +356,7 @@ export default function UploadVideo() {
                       onChange={handleInputChange("videoUrl")}
                     />
                   </FormControl>
-                  <FormControl defaultValue="" required>
-                    <Label>Video Download</Label>
-                    <CustomInput
-                      placeholder="Write the video download link"
-                      value={formData.videoDownload}
-                      onChange={handleInputChange("videoDownload")}
-                    />
-                  </FormControl>
+                  
                   <FormControl defaultValue="" required>
                     <Label>Video Official Photo</Label>
                     <CustomInput
