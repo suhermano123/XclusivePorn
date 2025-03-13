@@ -24,7 +24,7 @@ import FooterComponent from "@/components/footer/Footer";
 import { CSSProperties } from "react";
 import { AttributeValue } from "@aws-sdk/client-dynamodb";
 import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
-
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 
 const VideoPage: React.FC = () => {
   const { getItem, GetItems, addComment } = useDynamoDB("list_videos");
@@ -266,7 +266,7 @@ const VideoPage: React.FC = () => {
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.videoLayout}>
         <div style={styles.videoContainer}>
-          
+          <VideoPlayer videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.video_thumsnail?.S} />
 
           <div style={styles.likeDislikeContainer}>
             <IconButton
