@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
-import ReactPlayer from "react-player";
-import "./VideoPlayer.css";
+//import ReactPlayer from "react-player";
+//import "./VideoPlayer.css";
 
 declare global {
   interface Window {
@@ -51,7 +51,7 @@ const VideoPlayer = ({ videoEmbedUrl, poster }: { videoEmbedUrl: string; poster:
 
   return (
     <div style={{ position: "relative" }}>
-      <ReactPlayer
+      {/* <ReactPlayer
         url={url.toString()}
         playing={false}
         controls={true}
@@ -59,7 +59,7 @@ const VideoPlayer = ({ videoEmbedUrl, poster }: { videoEmbedUrl: string; poster:
         width="100%"
         height="400px"
         className="react-player"
-      />
+      /> */}
       {showAd && (
         <div
           style={{
