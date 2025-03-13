@@ -1,6 +1,6 @@
 {
   "name": "Xclusiveporn.com",
-  "version": "0.1.0",
+  "version": "0.4.2",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -27,10 +27,10 @@
     "next-sitemap": "^4.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-player": "^2.16.0",
     "react-redux": "^9.2.0",
     "styled-components": "^6.1.15",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "video.js": "^8.22.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
