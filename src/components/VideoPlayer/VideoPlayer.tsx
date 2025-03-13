@@ -1,9 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
-import videojs from "video.js";
-import "video.js/dist/video-js.css";
+import ReactPlayer from "react-player";
 import "./VideoPlayer.css";
-
 
 declare global {
   interface Window {
@@ -13,7 +11,6 @@ declare global {
 
 // Componente para el anuncio de JuicyAds
 const JuicyAds = ({ showAd }: { showAd: boolean }) => {
-  console.log('add', showAd);
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "text/javascript";
@@ -42,55 +39,27 @@ const JuicyAds = ({ showAd }: { showAd: boolean }) => {
   );
 };
 
-const VideoPlayer = ({ videoEmbedUrl, poster }: { videoEmbedUrl: string, poster: string }) => {
+const VideoPlayer = ({ videoEmbedUrl, poster }: { videoEmbedUrl: string; poster: string }) => {
   // Obtener la URL del video desde Wasabi
   const { url, loading, error } = useWasabiObjectUrl(videoEmbedUrl);
-  console.log("Reproduciendo:", url);
-
-  const videoUrl = url?.toString();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const playerRef = useRef<any | null>(null);
-  // Estado para controlar la visibilidad del overlay del anuncio
   const [showAd, setShowAd] = useState(true);
   const firstThumbnail = poster?.split(",")[0].trim();
-  console.log(firstThumbnail)
-  // Configuración del reproductor
-  const options = {
-    autoplay: false,
-    controls: true,
-    responsive: true,
-    fluid: true,
-    poster: firstThumbnail,
-    sources: videoUrl ? [{ src: videoUrl, type: "video/mp4" }] : [],
-  };
-
-  useEffect(() => {
-    if (videoRef.current && !playerRef.current) {
-      playerRef.current = videojs(videoRef.current, options);
-    } else if (playerRef.current) {
-      playerRef.current.src(options.sources);
-    }
-  }, [videoUrl]);
-
-  // Limpieza del reproductor al desmontar el componente
-  useEffect(() => {
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.dispose();
-        playerRef.current = null;
-      }
-    };
-  }, []);
 
   if (loading) return <div>Cargando video...</div>;
   if (error) return <div>Error al cargar el video: {error}</div>;
-  if (!videoUrl) return <div>La URL del video no está disponible.</div>;
+  if (!url) return <div>La URL del video no está disponible.</div>;
 
   return (
     <div style={{ position: "relative" }}>
-      <div data-vjs-player>
-        <video ref={videoRef} className="video-js custom-video-js" />
-      </div>
+      <ReactPlayer
+        url={url.toString()}
+        playing={false}
+        controls={true}
+        light={firstThumbnail}
+        width="100%"
+        height="400px"
+        className="react-player"
+      />
       {showAd && (
         <div
           style={{
@@ -115,7 +84,7 @@ const VideoPlayer = ({ videoEmbedUrl, poster }: { videoEmbedUrl: string, poster:
               justifyContent: "center",
             }}
           >
-            <JuicyAds showAd={showAd}/>
+            <JuicyAds showAd={showAd} />
           </div>
           {/* Botón Close en la parte inferior */}
           <div
