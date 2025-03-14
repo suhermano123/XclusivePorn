@@ -8,6 +8,7 @@ import { Typography } from "@mui/material";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
 
 export default function NavMenu(props: any) {
   const [open, setOpen] = React.useState(false);
@@ -23,6 +24,13 @@ export default function NavMenu(props: any) {
 
   const handleMoviesClick = () => {
     router.push("/Downloads/PornMovies"); // Redirige a la ruta de subida de videos
+  };
+
+  const handleAdClickCams = () => {
+    const adUrl = "http://www.juicyads.rocks";
+
+    // Abre la nueva ventana del anuncio en segundo plano
+    window.open(adUrl, "_blank", "width=800,height=600");
   };
 
   React.useEffect(() => {
@@ -114,6 +122,17 @@ export default function NavMenu(props: any) {
           </Tooltip>
         </Grid>
         <Grid item>
+          <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
+            <Button style={{
+                color: "white",
+                display: "flex",
+                alignItems: "center", // Asegura la alineación vertical
+                justifyContent: "center", // Centra el contenido horizontalmente
+                gap: "5px", // Espaciado entre el icono y el texto
+              }} onClick={ handleAdClickCams}> <Diversity1Icon /> CAMS</Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
           <ClickAwayListener onClickAway={handleTooltipClose}>
             <div></div>
           </ClickAwayListener>
@@ -135,13 +154,13 @@ export default function NavMenu(props: any) {
       >
         <div id="juicy-ads-banner-1" style={{ width: "468px", height: "60px" }}>
           <Typography variant="h6" align="center" color="textSecondary">
-            Ad here 1
+            
           </Typography>
         </div>
 
         <div id="juicy-ads-banner-2" style={{ width: "468px", height: "60px" }}>
           <Typography variant="h6" align="center" color="textSecondary">
-            Ad here 2
+            
           </Typography>
         </div>
       </div>

@@ -266,7 +266,7 @@ const VideoPage: React.FC = () => {
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.videoLayout}>
         <div style={styles.videoContainer}>
-          <VideoPlayer videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.video_thumsnail?.S} />
+          <VideoPlayer videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.video_thumsnail?.S} title={videoData?.video_name?.S}/>
 
           <div style={styles.likeDislikeContainer}>
             <IconButton
