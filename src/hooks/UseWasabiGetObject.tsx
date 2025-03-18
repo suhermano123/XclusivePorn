@@ -3,10 +3,10 @@ import AWS from "aws-sdk";
 
 // Configurar cliente S3 para Wasabi
 const s3 = new AWS.S3({
-  endpoint: "https://s3.wasabisys.com", // Asegúrate de que el endpoint y la región sean correctos
-  region: "us-east-1",
-  accessKeyId: "1SICD2LMVR6C86GBMC2O",
-  secretAccessKey: "GmC95OZ9ps7AD9AfHzvQ2YXdwnbXSoGq6UDZVaiY",
+  endpoint: process.env.NEXT_PUBLIC_WASABI_ENDPOINT || "https://s3.wasabisys.com",
+  region: process.env.NEXT_PUBLIC_WASABI_REGION || "us-east-1",
+  accessKeyId: process.env.NEXT_PUBLIC_WASABI_ACCESS_KEY || "",
+  secretAccessKey: process.env.NEXT_PUBLIC_WASABI_SECRET_KEY || "",
   signatureVersion: "v4",
 });
 

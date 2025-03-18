@@ -4,57 +4,94 @@ import useDynamoDB from "@/hooks/UseDynamoDB";
 import { VideoItem } from "@/api/types/videoTypes";
 import { addVideos } from "@/redux/videosSlice";
 import { VideosState } from "@/redux/videosSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { Skeleton, Pagination } from "@mui/material"; // Importamos Pagination
+import { useDispatch } from "react-redux";
+import { Skeleton, Pagination, Box, Button } from "@mui/material";
 import FooterComponent from "../footer/Footer";
 import { CSSProperties } from "react";
 import AgeVerification from "../OlderVerify/OlderVerify";
 import Image from "next/image";
+import { ScanCommand } from "@aws-sdk/client-dynamodb";
+import { dynamoClient } from "@/api/dynamoClient";
 
 const VideoGrid: React.FC = () => {
-  const { GetItems } = useDynamoDB("list_videos");
+  const { getItemsPaginated } = useDynamoDB("list_videos");
   const [videoL, setVideoL] = useState<any>([]);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
-  const [currentPreview, setCurrentPreview] = useState<{
-    [key: string]: number;
-  }>({});
-  const [loading, setLoading] = useState(true); // Nuevo estado para el loading
+  const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
+  const [currentStartKey, setCurrentStartKey] = useState<any>(undefined);
+  const [prevKeys, setPrevKeys] = useState<any[]>([]);
   const dispatch = useDispatch();
-  const videos = useSelector(
-    (state: { videos: VideosState }) => state.videos.videos
-  );
-
   const router = useRouter();
 
   const handleAddVideo = (newVideos: any) => {
     dispatch(addVideos(newVideos));
   };
 
-  const [currentPage, setCurrentPage] = useState(1); // Estado de la página actual
-  const videosPerPage = 19; // Limitar a 20 videos por página
+  // Paginación: usamos server-side pagination
+  const [lastKey, setLastKey] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const videosPerPage = 10;
 
-  const handlePageChange = (event: any, value: number) => {
-    setCurrentPage(value);
+  const loadVideos = async (startKey?: any) => {
+    const data = await getItemsPaginated(videosPerPage, startKey);
+    //console.log("datas", data);
+    setVideoL(data?.items || []);
+    setLastKey(data?.lastEvaluatedKey);
+    setCurrentStartKey(startKey);
   };
 
   useEffect(() => {
-    if (videos.length === 0) {
-      setLoading(false);
-      GetItems().then((tables) => {
-        if (tables) {
-          setVideoL(tables); // Solo se llama si tables no es undefined
-        } else {
-          setVideoL([]); // Si es undefined, se establece un arreglo vacío
-        }
-      });
-    } else {
-      setVideoL(videos);
-      setLoading(false); // Si ya hay videos en Redux, dejamos de mostrar el Skeleton
+    // Para la primera carga, pasamos undefined o null
+    loadVideos();
+    fetchTotalCount().then((count) => {setTotalCount(count)});
+  }, []);
+
+  const fetchTotalCount = async () => {
+    try {
+      const params = {
+        TableName: "list_videos",
+        Select: "COUNT" as const,
+      };
+      const data = await dynamoClient.send(new ScanCommand(params));
+      return data.Count || 0;
+    } catch (err) {
+      console.error("Error al obtener total de elementos:", err);
+      return 0;
     }
-  }, [videos]);
+  };
+
+
+  // Actualiza Redux (opcional)
+  useEffect(() => {
+    console.log("charged", videoL);
+    if (videoL && videoL.length > 0) {
+      dispatch(addVideos(videoL));
+    }
+  }, [videoL, dispatch]);
+
+  const handleNextPage = async () => {
+    if (lastKey) {
+      // Guarda la clave actual en el stack
+      setPrevKeys((prev) => [...prev, currentStartKey]);
+      setCurrentPage((prev) => prev + 1);
+      await loadVideos(lastKey);
+    }
+  };
+
+  const handlePreviousPage = async () => {
+    if (prevKeys.length > 0) {
+      const newPrevKeys = [...prevKeys];
+      const previousKey = newPrevKeys.pop();
+      setPrevKeys(newPrevKeys);
+      setCurrentPage((prev) => prev - 1);
+      await loadVideos(previousKey);
+    }
+  };
+
 
   useEffect(() => {
-    if (videoL.length > 0) {
+    if (videoL && videoL.length > 0) {
       handleAddVideo(videoL);
     }
   }, [videoL]);
@@ -67,10 +104,8 @@ const VideoGrid: React.FC = () => {
         setCurrentPreview((prev) => ({
           ...prev,
           [hoveredVideo]:
-            (prev[hoveredVideo] + 1) %
-            videoL
-              .find((v: any) => v.id_video.S === hoveredVideo)!
-              .video_thumsnail.S.split(",").length,
+            ((prev[hoveredVideo] || 0) + 1) %
+            videoL.find((v: any) => v.id_video.S === hoveredVideo)?.video_thumsnail.S.split(",").length,
         }));
       }, 1000);
     }
@@ -79,26 +114,20 @@ const VideoGrid: React.FC = () => {
   }, [hoveredVideo, videoL]);
 
   const handleClick = (video: VideoItem) => {
-    router.push({
-      pathname: `/video/${video.id_video.S}`
-    });
+    router.push({ pathname: `/video/${video.id_video.S}` });
   };
 
-  // Calcular el índice de inicio y fin de los videos a mostrar según la página actual
-  const indexOfLastVideo = currentPage * videosPerPage;
-  const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
-  const currentVideos = videoL.slice(indexOfFirstVideo, indexOfLastVideo); // Seleccionar los videos de la página actual
-
+  // Si estamos usando paginación en el servidor, videoL ya contiene los items de la página actual
+  const currentVideos = Array.isArray(videoL) ? videoL : [];
+  const totalPages = Math.ceil(totalCount / videosPerPage);
+  console.log("actuales", currentVideos, totalPages);
   return (
     <div>
-      <meta
-        name="juicyads-site-verification"
-        content="f483025e8fb2d3cfaa1a93f7fde3d85d"
-      />
+      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
       <AgeVerification />
       <div style={styles.container}>
         <div style={styles.gridContainer}>
-          {currentVideos?.length == 0
+          {currentVideos.length === 0
             ? Array(8)
                 .fill(0)
                 .map((_, index) => (
@@ -113,37 +142,12 @@ const VideoGrid: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Skeleton
-                      variant="rectangular"
-                      width="100%"
-                      height={200}
-                      style={styles.thumbnail}
-                    />
-                    <Skeleton
-                      variant="text"
-                      width="60%"
-                      style={{ marginTop: "10px", marginLeft: "20px" }}
-                    />
-                    <Skeleton
-                      variant="text"
-                      width="40%"
-                      style={{ marginTop: "5px", marginLeft: "20px" }}
-                    />
-                    <Skeleton
-                      variant="text"
-                      width="40%"
-                      style={{ marginTop: "5px", marginLeft: "20px" }}
-                    />
-                    <Skeleton
-                      variant="text"
-                      width="40%"
-                      style={{ marginTop: "5px", marginLeft: "20px" }}
-                    />
-                    <Skeleton
-                      variant="text"
-                      width="40%"
-                      style={{ marginTop: "5px", marginLeft: "20px" }}
-                    />
+                    <Skeleton variant="rectangular" width="100%" height={200} style={styles.thumbnail} />
+                    <Skeleton variant="text" width="60%" style={{ marginTop: "10px", marginLeft: "20px" }} />
+                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
                   </div>
                 ))
             : currentVideos.map((video: any) => {
@@ -152,7 +156,6 @@ const VideoGrid: React.FC = () => {
                       .map((url: any) => url.trim())
                       .filter(Boolean)
                   : [];
-
                 return (
                   <div
                     key={video.id_video?.S || `skeleton-${Math.random()}`}
@@ -177,32 +180,20 @@ const VideoGrid: React.FC = () => {
                         alt={video.video_name.S}
                         style={styles.thumbnail}
                       />
-                      {hoveredVideo === video.id_video.S &&
-                        previewImages.length > 0 && (
-                          <Image
-                            priority
-                            height={300}
-                            width={300}
-                            alt={video.video_name.S}
-                            src={
-                              previewImages[
-                                currentPreview[video.id_video.S] || 0
-                              ]
-                            }
-                            style={styles.previewOverlay}
-                          />
-                        )}
+                      {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
+                        <Image
+                          priority
+                          height={300}
+                          width={300}
+                          alt={video.video_name.S}
+                          src={previewImages[currentPreview[video.id_video.S] || 0]}
+                          style={styles.previewOverlay}
+                        />
+                      )}
                       <div style={styles.videoInfo}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <div
-                            style={{
-                              ...styles.overlay,
-                              opacity:
-                                hoveredVideo === video.id_video.S ? 0 : 1,
-                            }}
-                          >
-                            <span>⏳ {video.video_time.S}</span> |
-                            <span>❤️ {video.video_likes.S}</span>
+                          <div style={{ ...styles.overlay, opacity: hoveredVideo === video.id_video.S ? 0 : 1 }}>
+                            <span>⏳ {video.video_time.S}</span> | <span>❤️ {video.video_likes.S}</span>
                           </div>
                         </div>
                       </div>
@@ -212,21 +203,17 @@ const VideoGrid: React.FC = () => {
               })}
         </div>
 
-        {/* Paginador */}
-        <Pagination
-          count={Math.ceil(videoL.length / videosPerPage)}
-          page={currentPage}
-          onChange={handlePageChange}
-          color="secondary"
-          sx={{
-            marginTop: "20px",
-            display: "flex",
-            justifyContent: "center",
-            "& .MuiPaginationItem-icon": { color: "white" },
-            "& .MuiPaginationItem-text": { color: "rgba(255, 255, 255, 0.6)" },
-            "& .MuiPaginationItem-root.Mui-selected": { color: "white" },
-          }}
-        />
+
+        {/* Botones de navegación adicionales */}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+          <Button variant="contained" color="secondary" onClick={handlePreviousPage} disabled={currentPage === 1} sx={{ mr: 2 }}>
+            Anterior
+          </Button>
+          {totalPages}
+          <Button variant="contained" color="secondary" onClick={handleNextPage} disabled={!lastKey}>
+            Siguiente
+          </Button>
+        </Box>
 
         <FooterComponent />
       </div>
@@ -238,14 +225,14 @@ const styles: { [key: string]: CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    minHeight: "100vh", // Esto asegura que el contenido y el footer se distribuyan correctamente
+    minHeight: "100vh",
   },
   gridContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
     gap: "14px",
     paddingTop: "17px",
-    marginBottom: "60px", // Espacio entre el contenido y el footer
+    marginBottom: "60px",
   },
   videoCard: {
     position: "relative",
@@ -269,8 +256,8 @@ const styles: { [key: string]: CSSProperties } = {
   },
   previewOverlay: {
     position: "absolute",
-    top: "0",
-    left: "0",
+    top: 0,
+    left: 0,
     width: "100%",
     height: "100%",
     objectFit: "cover",
@@ -292,23 +279,23 @@ const styles: { [key: string]: CSSProperties } = {
     transition: "opacity 0.3s ease-in-out",
   },
   overlay: {
-    background: "rgba(115, 38, 122, 0.6)", // Fondo oscuro que cubre solo los íconos
+    background: "rgba(115, 38, 122, 0.6)",
     padding: "5px 10px",
     fontSize: "12px",
     borderRadius: "5px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "auto", // Esto hace que el fondo solo cubra lo necesario
+    width: "auto",
   },
   videoTitle: {
-    position: "absolute", // Se posiciona sobre la imagen
+    position: "absolute",
     top: "1px",
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: "11px", // Tamaño ajustado para visibilidad
+    fontSize: "11px",
     color: "white",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Fondo oscuro para el texto
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: "3px",
   },
 };

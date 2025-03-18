@@ -25,6 +25,7 @@ import { CSSProperties } from "react";
 import { AttributeValue } from "@aws-sdk/client-dynamodb";
 import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import ThumbnailSlider from "@/components/ThumbsnailSlider/ThumbsnailSlider";
 
 const VideoPage: React.FC = () => {
   const { getItem, GetItems, addComment } = useDynamoDB("list_videos");
@@ -259,7 +260,7 @@ const VideoPage: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  console.log(comments);
+  
   return (
     <div>
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
@@ -326,7 +327,7 @@ const VideoPage: React.FC = () => {
             </Button>
           </div>
           <div style={styles.likeDislikeContainer}>{videoDescription}</div>
-
+          <ThumbnailSlider thumbnails={videoData?.video_thumsnail?.S || ""} />
           <Paper elevation={3} style={styles.commentBox}>
             <div
               style={{
@@ -359,7 +360,7 @@ const VideoPage: React.FC = () => {
                 sx={{ background: "white", borderRadius: "5px" }}
               />
               <Typography variant="body2" color="textSecondary">
-                Fro comment please fill the form
+              or comment please fill the form
               </Typography>
             </div>
             <Typography variant="h6" gutterBottom>

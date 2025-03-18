@@ -32,6 +32,11 @@ export default function NavMenu(props: any) {
     // Abre la nueva ventana del anuncio en segundo plano
     window.open(adUrl, "_blank", "width=800,height=600");
   };
+  const handleAdClicImages = () => {
+    router.push("/Porn/Images");
+
+    
+  };
 
   React.useEffect(() => {
     const loadAdScript = () => {
@@ -118,7 +123,7 @@ export default function NavMenu(props: any) {
                 alignItems: "center", // Asegura la alineación vertical
                 justifyContent: "center", // Centra el contenido horizontalmente
                 gap: "5px", // Espaciado entre el icono y el texto
-              }}> <FavoriteIcon />Porn Stars</Button>
+              }} onClick={handleAdClicImages}> <FavoriteIcon />PORN IMAGES</Button>
           </Tooltip>
         </Grid>
         <Grid item>

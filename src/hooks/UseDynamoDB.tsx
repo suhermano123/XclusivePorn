@@ -100,11 +100,29 @@ const useDynamoDB = (tableName: string) => {
         console.error(`Error al agregar comentario a ${id_video}:`, err);
       }
     };
+
+     // Función para obtener items paginados
+     const getItemsPaginated = async (limit: number, startKey?: any) => {
+      const params = {
+        TableName: tableName,
+        Limit: limit,
+        ExclusiveStartKey: startKey,
+      };
+    
+      try {
+        const data = await dynamoClient.send(new ScanCommand(params));
+        return { items: data.Items || [], lastEvaluatedKey: data.LastEvaluatedKey };
+      } catch (err) {
+        console.error(`Error al escanear la tabla ${tableName}:`, err);
+        return { items: [], lastEvaluatedKey: undefined };
+      }
+    };
+    
     
     
    
 
-  return { putItem, listItems, GetItems, getItem, getVideosByTag, addComment };
+  return { putItem, listItems, GetItems, getItem, getVideosByTag, addComment, getItemsPaginated };
 };
 
 export default useDynamoDB;

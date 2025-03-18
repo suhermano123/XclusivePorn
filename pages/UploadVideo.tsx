@@ -133,6 +133,7 @@ export default function UploadVideo() {
           video_comments: { S: "" },
           video_time: { S: formData.videoTime },
           video_description: { S: formData.videoDescription },
+          video_date: { S: new Date().toISOString().split("T")[0]}
         };
         console.log('env', item)
         await putItem(item);
