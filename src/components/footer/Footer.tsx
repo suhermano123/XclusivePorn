@@ -145,7 +145,7 @@ const FooterComponent: React.FC = () => {
         </Typography>
 
         <Typography variant="body2" color="inherit" paragraph>
-          This site does not store any files on your servers. Xclusiveporn only indexes and links to content provided by other non-affiliated sites. All models appearing on this website are 18 years or older.
+          Welcome to XclusivePron.net free porn videos in PREMIUM HD, This site does not store any files on your servers. Xclusiveporn only indexes and links to content provided by other non-affiliated sites. All models appearing on this website are 18 years or older.
         </Typography>
       </footer>
     </div>
