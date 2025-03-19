@@ -193,7 +193,7 @@ export default function PrimarySearchAppBar(props: any) {
         sx={{
           backgroundColor: "#e91ec4",
           height: 60,
-          boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+          
         }}
         {...props}
       >
@@ -207,24 +207,18 @@ export default function PrimarySearchAppBar(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{
-              display: { xs: "none", sm: "block" },
-              cursor: "pointer",
-            }}
+          
+          <Box
+            sx={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
           >
-            XclusivePorn
-            <Typography
-              variant="caption"
-              sx={{ fontStyle: "italic", display: "block", textAlign: 'center' }}
-            >
-              Daily updates
-            </Typography>
-          </Typography>
+            <img
+              src="/assets/oficial_logo.png"
+              width={170}
+              height={60}
+              alt="Logo oficial"
+            />
+          </Box>
 
           <Search>
             <SearchIconWrapper>

@@ -167,7 +167,7 @@ const VideoPage: React.FC = () => {
 
     try {
       // Guarda los comentarios actualizados en DynamoDB
-      await addComment(idVideo, updatedCommentString);
+      await addComment(idVideo || '', updatedCommentString);
 
       // Actualiza el estado local con el nuevo array de comentarios
       setComments(updatedComments);
@@ -267,7 +267,7 @@ const VideoPage: React.FC = () => {
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.videoLayout}>
         <div style={styles.videoContainer}>
-          <VideoPlayer videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.video_thumsnail?.S} title={videoData?.video_name?.S}/>
+          <VideoPlayer date={videoData?.video_date?.S} videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.video_thumsnail?.S} title={videoData?.video_name?.S}/>
 
           <div style={styles.likeDislikeContainer}>
             <IconButton
@@ -360,7 +360,7 @@ const VideoPage: React.FC = () => {
                 sx={{ background: "white", borderRadius: "5px" }}
               />
               <Typography variant="body2" color="textSecondary">
-              or comment please fill the form
+              for comment please fill the form
               </Typography>
             </div>
             <Typography variant="h6" gutterBottom>
@@ -369,7 +369,7 @@ const VideoPage: React.FC = () => {
             <List>
               {comments.flat().length === 0 ? (
                 <Typography variant="body2" color="textSecondary">
-                  No hay comentarios aún. Sé el primero en comentar.
+                  there are no comments yed. be the first
                 </Typography>
               ) : (
                 comments.flat().map((comment, index) => (

@@ -31,7 +31,7 @@ const VideoGrid: React.FC = () => {
   const [lastKey, setLastKey] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const videosPerPage = 10;
+  const videosPerPage = 12;
 
   const loadVideos = async (startKey?: any) => {
     const data = await getItemsPaginated(videosPerPage, startKey);
@@ -233,6 +233,7 @@ const styles: { [key: string]: CSSProperties } = {
     gap: "14px",
     paddingTop: "17px",
     marginBottom: "60px",
+    padding: "10px"
   },
   videoCard: {
     position: "relative",

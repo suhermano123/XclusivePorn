@@ -1,16 +1,16 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
-import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
 
-const REGION = "us-east-1"; // Reemplaza con tu región de AWS
-const IDENTITY_POOL_ID = "us-east-1:f6374909-3b69-4d76-8226-d42a10b11483"; // Reemplaza con tu ID de pool de identidades de Cognito
+// Usa variables de entorno sin el prefijo NEXT_PUBLIC_ para que sean privadas
+const REGION = process.env.NEXT_PUBLIC_AWS_REGION;
+const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY;
 
 const dynamoClient = new DynamoDBClient({
   region: REGION,
-  credentials: fromCognitoIdentityPool({
-    client: new CognitoIdentityClient({ region: REGION }),
-    identityPoolId: IDENTITY_POOL_ID,
-  }),
+  credentials: {
+    accessKeyId: ACCESS_KEY_ID || '',
+    secretAccessKey: SECRET_ACCESS_KEY || '',
+  },
 });
 
 export { dynamoClient };

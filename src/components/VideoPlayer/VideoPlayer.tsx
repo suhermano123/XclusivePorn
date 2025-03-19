@@ -8,7 +8,13 @@ const VideoPlayer = ({
   videoEmbedUrl,
   poster,
   title,
-}: { videoEmbedUrl: string; poster: string; title: string }) => {
+  date,
+}: {
+  videoEmbedUrl: string;
+  poster: string;
+  title: string;
+  date: string;
+}) => {
   const { url, loading, error } = useWasabiObjectUrl(videoEmbedUrl);
   const videoUrl = url?.toString();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -54,7 +60,7 @@ const VideoPlayer = ({
   if (!videoUrl) return <div>La URL del video no está disponible.</div>;
 
   return (
-    <div style={{ position: "relative"}}>
+    <div style={{ position: "relative" }}>
       {/* Título del video */}
       <h2
         style={{
@@ -62,14 +68,17 @@ const VideoPlayer = ({
           fontSize: "16px",
           fontWeight: "bold",
           color: "#fff",
-          background: "rgba(255, 3, 213, 0.541)",
-          padding: "5px 6px",
-          width: '100%',
-          display: "inline-block",
+          background: "rgba(255, 0, 212, 0.541)",
+          padding: "5px 16px",
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           borderRadius: "5px",
         }}
       >
-        {title}
+        <span>{title}</span>
+        <span>{date}</span>
       </h2>
 
       <div data-vjs-player>

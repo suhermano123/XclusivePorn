@@ -20,13 +20,13 @@ const DmcaPage: React.FC = () => {
           The owners and operators of Pornobae.com are not U.S. citizens. Pornobae.com doesn’t host any content.
           <br />
           <br />
-          All Pornobae does is use link or embed content that was uploaded to popular Online Video hosting. All popular Online Video hosting users signed a contract with the sites when they set up their accounts which force them not to upload illegal content. By clicking on any Links to videos while surfing on Pornobae you watch content hosted on third parties and Pornobae can’t take the responsibility for any content hosted on other sites.
+          All XclusivePorn does is use link or embed content that was uploaded to popular Online Video hosting. All popular Online Video hosting users signed a contract with the sites when they set up their accounts which force them not to upload illegal content. By clicking on any Links to videos while surfing on XclusivePorn you watch content hosted on third parties and XclusivePorn can’t take the responsibility for any content hosted on other sites.
           <br />
           <br />
           We do not upload any videos nor do we know who and where videos are coming from. We do not promote any illegal conduct of any kind. Links to the videos are submitted by users and managed by users.
           <br />
           <br />
-          All content has been exclusively drawn from public Web sites, so this material is considered free distribution. In no article mentions the legal prohibition of free material so that this page does not infringe any law. Anyone has any questions or problems with this, please contact: info@pornobae.com
+          All content has been exclusively drawn from public Web sites, so this material is considered free distribution. In no article mentions the legal prohibition of free material so that this page does not infringe any law. Anyone has any questions or problems with this, please contact
           <br />
           <br />
           So, Copyright owners should not complaint to our website, owner should go to the actual video Host or video providers.
@@ -40,7 +40,7 @@ const DmcaPage: React.FC = () => {
           </Typography>
           <br />
           <Typography variant="body1" style={styles.text}>
-            Pornobae is an online service provider as defined in the Digital Millennium Copyright Act.
+          XclusivePorn is an online service provider as defined in the Digital Millennium Copyright Act.
             <br />
             <br />
             We provide legal copyright owners with the ability to self-publish on the Internet by uploading, storing and displaying various types of media. We do not actively monitor, screen or otherwise review the media which is uploaded to our servers by users of the service.
@@ -49,7 +49,7 @@ const DmcaPage: React.FC = () => {
             We take copyright violation very seriously and will vigorously protect the rights of legal copyright owners.
             <br />
             <br />
-            If you are the copyright owner of content which appears on the Pornobae website and you did not authorize the use of the content you must notify us in writing in order for us to identify the allegedly infringing content and take action. We will be unable to take any action if you do not provide us with the required information, so please fill out all fields accurately and completely. You may make a written notice via e-mail, facsimile or postal mail to our DMCA Agent as listed below. Your written notice must include the following:
+            If you are the copyright owner of content which appears on the XclusivePorn website and you did not authorize the use of the content you must notify us in writing in order for us to identify the allegedly infringing content and take action. We will be unable to take any action if you do not provide us with the required information, so please fill out all fields accurately and completely. You may make a written notice via e-mail, facsimile or postal mail to our DMCA Agent as listed below. Your written notice must include the following:
             <br />
             <br />
             Specific identification of the copyrighted work which you are alleging to have been infringed. If you are alleging infringement of multiple copyrighted works with a single notification you must submit a representative list which specifically identifies each of the works that you allege are being infringed.

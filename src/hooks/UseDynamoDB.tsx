@@ -1,4 +1,10 @@
-import { PutItemCommand, ListTablesCommand, ScanCommand, GetItemCommand, UpdateItemCommand   } from "@aws-sdk/client-dynamodb";
+import { 
+  PutItemCommand, 
+  ListTablesCommand, 
+  ScanCommand, 
+  GetItemCommand, 
+  UpdateItemCommand 
+} from "@aws-sdk/client-dynamodb";
 import { dynamoClient } from "../api/dynamoClient";
 
 interface PutItemInput {
@@ -43,84 +49,80 @@ const useDynamoDB = (tableName: string) => {
     }
   };
 
-    // 🟢 Obtener video por ID
-    const getItem = async (id_video: string) => {
-      const params = {
-        TableName: tableName,
-        Key: {
-          id_video: { S: id_video },
-        },
-      };
-  
-      try {
-        const data = await dynamoClient.send(new GetItemCommand(params));
-        return data.Item ? data.Item : null;
-      } catch (err) {
-        console.error(`Error al obtener el video con ID ${id_video}:`, err);
-        return null;
-      }
-    };
-  
-    // 🟢 Obtener videos con la misma etiqueta (video_tags)
-    const getVideosByTag = async (video_tags: string) => {
-      const params = {
-        TableName: tableName,
-        FilterExpression: "video_tags = :tag",
-        ExpressionAttributeValues: {
-          ":tag": { S: video_tags },
-        },
-      };
-  
-      try {
-        const data = await dynamoClient.send(new ScanCommand(params));
-        return data.Items ? data.Items : [];
-      } catch (err) {
-        console.error(`Error al obtener videos con la etiqueta ${video_tags}:`, err);
-        return [];
-      }
+  // Obtener video por ID
+  const getItem = async (id_video: string) => {
+    const params = {
+      TableName: tableName,
+      Key: {
+        id_video: { S: id_video },
+      },
     };
 
-    const addComment = async (id_video: any, comment: any) => {
-      const formattedComment = `[${comment}]`;
-      const params = {
-        TableName: tableName,
-        Key: {
-          id_video: { S: id_video },
-        },
-        UpdateExpression: "SET video_comments = :comment",
-        ExpressionAttributeValues: {
-          ":comment": { S: formattedComment },
-        },
-      };
-  
-      try {
-        await dynamoClient.send(new UpdateItemCommand(params));
-        console.log(`Comentario agregado a ${id_video}: ${formattedComment}`);
-      } catch (err) {
-        console.error(`Error al agregar comentario a ${id_video}:`, err);
-      }
+    try {
+      const data = await dynamoClient.send(new GetItemCommand(params));
+      return data.Item ? data.Item : null;
+    } catch (err) {
+      console.error(`Error al obtener el video con ID ${id_video}:`, err);
+      return null;
+    }
+  };
+
+  // Obtener videos con la misma etiqueta (video_tags)
+  const getVideosByTag = async (video_tags: string) => {
+    const params = {
+      TableName: tableName,
+      FilterExpression: "video_tags = :tag",
+      ExpressionAttributeValues: {
+        ":tag": { S: video_tags },
+      },
     };
 
-     // Función para obtener items paginados
-     const getItemsPaginated = async (limit: number, startKey?: any) => {
-      const params = {
-        TableName: tableName,
-        Limit: limit,
-        ExclusiveStartKey: startKey,
-      };
-    
-      try {
-        const data = await dynamoClient.send(new ScanCommand(params));
-        return { items: data.Items || [], lastEvaluatedKey: data.LastEvaluatedKey };
-      } catch (err) {
-        console.error(`Error al escanear la tabla ${tableName}:`, err);
-        return { items: [], lastEvaluatedKey: undefined };
-      }
+    try {
+      const data = await dynamoClient.send(new ScanCommand(params));
+      return data.Items ? data.Items : [];
+    } catch (err) {
+      console.error(`Error al obtener videos con la etiqueta ${video_tags}:`, err);
+      return [];
+    }
+  };
+
+  const addComment = async (id_video: string, comment: string) => {
+    const formattedComment = `[${comment}]`;
+    const params = {
+      TableName: tableName,
+      Key: {
+        id_video: { S: id_video },
+      },
+      UpdateExpression: "SET video_comments = :comment",
+      ExpressionAttributeValues: {
+        ":comment": { S: formattedComment },
+      },
     };
-    
-    
-    
-   
+
+    try {
+      await dynamoClient.send(new UpdateItemCommand(params));
+      console.log(`Comentario agregado a ${id_video}: ${formattedComment}`);
+    } catch (err) {
+      console.error(`Error al agregar comentario a ${id_video}:`, err);
+    }
+  };
+
+  // Función para obtener items paginados
+  const getItemsPaginated = async (limit: number, startKey?: any) => {
+    const params = {
+      TableName: tableName,
+      Limit: limit,
+      ExclusiveStartKey: startKey,
+    };
+
+    try {
+      const data = await dynamoClient.send(new ScanCommand(params));
+      return { items: data.Items || [], lastEvaluatedKey: data.LastEvaluatedKey };
+    } catch (err) {
+      console.error(`Error al escanear la tabla ${tableName}:`, err);
+      return { items: [], lastEvaluatedKey: undefined };
+    }
+  };
 
   return { putItem, listItems, GetItems, getItem, getVideosByTag, addComment, getItemsPaginated };
 };

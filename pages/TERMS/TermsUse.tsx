@@ -14,23 +14,23 @@ const TermsUsePage: React.FC = () => {
             ACCEPTANCE
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            By using and/or visiting the Pornobae.com, you agree to the terms and conditions contained herein and the terms and conditions of Pornobae’s privacy policy incorporated herein, and all future amendments and modifications (collectively referred to as the “Agreement”). By entering, you agree to be bound by these terms and conditions. If you do not agree to be bound the terms and conditions contained herein, then do not use Pornobae.com.
+            By using and/or visiting the XclusivePorn.net, you agree to the terms and conditions contained herein and the terms and conditions of XclusivePorn privacy policy incorporated herein, and all future amendments and modifications (collectively referred to as the “Agreement”). By entering, you agree to be bound by these terms and conditions. If you do not agree to be bound the terms and conditions contained herein, then do not use Pornobae.com.
             <br />
             <br />
-            The terms and conditions of this Agreement are subject to change by Pornobae at any time in its sole discretion and you agree be bound by all modifications, changes and/or revisions. If you do not accept to be bound by any and all modifications, changes and/or revisions of this agreement, you may not use Pornobae.com.
+            The terms and conditions of this Agreement are subject to change by XclusivePorn at any time in its sole discretion and you agree be bound by all modifications, changes and/or revisions. If you do not accept to be bound by any and all modifications, changes and/or revisions of this agreement, you may not use XclusivePorn.com.
             <br />
             <br />
-            The terms and conditions contained herein apply to all users of Pornobae and you are only authorized to use Pornobae.com if you agree to abide by all applicable laws and be legally bound by the terms and conditions of this Agreement.
+            The terms and conditions contained herein apply to all users of XclusivePorn and you are only authorized to use XclusivePorn.com if you agree to abide by all applicable laws and be legally bound by the terms and conditions of this Agreement.
           </Typography>
           
           <Typography variant="h5" style={styles.title}>
             DESCRIPTION
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            The website allows for sharing and general viewing various types of content allowing users to share and view visual depictions of adult content, including sexually explicit images. Pornobae allows its users to view the Content and Website subject to the terms and conditions of this Agreement.
+            The website allows for sharing and general viewing various types of content allowing users to share and view visual depictions of adult content, including sexually explicit images. XclusivePorn allows its users to view the Content and Website subject to the terms and conditions of this Agreement.
             <br />
             <br />
-            The website may also contain certain links to third party websites which are in no way owned or controlled by Pornobae. Pornobae assumes no responsibility for the content, privacy policies, practices of any and all third party websites. Pornobae cannot censor or edit the content of third party sites. You acknowledge that Pornobae will not be liable for any and all liability arising for your use of any third-party website.
+            The website may also contain certain links to third party websites which are in no way owned or controlled by XclusivePorn. XclusivePorn assumes no responsibility for the content, privacy policies, practices of any and all third party websites. XclusivePorn cannot censor or edit the content of third party sites. You acknowledge that XclusivePorn will not be liable for any and all liability arising for your use of any third-party website.
           </Typography>
 
           <Typography variant="h5" style={styles.title}>
@@ -40,7 +40,7 @@ const TermsUsePage: React.FC = () => {
             In order to use this website, you affirm that you are at least eighteen (18) years of age and/or over the age of majority in the jurisdiction you reside and from which you access the website where the age of majority is greater than eighteen (18) years of age. If you are under the age of 18 and/or under the age of majority in the jurisdiction you reside and from which you access the website, then you are not permitted to use the website.
             <br />
             <br />
-            We will not reproduce, plagiarize, distribute or communicate publicly movies or scenes that can be copyrighted. Pornobae.com doesn’t host any content. All Pornobae does is use link or embed content that was uploaded to popular Online Video hosting. All popular Online Video hosting users signed a contract with the sites when they set up their accounts which force them not to upload illegal content. By clicking on any Links to videos while surfing on Pornobae you watch content hosted on third parties and Pornobae can’t take the responsibility for any content hosted on other sites.
+            We will not reproduce, plagiarize, distribute or communicate publicly movies or scenes that can be copyrighted. Pornobae.com doesn’t host any content. All XclusivePorn does is use link or embed content that was uploaded to popular Online Video hosting. All popular Online Video hosting users signed a contract with the sites when they set up their accounts which force them not to upload illegal content. By clicking on any Links to videos while surfing on XclusivePorn you watch content hosted on third parties and XclusivePorn can’t take the responsibility for any content hosted on other sites.
             <br />
             <br />
             All brands and logos referenced herein are trademarks of their rightful owners and are used only in reference to them and with a view to appointment or comment, in accordance with article 32 LPI.
