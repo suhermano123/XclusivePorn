@@ -57,6 +57,11 @@ module.exports = {
         hostname: "ah-img.luscious.net",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "xmoviesforyou.com",
+        pathname: "/**",
+      },
     ],
     domains: [
       "t102.pixhost.to", "t86.pixhost.to", "img86.pixhost.to", "img102.pixhost.to",
