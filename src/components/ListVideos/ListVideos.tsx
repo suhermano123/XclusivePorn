@@ -35,11 +35,32 @@ const VideoGrid: React.FC = () => {
 
   const loadVideos = async (startKey?: any) => {
     const data = await getItemsPaginated(videosPerPage, startKey);
-    //console.log("datas", data);
-    setVideoL(data?.items || []);
+    console.log("datas", data);
+    const items = data?.items || [];
+  
+    const getDateValue = (video: any): Date => {
+      if (video.video_date) {
+        if (typeof video.video_date === "object" && "S" in video.video_date) {
+          return new Date(video.video_date.S as string);
+        } else if (typeof video.video_date === "string") {
+          return new Date(video.video_date);
+        }
+      }
+      // Si no existe la fecha, asignamos una fecha muy antigua para que quede al final.
+      return new Date(0);
+    };
+  
+    const sortedItems = items.sort((a, b) => {
+      const dateA = getDateValue(a);
+      const dateB = getDateValue(b);
+      return dateB.getTime() - dateA.getTime();
+    });
+  
+    setVideoL(sortedItems);
     setLastKey(data?.lastEvaluatedKey);
     setCurrentStartKey(startKey);
   };
+  
 
   useEffect(() => {
     // Para la primera carga, pasamos undefined o null

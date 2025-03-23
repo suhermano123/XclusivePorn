@@ -4,6 +4,8 @@ import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import useDynamoDB from "@/hooks/UseDynamoDB";
 import LoyaltyIcon from "@mui/icons-material/Loyalty";
+import ReportIcon from '@mui/icons-material/Report';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
   List,
   ListItem,
@@ -167,7 +169,7 @@ const VideoPage: React.FC = () => {
 
     try {
       // Guarda los comentarios actualizados en DynamoDB
-      await addComment(idVideo || '', updatedCommentString);
+      await addComment(idVideo || "", updatedCommentString);
 
       // Actualiza el estado local con el nuevo array de comentarios
       setComments(updatedComments);
@@ -175,10 +177,6 @@ const VideoPage: React.FC = () => {
     } catch (error) {
       console.error("Error al guardar el comentario:", error);
     }
-  };
-
-  const handleDownloadVideo = () => {
-    window.open(videoData.video_download.S, "_blank");
   };
 
   const handleMouseEnter = (videoId: string, thumbnails: string) => {
@@ -260,72 +258,116 @@ const VideoPage: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  
   return (
     <div>
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.videoLayout}>
         <div style={styles.videoContainer}>
-          <VideoPlayer date={videoData?.video_date?.S} videoEmbedUrl={videoData?.video_embed_url?.S} poster={videoData?.video_thumsnail?.S} title={videoData?.video_name?.S}/>
+          <VideoPlayer
+            date={videoData?.video_date?.S}
+            videoEmbedUrl={videoData?.video_embed_url?.S}
+            poster={videoData?.video_thumsnail?.S}
+            title={videoData?.video_name?.S}
+          />
 
-          <div style={styles.likeDislikeContainer}>
-            <IconButton
-              onClick={handleLike}
-              color={liked ? "secondary" : "default"}
-            >
-              {liked ? (
-                <FavoriteIcon style={{ color: "rgb(233, 30, 196)" }} />
-              ) : (
-                <FavoriteBorderIcon />
-              )}
-            </IconButton>
-            <span>{videoData?.video_likes?.S}</span>
-            <IconButton
-              onClick={handleDislike}
-              color={disliked ? "error" : "default"}
-            >
-              <ThumbDownIcon style={{ color: "rgb(233, 30, 196)" }} />
-            </IconButton>
-            <span>{dislikes} </span>
+<div style={styles.likeDislikeContainer}>
+  {/* Primera parte (10%) - Likes/Dislikes */}
+  <div
+    style={{
+      flexBasis: "10%",
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      padding: "5px",
+      borderRight: "1px solid rgba(0,0,0,0.2)",
+    }}
+  >
+    <IconButton onClick={handleLike} color={liked ? "secondary" : "default"}>
+      {liked ? (
+        <FavoriteIcon style={{ color: "rgb(233, 30, 196)" }} />
+      ) : (
+        <FavoriteBorderIcon />
+      )}
+    </IconButton>
+    <span>{videoData?.video_likes?.S}</span>
+    <IconButton onClick={handleDislike} color={disliked ? "error" : "default"}>
+      <ThumbDownIcon style={{ color: "rgb(233, 30, 196)" }} />
+    </IconButton>
+    <span>{dislikes}</span>
+  </div>
 
-            <span
-              style={{
-                marginLeft: "50px",
-                width: "100%",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "3px",
-              }}
-            >
-              {videoTagsArray?.map((tag: any, index: any) => (
-                <span
-                  key={index}
-                  style={{ display: "flex", alignItems: "center", gap: "3px" }}
-                >
-                  <LoyaltyIcon
-                    style={{ color: "rgb(233, 30, 196)" }}
-                    fontSize="small"
-                  />
-                  {tag}
-                </span>
-              ))}
-            </span>
+  {/* Segunda parte (65%) - Tags */}
+  <div
+    style={{
+      flexBasis: "65%",
+      marginLeft: "20px",
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "2px",
+      alignItems: "center",
+      padding: "5px",
+      borderRight: "1px solid rgba(0,0,0,0.2)",
+    }}
+  >
+    {videoTagsArray?.map((tag: any, index: any) => (
+      <span
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "3px",
+          backgroundColor: "rgba(233, 30, 196, 0.1)",
+          padding: "2px 4px",
+          borderRadius: "4px",
+        }}
+      >
+        <LoyaltyIcon style={{ color: "rgb(233, 30, 196)" }} fontSize="small" />
+        {tag}
+      </span>
+    ))}
+  </div>
 
-            <Button
-              variant="contained"
-              sx={{
-                marginLeft: "10%",
-                backgroundColor: "rgb(233, 30, 196)",
-                color: "white",
-                width: "490px",
-                "&:hover": { backgroundColor: "#C2185B" },
-              }}
-              onClick={downloadFile}
-            >
-              DOWNLOAD VIDEO
-            </Button>
-          </div>
+  {/* Tercera parte (25%) - Botones */}
+  <div
+    style={{
+      flexBasis: "25%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: "5px",
+      padding: "5px",
+    }}
+  >
+    <Button
+      variant="contained"
+      sx={{
+        backgroundColor: "rgb(233, 30, 196)",
+        color: "white",
+        width: "100%",
+        "&:hover": { backgroundColor: "#C2185B" },
+      }}
+      onClick={downloadFile}
+    >
+      <CloudDownloadIcon style={{ marginRight: "5px" }} />
+      <span style={{ fontFamily: "-moz-initial" }}>DOWNLOAD VIDEO</span>
+    </Button>
+    <Button
+      variant="contained"
+      sx={{
+        backgroundColor: "rgb(209, 209, 14)",
+        color: "white",
+        width: "100%",
+        "&:hover": { backgroundColor: "#e40d0d" },
+      }}
+      // onClick={reportFile} // Define reportFile si lo necesitas
+    >
+      <ReportIcon style={{ marginRight: "5px" }} />
+      <span style={{ fontFamily: "-moz-initial" }}>REPORT VIDEO</span>
+    </Button>
+  </div>
+</div>
+
           <div style={styles.likeDislikeContainer}>{videoDescription}</div>
           <ThumbnailSlider thumbnails={videoData?.video_thumsnail?.S || ""} />
           <Paper elevation={3} style={styles.commentBox}>
@@ -360,7 +402,7 @@ const VideoPage: React.FC = () => {
                 sx={{ background: "white", borderRadius: "5px" }}
               />
               <Typography variant="body2" color="textSecondary">
-              for comment please fill the form
+                for comment please fill the form
               </Typography>
             </div>
             <Typography variant="h6" gutterBottom>
@@ -516,11 +558,11 @@ const styles: { [key: string]: CSSProperties } = {
     display: "flex",
     flexWrap: "wrap",
     gap: "20px",
-    padding: "20px 30px",
+    padding: "20px 20px",
     justifyContent: "center",
   },
   videoContainer: {
-    maxWidth: "800px",
+    maxWidth: "950px",
     flex: "1 1 800px",
   },
   videoFrame: {
@@ -529,7 +571,7 @@ const styles: { [key: string]: CSSProperties } = {
     borderRadius: "15px",
   },
   likeDislikeContainer: {
-    marginTop: "5px",
+    marginTop: "2px",
     fontFamily: "revert",
     display: "flex",
     alignItems: "center",

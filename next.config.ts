@@ -62,6 +62,11 @@ module.exports = {
         hostname: "xmoviesforyou.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img-thumbs-videos.s3.amazonaws.com",
+        pathname: "/**",
+      },
     ],
     domains: [
       "t102.pixhost.to", "t86.pixhost.to", "img86.pixhost.to", "img102.pixhost.to",

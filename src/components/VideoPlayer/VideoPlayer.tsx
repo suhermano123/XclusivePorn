@@ -81,8 +81,8 @@ const VideoPlayer = ({
         <span>{date}</span>
       </h2>
 
-      <div data-vjs-player>
-        <video ref={videoRef} className="video-js custom-video-js" />
+      <div data-vjs-player style={{ width: "100%" }}>
+        <video ref={videoRef} className="video-js vjs-fluid custom-video-js" />
       </div>
 
       {/* Capa invisible que activa el Pop-Under cuando se hace clic en el video */}

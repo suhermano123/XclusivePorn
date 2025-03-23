@@ -52,51 +52,67 @@ const ThumbnailSlider = ({ thumbnails }: { thumbnails: string }) => {
   const handleDownload = async () => {
     if (selectedMedia) {
       try {
-        // Se simula una petición sin referer para que el servidor la acepte
-        const response = await fetch(selectedMedia.url, {
-          mode: "cors",
-          referrer: "",
-          referrerPolicy: "no-referrer",
-        });
-        if (!response.ok) throw new Error("Error en la respuesta de red");
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download =  "imagen_downloaded.jpg";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
+        if (selectedMedia.url.includes("amazonaws.com")) {
+          // Descarga directa usando la URL original
+          const link = document.createElement("a");
+          link.href = selectedMedia.url;
+          link.download = "imagen_downloaded.jpg";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          // Se simula una petición sin referer para que el servidor la acepte
+          const response = await fetch(selectedMedia.url, {
+            mode: "cors",
+            referrer: "",
+            referrerPolicy: "no-referrer",
+          });
+          if (!response.ok) throw new Error("Error en la respuesta de red");
+          const blob = await response.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = "imagen_downloaded.jpg";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+        }
       } catch (error) {
         console.error("Error al descargar el medio:", error);
       }
     }
   };
+  
   // Al cambiar selectedMedia (y si es imagen) se hace un GET a la URL original para obtener el blob
   React.useEffect(() => {
     let isMounted = true;
     if (selectedMedia) {
-      setModalBlobUrl(null);
-      fetch(selectedMedia.url, {
-        mode: "cors",
-        referrer: "",
-        referrerPolicy: "no-referrer",
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error("Error en la respuesta de red");
-          return response.blob();
+      // Si la URL proviene de Amazon S3, usamos la URL directamente.
+      if (selectedMedia.url.includes("amazonaws.com")) {
+        setModalBlobUrl(selectedMedia.url);
+      } else {
+        setModalBlobUrl(null);
+        fetch(selectedMedia.url, {
+          mode: "cors",
+          referrer: "",
+          referrerPolicy: "no-referrer",
         })
-        .then((blob) => {
-          if (isMounted) {
-            const blobUrl = window.URL.createObjectURL(blob);
-            setModalBlobUrl(blobUrl);
-          }
-        })
-        .catch((error) => {
-          console.error("Error al obtener el blob de la imagen:", error);
-          setModalBlobUrl(null);
-        });
+          .then((response) => {
+            if (!response.ok) throw new Error("Error en la respuesta de red");
+            return response.blob();
+          })
+          .then((blob) => {
+            if (isMounted) {
+              const blobUrl = window.URL.createObjectURL(blob);
+              setModalBlobUrl(blobUrl);
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener el blob de la imagen:", error);
+            setModalBlobUrl(null);
+          });
+      }
     } else {
       setModalBlobUrl(null);
     }
@@ -107,6 +123,7 @@ const ThumbnailSlider = ({ thumbnails }: { thumbnails: string }) => {
       }
     };
   }, [selectedMedia]);
+  
   const styles: { [key: string]: CSSProperties } = {
     container: {
       display: "flex",
