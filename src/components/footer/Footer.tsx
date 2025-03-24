@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Link } from "@mui/material";
+import { Typography, Link, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
 
 const FooterComponent: React.FC = () => {
@@ -9,30 +9,40 @@ const FooterComponent: React.FC = () => {
     router.push(path);
   };
   const [renderCount, setRenderCount] = useState(0);
-
+  const isMobile = useMediaQuery("(max-width:600px)");
   useEffect(() => {
-    const loadAdScript = (adZoneId: string, containerId: string, width: string, height: string) => {
+    const loadAdScript = (
+      adZoneId: string,
+      containerId: string,
+      width: string,
+      height: string
+    ) => {
       const adContainer = document.getElementById(containerId);
-  
       if (adContainer) {
+        // Limpiar el contenido previo
         adContainer.innerHTML = "";
   
-        // 🛑 Eliminar cualquier script anterior de JuicyAds para evitar duplicados
-        document.querySelectorAll(`script[src*="jads.js"]`).forEach((s) => s.remove());
+        // Eliminar cualquier script anterior de JuicyAds para evitar duplicados
+        document.querySelectorAll(`script[src*="jads.js"]`).forEach((s) =>
+          s.remove()
+        );
   
+        // Crear y agregar el script principal de JuicyAds
         const script1 = document.createElement("script");
         script1.type = "text/javascript";
         script1.setAttribute("data-cfasync", "false");
         script1.async = true;
-        script1.src = `https://poweredby.jads.co/js/jads.js?v=${new Date().getTime()}`; // 👈 Fuerza recarga con un timestamp único
+        script1.src = `https://poweredby.jads.co/js/jads.js?v=${new Date().getTime()}`;
         document.body.appendChild(script1);
   
+        // Crear y agregar el elemento <ins> para el anuncio
         const ins = document.createElement("ins");
         ins.id = adZoneId;
         ins.setAttribute("data-width", width);
         ins.setAttribute("data-height", height);
         adContainer.appendChild(ins);
   
+        // Crear y agregar el script para inicializar el anuncio
         const script2 = document.createElement("script");
         script2.type = "text/javascript";
         script2.setAttribute("data-cfasync", "false");
@@ -42,18 +52,21 @@ const FooterComponent: React.FC = () => {
       }
     };
   
-    // 🔄 Eliminar anuncios viejos y recargar nuevamente
+    // Eliminar anuncios viejos para recargar nuevamente
     document.querySelectorAll("ins[id^='juicy-ads']").forEach((el) => el.remove());
+    console.log("es movil", isMobile);
   
-    loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
-    loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
-    loadAdScript("1081332", "juicy-ads-1081332", "300", "250");
-  
-    // 🔄 Asegurar doble renderizado para forzar la recarga
-    if (renderCount < 1) {
-      setTimeout(() => setRenderCount(renderCount + 1), 100);
+    if (isMobile) {
+      // En dispositivos móviles solo se carga este anuncio
+      loadAdScript("1085104", "juicy-ads-1085104", "300", "100");
+    } else {
+      // En escritorio se cargan los anuncios habituales
+      loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
+      loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
+      loadAdScript("1081332", "juicy-ads-1081332", "300", "250");
     }
-  }, [renderCount, true]);
+  }, [isMobile]);
+  
   
 
   return (

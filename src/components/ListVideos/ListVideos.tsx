@@ -3,9 +3,8 @@ import { useRouter } from "next/router";
 import useDynamoDB from "@/hooks/UseDynamoDB";
 import { VideoItem } from "@/api/types/videoTypes";
 import { addVideos } from "@/redux/videosSlice";
-import { VideosState } from "@/redux/videosSlice";
 import { useDispatch } from "react-redux";
-import { Skeleton, Pagination, Box, Button } from "@mui/material";
+import { Skeleton, Box, Button } from "@mui/material";
 import FooterComponent from "../footer/Footer";
 import { CSSProperties } from "react";
 import AgeVerification from "../OlderVerify/OlderVerify";
@@ -19,7 +18,8 @@ const VideoGrid: React.FC = () => {
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
   const [currentStartKey, setCurrentStartKey] = useState<any>(undefined);
-  const [prevKeys, setPrevKeys] = useState<any[]>([]);
+  // Anteriormente se usaba prevKeys, ahora usamos pageKeys para almacenar las claves de inicio de cada página.
+  const [pageKeys, setPageKeys] = useState<any[]>([undefined]);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -31,13 +31,13 @@ const VideoGrid: React.FC = () => {
   const [lastKey, setLastKey] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const videosPerPage = 12;
+  const videosPerPage = 16;
 
   const loadVideos = async (startKey?: any) => {
     const data = await getItemsPaginated(videosPerPage, startKey);
     console.log("datas", data);
     const items = data?.items || [];
-  
+
     const getDateValue = (video: any): Date => {
       if (video.video_date) {
         if (typeof video.video_date === "object" && "S" in video.video_date) {
@@ -49,23 +49,24 @@ const VideoGrid: React.FC = () => {
       // Si no existe la fecha, asignamos una fecha muy antigua para que quede al final.
       return new Date(0);
     };
-  
+
     const sortedItems = items.sort((a, b) => {
       const dateA = getDateValue(a);
       const dateB = getDateValue(b);
       return dateB.getTime() - dateA.getTime();
     });
-  
+
     setVideoL(sortedItems);
     setLastKey(data?.lastEvaluatedKey);
     setCurrentStartKey(startKey);
   };
-  
 
   useEffect(() => {
-    // Para la primera carga, pasamos undefined o null
+    // Para la primera carga, se pasa undefined (página 1)
     loadVideos();
-    fetchTotalCount().then((count) => {setTotalCount(count)});
+    fetchTotalCount().then((count) => {
+      setTotalCount(count);
+    });
   }, []);
 
   const fetchTotalCount = async () => {
@@ -82,66 +83,83 @@ const VideoGrid: React.FC = () => {
     }
   };
 
-
   // Actualiza Redux (opcional)
   useEffect(() => {
-    console.log("charged", videoL);
     if (videoL && videoL.length > 0) {
       dispatch(addVideos(videoL));
     }
   }, [videoL, dispatch]);
 
+  // Manejo de avanzar a la siguiente página
   const handleNextPage = async () => {
     if (lastKey) {
-      // Guarda la clave actual en el stack
-      setPrevKeys((prev) => [...prev, currentStartKey]);
-      setCurrentPage((prev) => prev + 1);
       await loadVideos(lastKey);
+      // Al avanzar, se agrega la clave de inicio utilizada para esta nueva página
+      setPageKeys((prev) => [...prev, lastKey]);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
+  // Manejo de retroceder a la página anterior
   const handlePreviousPage = async () => {
-    if (prevKeys.length > 0) {
-      const newPrevKeys = [...prevKeys];
-      const previousKey = newPrevKeys.pop();
-      setPrevKeys(newPrevKeys);
-      setCurrentPage((prev) => prev - 1);
-      await loadVideos(previousKey);
+    if (currentPage > 1) {
+      const targetPage = currentPage - 1;
+      // Se obtiene la clave de inicio almacenada para la página destino
+      const targetKey = pageKeys[targetPage - 1]; // ya que la página 1 corresponde a índice 0
+      await loadVideos(targetKey);
+      setCurrentPage(targetPage);
     }
   };
 
-
-  useEffect(() => {
-    if (videoL && videoL.length > 0) {
-      handleAddVideo(videoL);
+  // Manejo de cambio directo de página al hacer clic en un número
+  const handlePageNumberClick = async (page: number) => {
+    if (page === currentPage) return;
+    // Si la página solicitada ya fue cargada, se usa la clave almacenada
+    if (page <= pageKeys.length) {
+      const targetKey = pageKeys[page - 1];
+      await loadVideos(targetKey);
+      setCurrentPage(page);
+    } else {
+      // Si se solicita una página futura no cargada, se recorre secuencialmente hasta llegar
+      let key = pageKeys[pageKeys.length - 1];
+      let targetPage = pageKeys.length;
+      while (targetPage < page) {
+        const data = await getItemsPaginated(videosPerPage, key);
+        const newKey = data?.lastEvaluatedKey;
+        if (!newKey) break; // Si no hay más páginas, se sale del ciclo
+        key = newKey;
+        setPageKeys((prev) => [...prev, key]);
+        targetPage++;
+      }
+      await loadVideos(key);
+      setCurrentPage(targetPage);
     }
-  }, [videoL]);
+  };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
     if (hoveredVideo) {
-      interval = setInterval(() => {
+      const interval = setInterval(() => {
         setCurrentPreview((prev) => ({
           ...prev,
           [hoveredVideo]:
             ((prev[hoveredVideo] || 0) + 1) %
-            videoL.find((v: any) => v.id_video.S === hoveredVideo)?.video_thumsnail.S.split(",").length,
+            videoL.find((v: any) => v.id_video.S === hoveredVideo)?.video_thumsnail.S.split(",")
+              .length,
         }));
       }, 1000);
+      return () => clearInterval(interval);
     }
-
-    return () => clearInterval(interval);
   }, [hoveredVideo, videoL]);
 
   const handleClick = (video: VideoItem) => {
     router.push({ pathname: `/video/${video.id_video.S}` });
   };
 
-  // Si estamos usando paginación en el servidor, videoL ya contiene los items de la página actual
+  // Videos de la página actual
   const currentVideos = Array.isArray(videoL) ? videoL : [];
   const totalPages = Math.ceil(totalCount / videosPerPage);
-  console.log("actuales", currentVideos, totalPages);
+  console.log("Página actual:", currentPage, "Total de páginas:", totalPages);
+
   return (
     <div>
       <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
@@ -224,14 +242,80 @@ const VideoGrid: React.FC = () => {
               })}
         </div>
 
-
-        {/* Botones de navegación adicionales */}
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-          <Button variant="contained" color="secondary" onClick={handlePreviousPage} disabled={currentPage === 1} sx={{ mr: 2 }}>
+        {/* Botones de paginación con números */}
+        <Box sx={{ display: "flex", justifyContent: "center", marginBottom: '10px' }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            sx={{
+              mr: 1,
+              backgroundColor: "#f013e5",
+              color: "#fff",
+              padding: "10px 10px",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              borderRadius: "20px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+              "&:hover": {
+                backgroundColor: "#e91ec4",
+              },
+              "&:disabled": {
+                backgroundColor: "#bfbec9",
+                color: "#e0e0e0",
+              },
+            }}
+          >
             Anterior
           </Button>
-          {totalPages}
-          <Button variant="contained" color="secondary" onClick={handleNextPage} disabled={!lastKey}>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <Button
+              key={page}
+              variant={page === currentPage ? "contained" : "outlined"}
+              onClick={() => handlePageNumberClick(page)}
+              sx={{
+                mx: 1,
+                backgroundColor: page === currentPage ? "#f013e5" : "transparent",
+                color: page === currentPage ? "#fff" : "#f013e5",
+                fontSize: "1rem",
+                borderRadius: "5px",
+                padding: "5px 10px",
+                border: "1px solid #f013e5",
+                "&:hover": {
+                  backgroundColor: page === currentPage ? "#e91ec4" : "#f013e5",
+                  color: "#fff",
+                },
+              }}
+            >
+              {page}
+            </Button>
+          ))}
+
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleNextPage}
+            disabled={!lastKey}
+            sx={{
+              ml: 1,
+              backgroundColor: "#f013e5",
+              color: "#fff",
+              padding: "10px 10px",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              borderRadius: "20px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+              "&:hover": {
+                backgroundColor: "#e91ec4",
+              },
+              "&:disabled": {
+                backgroundColor: "#b0aef5",
+                color: "#e0e0e0",
+              },
+            }}
+          >
             Siguiente
           </Button>
         </Box>
@@ -253,8 +337,8 @@ const styles: { [key: string]: CSSProperties } = {
     gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
     gap: "14px",
     paddingTop: "17px",
-    marginBottom: "60px",
-    padding: "10px"
+    marginBottom: "10px",
+    padding: "10px",
   },
   videoCard: {
     position: "relative",

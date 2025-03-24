@@ -4,8 +4,8 @@ import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import useDynamoDB from "@/hooks/UseDynamoDB";
 import LoyaltyIcon from "@mui/icons-material/Loyalty";
-import ReportIcon from '@mui/icons-material/Report';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import ReportIcon from "@mui/icons-material/Report";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import {
   List,
   ListItem,
@@ -271,102 +271,113 @@ const VideoPage: React.FC = () => {
             title={videoData?.video_name?.S}
           />
 
-<div style={styles.likeDislikeContainer}>
-  {/* Primera parte (10%) - Likes/Dislikes */}
-  <div
-    style={{
-      flexBasis: "10%",
-      display: "flex",
-      alignItems: "center",
-      gap: "4px",
-      padding: "5px",
-      borderRight: "1px solid rgba(0,0,0,0.2)",
-    }}
-  >
-    <IconButton onClick={handleLike} color={liked ? "secondary" : "default"}>
-      {liked ? (
-        <FavoriteIcon style={{ color: "rgb(233, 30, 196)" }} />
-      ) : (
-        <FavoriteBorderIcon />
-      )}
-    </IconButton>
-    <span>{videoData?.video_likes?.S}</span>
-    <IconButton onClick={handleDislike} color={disliked ? "error" : "default"}>
-      <ThumbDownIcon style={{ color: "rgb(233, 30, 196)" }} />
-    </IconButton>
-    <span>{dislikes}</span>
-  </div>
+          <div style={styles.likeDislikeContainer}>
+            {/* Primera parte (10%) - Likes/Dislikes */}
+            <div
+              style={{
+                flexBasis: "10%",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                padding: "5px",
+                borderRight: "1px solid rgba(0,0,0,0.2)",
+              }}
+            >
+              <IconButton
+                onClick={handleLike}
+                color={liked ? "secondary" : "default"}
+              >
+                {liked ? (
+                  <FavoriteIcon style={{ color: "rgb(233, 30, 196)" }} />
+                ) : (
+                  <FavoriteBorderIcon />
+                )}
+              </IconButton>
+              <span>{videoData?.video_likes?.S}</span>
+              <IconButton
+                onClick={handleDislike}
+                color={disliked ? "error" : "default"}
+              >
+                <ThumbDownIcon style={{ color: "rgb(233, 30, 196)" }} />
+              </IconButton>
+              <span>{dislikes}</span>
+            </div>
 
-  {/* Segunda parte (65%) - Tags */}
-  <div
-    style={{
-      flexBasis: "65%",
-      marginLeft: "20px",
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "2px",
-      alignItems: "center",
-      padding: "5px",
-      borderRight: "1px solid rgba(0,0,0,0.2)",
-    }}
-  >
-    {videoTagsArray?.map((tag: any, index: any) => (
-      <span
-        key={index}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "3px",
-          backgroundColor: "rgba(233, 30, 196, 0.1)",
-          padding: "2px 4px",
-          borderRadius: "4px",
-        }}
-      >
-        <LoyaltyIcon style={{ color: "rgb(233, 30, 196)" }} fontSize="small" />
-        {tag}
-      </span>
-    ))}
-  </div>
+            {/* Segunda parte (65%) - Tags */}
+            <div
+              style={{
+                flexBasis: "65%",
+                marginLeft: "20px",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "2px",
+                alignItems: "center",
+                padding: "5px",
+                borderRight: "1px solid rgba(0,0,0,0.2)",
+              }}
+            >
+              {videoTagsArray?.map((tag: any, index: any) => (
+                <span
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "3px",
+                    backgroundColor: "rgba(233, 30, 196, 0.1)",
+                    padding: "2px 4px",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <LoyaltyIcon
+                    style={{ color: "rgb(233, 30, 196)" }}
+                    fontSize="small"
+                  />
+                  {tag}
+                </span>
+              ))}
+            </div>
 
-  {/* Tercera parte (25%) - Botones */}
-  <div
-    style={{
-      flexBasis: "25%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      gap: "5px",
-      padding: "5px",
-    }}
-  >
-    <Button
-      variant="contained"
-      sx={{
-        backgroundColor: "rgb(233, 30, 196)",
-        color: "white",
-        width: "100%",
-        "&:hover": { backgroundColor: "#C2185B" },
-      }}
-      onClick={downloadFile}
-    >
-      <CloudDownloadIcon style={{ marginRight: "5px" }} />
-      <span style={{ fontFamily: "-moz-initial" }}>DOWNLOAD VIDEO</span>
-    </Button>
-    <Button
-      variant="contained"
-      sx={{
-        backgroundColor: "rgb(209, 209, 14)",
-        color: "white",
-        width: "100%",
-        "&:hover": { backgroundColor: "#e40d0d" },
-      }}
-      // onClick={reportFile} // Define reportFile si lo necesitas
-    >
-      <ReportIcon style={{ marginRight: "5px" }} />
-      <span style={{ fontFamily: "-moz-initial" }}>REPORT VIDEO</span>
-    </Button>
-  </div>
-</div>
+            {/* Tercera parte (25%) - Botones */}
+            <div
+              style={{
+                flexBasis: "25%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "5px",
+                padding: "5px",
+              }}
+            >
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "rgb(233, 30, 196)",
+                  color: "white",
+                  width: "100%",
+                  "&:hover": { backgroundColor: "#C2185B" },
+                }}
+                onClick={downloadFile}
+              >
+                <CloudDownloadIcon style={{ marginRight: "5px" }} />
+                <span style={{ fontFamily: "-moz-initial" }}>
+                  DOWNLOAD VIDEO
+                </span>
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "rgb(209, 209, 14)",
+                  color: "white",
+                  width: "100%",
+                  "&:hover": { backgroundColor: "#e40d0d" },
+                }}
+                // onClick={reportFile} // Define reportFile si lo necesitas
+              >
+                <ReportIcon style={{ marginRight: "5px" }} />
+                <span style={{ fontFamily: "-moz-initial" }}>REPORT VIDEO</span>
+              </Button>
+            </div>
+          </div>
 
           <div style={styles.likeDislikeContainer}>{videoDescription}</div>
           <ThumbnailSlider thumbnails={videoData?.video_thumsnail?.S || ""} />

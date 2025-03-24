@@ -77,8 +77,8 @@ const VideoPlayer = ({
           borderRadius: "5px",
         }}
       >
-        <span>{title}</span>
-        <span>{date}</span>
+        <span style={{width: '90%', fontSize: '15px', fontFamily: "-moz-initial"}}>{title}</span>
+        <span style={{fontSize: '15px', fontFamily: "-moz-initial"}}>{date}</span>
       </h2>
 
       <div data-vjs-player style={{ width: "100%" }}>
