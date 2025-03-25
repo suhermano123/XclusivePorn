@@ -267,7 +267,7 @@ const VideoGrid: React.FC = () => {
               },
             }}
           >
-            Anterior
+            Back
           </Button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -316,7 +316,7 @@ const VideoGrid: React.FC = () => {
               },
             }}
           >
-            Siguiente
+            Next
           </Button>
         </Box>
 

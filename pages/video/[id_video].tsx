@@ -40,7 +40,7 @@ const VideoPage: React.FC = () => {
   );
   const { id_video } = router.query;
   const videoUrl = url?.toString();
-  console.log("vids", relatedVideos, url);
+  //console.log("vids", relatedVideos, url);
 
   const videoTagsArray = Array.isArray(videoData?.video_tags?.S)
     ? videoData?.video_tags?.S.flatMap((tag: any) =>
@@ -78,17 +78,17 @@ const VideoPage: React.FC = () => {
 
     if (videoInRedux) {
       setVideoData(videoInRedux);
-      console.log("Video encontrado en Redux:", videoInRedux);
+      //console.log("Video encontrado en Redux:", videoInRedux);
     } else {
       getItem(idVideo as string).then((data: any) => {
         if (data) {
-          console.log("Video obtenido de DynamoDB:", data);
+          //console.log("Video obtenido de DynamoDB:", data);
           setVideoData(data);
 
           // 🔍 Obtener todos los videos desde DynamoDB
           GetItems().then(
             (allVideos: Record<string, AttributeValue>[] | undefined) => {
-              console.log("Todos los videos obtenidos:", allVideos);
+              //console.log("Todos los videos obtenidos:", allVideos);
 
               // ✅ Guardar los videos en Redux (si lo necesitas)
               dispatch({ type: "SET_VIDEOS", payload: allVideos });
@@ -103,11 +103,11 @@ const VideoPage: React.FC = () => {
       });
     }
   }, [idVideo, videos]); // Dependencias
-  console.log("actuales", oldComment);
+  //console.log("actuales", oldComment);
   // ✅ Nuevo useEffect para asegurarnos de que los videos relacionados se actualicen correctamente
   useEffect(() => {
     if (videoData && videoData.video_tags?.S) {
-      console.log("Actualizando videos relacionados desde Redux/DynamoDB...");
+      //console.log("Actualizando videos relacionados desde Redux/DynamoDB...");
       setRelatedVideos(getRelatedVideos(videoData.video_tags.S, videos));
     }
   }, [videoData, videos]); // Se ejecuta cuando cambia videoData o los videos en Redux
@@ -117,7 +117,7 @@ const VideoPage: React.FC = () => {
     if (!tags || videoList.length === 0) return [];
 
     const tagsArray = tags.split(",").map((tag) => tag.trim());
-    console.log("Ejecutando getRelatedVideos con videos:", videoList);
+    //console.log("Ejecutando getRelatedVideos con videos:", videoList);
 
     const related = videoList.filter((video) => {
       const videoTagsArray =

@@ -22,22 +22,28 @@ const VideoPlayer = ({
   const [showAdLayer, setShowAdLayer] = useState(true);
   const firstThumbnail = poster?.split(",")[0].trim();
 
-  const options = {
-    autoplay: false,
-    controls: true,
-    responsive: true,
-    fluid: true,
-    poster: firstThumbnail,
-    sources: videoUrl ? [{ src: videoUrl, type: "video/mp4" }] : [],
-  };
-
   useEffect(() => {
-    if (videoRef.current && !playerRef.current) {
-      playerRef.current = videojs(videoRef.current, options);
-    } else if (playerRef.current) {
-      playerRef.current.src(options.sources);
+    if (videoUrl && videoRef.current) {
+      const options = {
+        autoplay: false,
+        controls: true,
+        responsive: true,
+        fluid: true,
+        poster: firstThumbnail,
+        sources: [{ src: videoUrl, type: "video/mp4" }],
+      };
+
+      if (!playerRef.current) {
+        // Inicializa el reproductor
+        playerRef.current = videojs(videoRef.current, options);
+      } else {
+        // Actualiza la fuente y el póster dinámicamente
+        playerRef.current.src(options.sources);
+        playerRef.current.poster(firstThumbnail);
+        playerRef.current.load(); // Recarga el reproductor con la nueva configuración
+      }
     }
-  }, [videoUrl]);
+  }, [videoUrl, firstThumbnail]);
 
   useEffect(() => {
     return () => {
@@ -77,8 +83,10 @@ const VideoPlayer = ({
           borderRadius: "5px",
         }}
       >
-        <span style={{width: '90%', fontSize: '15px', fontFamily: "-moz-initial"}}>{title}</span>
-        <span style={{fontSize: '15px', fontFamily: "-moz-initial"}}>{date}</span>
+        <span style={{ width: "90%", fontSize: "15px", fontFamily: "-moz-initial" }}>
+          {title}
+        </span>
+        <span style={{ fontSize: "15px", fontFamily: "-moz-initial" }}>{date}</span>
       </h2>
 
       <div data-vjs-player style={{ width: "100%" }}>
