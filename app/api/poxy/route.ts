@@ -1,11 +1,9 @@
-export const config = {
-  runtime: 'edge',
-};
+export const runtime = 'edge';
 
-export default async function handler(req: Request) {
+export async function GET(req: Request) {
 
-  const url = new URL(req.url);
-  const target = url.searchParams.get("url");
+  const { searchParams } = new URL(req.url);
+  const target = searchParams.get("url");
 
   if (!target) {
     return new Response(
@@ -14,7 +12,6 @@ export default async function handler(req: Request) {
     );
   }
 
-  // permitir carga directa de scripts/css/player
   if (
     target.includes("/player/") ||
     target.includes(".js") ||
@@ -33,24 +30,24 @@ export default async function handler(req: Request) {
       },
     });
 
-    const contentType = response.headers.get("content-type") || "";
+    const contentType =
+      response.headers.get("content-type") || "";
 
     return new Response(response.body, {
       status: response.status,
       headers: {
         "Content-Type": contentType,
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
       },
     });
 
   } catch {
 
     return new Response(
-      JSON.stringify({ error: "Proxy request failed" }),
+      JSON.stringify({ error: "Proxy failed" }),
       { status: 500 }
     );
 
   }
+
 }
