@@ -1,28 +1,27 @@
 export const runtime = 'edge';
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const url = searchParams.get("url");
 
-  const { searchParams } = new URL(req.url);
-  const target = searchParams.get("url");
-
-  if (!target) {
+  if (!url) {
     return new Response(
       JSON.stringify({ error: "No URL provided" }),
-      { status: 400 }
+      { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
+  // permitir scripts y css directos
   if (
-    target.includes("/player/") ||
-    target.includes(".js") ||
-    target.includes(".css")
+    url.includes("/player/") ||
+    url.endsWith(".js") ||
+    url.endsWith(".css")
   ) {
-    return Response.redirect(target);
+    return Response.redirect(url);
   }
 
   try {
-
-    const response = await fetch(decodeURIComponent(target), {
+    const response = await fetch(decodeURIComponent(url), {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X)",
@@ -30,24 +29,27 @@ export async function GET(req: Request) {
       },
     });
 
-    const contentType =
-      response.headers.get("content-type") || "";
+    if (!response.ok) {
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch resource" }),
+        { status: response.status }
+      );
+    }
+
+    const headers = new Headers(response.headers);
+    headers.set("Access-Control-Allow-Origin", "*");
+    headers.set("Access-Control-Allow-Methods", "GET,OPTIONS");
+    headers.set("Access-Control-Allow-Headers", "*");
 
     return new Response(response.body, {
       status: response.status,
-      headers: {
-        "Content-Type": contentType,
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers,
     });
 
   } catch {
-
     return new Response(
-      JSON.stringify({ error: "Proxy failed" }),
+      JSON.stringify({ error: "Proxy request failed" }),
       { status: 500 }
     );
-
   }
-
 }
