@@ -11,7 +11,6 @@ export async function GET(request: Request) {
     );
   }
 
-  // permitir scripts y css directos
   if (
     url.includes("/player/") ||
     url.endsWith(".js") ||
