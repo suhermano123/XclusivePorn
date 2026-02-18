@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getVideosPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
-import { addVideos } from "@/redux/videosSlice";
-import { useDispatch } from "react-redux";
 import { Skeleton, Box, Button, Chip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import FooterComponent from "../footer/Footer";
-import { CSSProperties } from "react";
 import AgeVerification from "../OlderVerify/OlderVerify";
 import Image from "next/image";
 import { getVisitorId } from "@/api/visitorIdHelper";
@@ -16,7 +13,6 @@ const VideoGrid: React.FC = () => {
   const [videoL, setVideoL] = useState<SupabaseVideo[]>([]);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const [currentPage, setCurrentPage] = useState(1);

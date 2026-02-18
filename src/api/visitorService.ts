@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 export const insertVisitorInfo = async (data: any) => {
     try {
         const response = await fetch('/api/visitor-info', {
