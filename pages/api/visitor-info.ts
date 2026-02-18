@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../src/api/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+export const config = {
+    runtime: 'edge',
+};
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
