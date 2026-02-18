@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "preview": "next-on-pages",
+    "pages:build": "npx @cloudflare/next-on-pages",
     "deploy": "next-on-pages",
     "start": "next start"
   },
