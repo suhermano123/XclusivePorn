@@ -4,36 +4,10 @@ import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
 import { useEffect } from "react";
-import { v4 as uuidv4 } from 'uuid';
-import useDynamoDB from "@/hooks/UseDynamoDB";
-
-const { putItem } = useDynamoDB('visitor_information');
+import { insertVisitorInfo } from "@/api/visitorService";
 
 const getVisitorInfoAndInsert = async (data: any) => {
-  try {
-
-
-    const visitorInfo = {
-      id_visitor: { S: uuidv4() },
-      country: { S: data.country || 'Unknown' },
-      regionName: { S: data.regionName || 'Unknown' },
-      city: { S: data.city || 'Unknown' },
-      zip: { S: data.zip || 'Unknown' },
-      lat: { N: data.lat ? data.lat.toString() : '0' },
-      lon: { N: data.lon ? data.lon.toString() : '0' },
-      timezone: { S: data.timezone || 'Unknown' },
-      isp: { S: data.isp || 'Unknown' },
-      org: { S: data.org || 'Unknown' },
-      as: { S: data.as || 'Unknown' },
-      ip: { S: data.query || 'Unknown' },
-    };
-
-    await putItem(visitorInfo);
-    //console.log('Visitor information inserted:', visitorInfo);
-
-  } catch (error) {
-    console.error('Error fetching visitor information or inserting to DynamoDB:', error);
-  }
+  await insertVisitorInfo(data);
 };
 
 
@@ -65,7 +39,7 @@ export default function HomeIndex() {
       <>
         <Head>
           <title>Free Premium Adult Videos | Download & Share in HD</title>
-          <link rel="canonical" href="https://www.xclusiveporn.org/Home" />
+          <link rel="canonical" href="https://xclusiveporn.org/Home" />
           <meta
             name="description"
             content="Enjoy free premium adult videos in high definition. Download and share the latest top-quality content, updated daily."

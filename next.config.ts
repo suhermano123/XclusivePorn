@@ -1,8 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Asegúrate de que NO haya 'output: export' si usas APIs o SSR
   eslint: {
-    ignoreDuringBuilds: true, // Útil para evitar que fallos menores detengan el build
+    ignoreDuringBuilds: true,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.xhcdn.com',
+      },
+      {
+        protocol: 'http',
+        hostname: '**.xhcdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.xvideos-cdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.phncdn.com',
+      }
+    ],
   },
 }
 
