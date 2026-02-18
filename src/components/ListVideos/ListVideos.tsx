@@ -162,84 +162,84 @@ const VideoGrid: React.FC = () => {
 
   return (
     <div>
-      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
+      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d"></meta>
       <AgeVerification />
       <div style={styles.container}>
         <div style={styles.gridContainer}>
           {currentVideos.length === 0
             ? Array(8)
-                .fill(0)
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      ...styles.videoCard,
-                      backgroundColor: "rgba(240, 236, 236, 0.3)",
-                      minHeight: "230px",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Skeleton variant="rectangular" width="100%" height={200} style={styles.thumbnail} />
-                    <Skeleton variant="text" width="60%" style={{ marginTop: "10px", marginLeft: "20px" }} />
-                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
-                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
-                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
-                    <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
-                  </div>
-                ))
+              .fill(0)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  style={{
+                    ...styles.videoCard,
+                    backgroundColor: "rgba(240, 236, 236, 0.3)",
+                    minHeight: "230px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Skeleton variant="rectangular" width="100%" height={200} style={styles.thumbnail} />
+                  <Skeleton variant="text" width="60%" style={{ marginTop: "10px", marginLeft: "20px" }} />
+                  <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                  <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                  <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                  <Skeleton variant="text" width="40%" style={{ marginTop: "5px", marginLeft: "20px" }} />
+                </div>
+              ))
             : currentVideos.map((video: any) => {
-                const previewImages = video.video_thumsnail?.S
-                  ? video.video_thumsnail.S.split(",")
-                      .map((url: any) => url.trim())
-                      .filter(Boolean)
-                  : [];
-                return (
-                  <div
-                    key={video.id_video?.S || `skeleton-${Math.random()}`}
-                    style={styles.videoCard}
-                    onMouseEnter={() => {
-                      setHoveredVideo(video.id_video?.S);
-                      setCurrentPreview((prev) => ({
-                        ...prev,
-                        [video.id_video?.S]: 0,
-                      }));
-                    }}
-                    onMouseLeave={() => setHoveredVideo(null)}
-                    onClick={() => handleClick(video)}
-                  >
-                    <div style={styles.thumbnailContainer}>
-                      <p style={styles.videoTitle}>{video.video_name.S}</p>
+              const previewImages = video.video_thumsnail?.S
+                ? video.video_thumsnail.S.split(",")
+                  .map((url: any) => url.trim())
+                  .filter(Boolean)
+                : [];
+              return (
+                <div
+                  key={video.id_video?.S || `skeleton-${Math.random()}`}
+                  style={styles.videoCard}
+                  onMouseEnter={() => {
+                    setHoveredVideo(video.id_video?.S);
+                    setCurrentPreview((prev) => ({
+                      ...prev,
+                      [video.id_video?.S]: 0,
+                    }));
+                  }}
+                  onMouseLeave={() => setHoveredVideo(null)}
+                  onClick={() => handleClick(video)}
+                >
+                  <div style={styles.thumbnailContainer}>
+                    <p style={styles.videoTitle}>{video.video_name.S}</p>
+                    <Image
+                      priority
+                      height={300}
+                      width={300}
+                      src={video.oficial_thumb.S}
+                      alt={video.video_name.S}
+                      style={styles.thumbnail}
+                    />
+                    {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
                       <Image
                         priority
                         height={300}
                         width={300}
-                        src={video.oficial_thumb.S}
                         alt={video.video_name.S}
-                        style={styles.thumbnail}
+                        src={previewImages[currentPreview[video.id_video.S] || 0]}
+                        style={styles.previewOverlay}
                       />
-                      {hoveredVideo === video.id_video.S && previewImages.length > 0 && (
-                        <Image
-                          priority
-                          height={300}
-                          width={300}
-                          alt={video.video_name.S}
-                          src={previewImages[currentPreview[video.id_video.S] || 0]}
-                          style={styles.previewOverlay}
-                        />
-                      )}
-                      <div style={styles.videoInfo}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <div style={{ ...styles.overlay, opacity: hoveredVideo === video.id_video.S ? 0 : 1 }}>
-                            <span>⏳ {video.video_time.S}</span> | <span>❤️ {video.video_likes.S}</span>
-                          </div>
+                    )}
+                    <div style={styles.videoInfo}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ ...styles.overlay, opacity: hoveredVideo === video.id_video.S ? 0 : 1 }}>
+                          <span>⏳ {video.video_time.S}</span> | <span>❤️ {video.video_likes.S}</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
         </div>
 
         {/* Botones de paginación con números */}
