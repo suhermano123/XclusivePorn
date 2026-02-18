@@ -9,9 +9,9 @@ import useDynamoDB from "@/hooks/UseDynamoDB";
 
 const { putItem } = useDynamoDB('visitor_information');
 
-const getVisitorInfoAndInsert = async (data:any) => {
+const getVisitorInfoAndInsert = async (data: any) => {
   try {
-    
+
 
     const visitorInfo = {
       id_visitor: { S: uuidv4() },
@@ -43,10 +43,10 @@ export default function HomeIndex() {
       try {
         const response = await fetch("https://api.ipify.org?format=json");
         const { ip } = await response.json();
-        
+
         const geoResponse = await fetch(`http://ip-api.com/json/${ip}`);
         const geoData = await geoResponse.json();
-        if(geoData?.query != '179.1.136.81')
+        if (geoData?.query != '179.1.136.81')
           getVisitorInfoAndInsert(geoData)
         //console.log("Visitor IP Information:", geoData);
       } catch (error) {
@@ -59,12 +59,13 @@ export default function HomeIndex() {
 
   return (
     <div>
+      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d"></meta>
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
       <>
         <Head>
           <title>Free Premium Adult Videos | Download & Share in HD</title>
-          <link rel="canonical" href="https://www.xclusiveporn.net/Home" />
+          <link rel="canonical" href="https://www.xclusiveporn.org/Home" />
           <meta
             name="description"
             content="Enjoy free premium adult videos in high definition. Download and share the latest top-quality content, updated daily."

@@ -1,5 +1,4 @@
 module.exports = {
-    siteUrl: "https://www.xclusiveporn.net",
-    generateRobotsTxt: true, // Crea robots.txt
-  };
-  
+  siteUrl: "https://www.xclusiveporn.org",
+  generateRobotsTxt: true, // Crea robots.txt
+};
