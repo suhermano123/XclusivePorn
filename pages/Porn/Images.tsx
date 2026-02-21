@@ -158,14 +158,11 @@ const ImagesPage: React.FC = () => {
                                     borderRadius: "8px",
                                     cursor: "pointer",
                                     backgroundColor: "#111",
-                                    "&:hover": {
-                                        "& .img-overlay": { opacity: 1 },
-                                        "& img": { transform: "scale(1.05)" },
-                                    },
                                     transition: "box-shadow 0.2s",
                                     "&:hover": {
                                         boxShadow: "0 0 0 2px #f013e5",
                                         "& .img-overlay": { opacity: 1 },
+                                        "& img": { transform: "scale(1.05)" },
                                     },
                                 }}
                             >
