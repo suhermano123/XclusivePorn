@@ -6,7 +6,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export const dynamic = 'force-dynamic'; // Defaults to auto, but force dynamic to ensure fresh data if needed
+export const runtime = 'edge';
 
 export async function GET(request: Request) {
     try {
