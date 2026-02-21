@@ -28,7 +28,7 @@ export default function HomeIndex() {
       }
     };
 
-    fetchIPInfo();
+    // fetchIPInfo();
   }, []);
 
   return (
@@ -39,7 +39,7 @@ export default function HomeIndex() {
       <>
         <Head>
           <title>Free Premium Adult Videos | Download & Share in HD</title>
-          <link rel="canonical" href="https://xclusiveporn.org/Home" />
+          <link rel="canonical" href="https://novapornx.com/Home" />
           <meta
             name="description"
             content="Enjoy free premium adult videos in high definition. Download and share the latest top-quality content, updated daily."

@@ -7,6 +7,14 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: 'xmoviescdn.online',
+      },
+      {
+        protocol: 'https',
         hostname: '**.xhcdn.com',
       },
       {
@@ -22,6 +30,18 @@ const nextConfig = {
         hostname: '**.phncdn.com',
       }
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/media-proxy/:path*',
+        destination: 'https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev/:path*',
+      },
+      {
+        source: '/image-proxy/:path*',
+        destination: 'https://xmoviescdn.online/:path*',
+      },
+    ]
   },
 }
 

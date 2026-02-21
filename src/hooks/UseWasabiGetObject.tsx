@@ -24,7 +24,10 @@ const useWasabiObjectUrl = (objectKey: string, expiresIn = 900) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!objectKey) return;
+    if (!objectKey) {
+      setLoading(false);
+      return;
+    }
 
     const fetchSignedUrl = async () => {
       setLoading(true);

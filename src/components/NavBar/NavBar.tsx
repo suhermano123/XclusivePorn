@@ -18,17 +18,22 @@ import { useRouter } from "next/router";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: "#e91ec4",
+  borderRadius: "50px",
+  backgroundColor: alpha(theme.palette.common.white, 0.1),
   "&:hover": {
-    backgroundColor: "#bb199d",
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: "100%",
+  transition: theme.transitions.create(["background-color", "width", "box-shadow"]),
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  display: "flex",
+  alignItems: "center",
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(3),
     width: "auto",
+    minWidth: "300px",
   },
 }));
 
@@ -44,14 +49,15 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
+  width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
+    fontSize: "0.9rem",
     [theme.breakpoints.up("md")]: {
-      width: "20ch",
+      width: "30ch",
     },
   },
 }));
@@ -189,11 +195,15 @@ export default function PrimarySearchAppBar(props: any) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
-        position="static"
+        position="sticky"
         sx={{
-          backgroundColor: "#e91ec4",
-          height: 60,
-          
+          background: "linear-gradient(90deg, #e91ec4 0%, #d81b60 100%)",
+          backdropFilter: "blur(15px)",
+          backgroundColor: alpha("#e91ec4", 0.8),
+          height: 64,
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          justifyContent: "center",
         }}
         {...props}
       >
@@ -207,7 +217,7 @@ export default function PrimarySearchAppBar(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          
+
           <Box
             sx={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
@@ -215,7 +225,7 @@ export default function PrimarySearchAppBar(props: any) {
             <img
               src="/assets/oficial_logo.png"
               width={170}
-              height={60}
+              height={30}
               alt="Logo oficial"
             />
           </Box>

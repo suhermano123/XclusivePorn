@@ -21,12 +21,12 @@ const FooterComponent: React.FC = () => {
       if (adContainer) {
         // Limpiar el contenido previo
         adContainer.innerHTML = "";
-  
+
         // Eliminar cualquier script anterior de JuicyAds para evitar duplicados
         document.querySelectorAll(`script[src*="jads.js"]`).forEach((s) =>
           s.remove()
         );
-  
+
         // Crear y agregar el script principal de JuicyAds
         const script1 = document.createElement("script");
         script1.type = "text/javascript";
@@ -34,14 +34,14 @@ const FooterComponent: React.FC = () => {
         script1.async = true;
         script1.src = `https://poweredby.jads.co/js/jads.js?v=${new Date().getTime()}`;
         document.body.appendChild(script1);
-  
+
         // Crear y agregar el elemento <ins> para el anuncio
         const ins = document.createElement("ins");
         ins.id = adZoneId;
         ins.setAttribute("data-width", width);
         ins.setAttribute("data-height", height);
         adContainer.appendChild(ins);
-  
+
         // Crear y agregar el script para inicializar el anuncio
         const script2 = document.createElement("script");
         script2.type = "text/javascript";
@@ -51,30 +51,30 @@ const FooterComponent: React.FC = () => {
         adContainer.appendChild(script2);
       }
     };
-  
+
     // Eliminar anuncios viejos para recargar nuevamente
     document.querySelectorAll("ins[id^='juicy-ads']").forEach((el) => el.remove());
     console.log("es movil", isMobile);
-  
+
     if (isMobile) {
       // En dispositivos móviles solo se carga este anuncio
-      loadAdScript("1085104", "juicy-ads-1085104", "300", "100");
+      loadAdScript("1111579", "juicy-ads-1111579", "300", "100");
     } else {
       // En escritorio se cargan los anuncios habituales
-      loadAdScript("1081330", "juicy-ads-1081330", "300", "250");
-      loadAdScript("1081329", "juicy-ads-1081329", "908", "258");
-      loadAdScript("1081332", "juicy-ads-1081332", "300", "250");
+      loadAdScript("1111576", "juicy-ads-1111576", "300", "250");
+      loadAdScript("1111577", "juicy-ads-1111577", "908", "258");
+      loadAdScript("1111578", "juicy-ads-1111578", "300", "250");
     }
   }, [isMobile]);
-  
-  
+
+
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
         {/* Contenedor del nuevo anuncio izquierdo */}
         <div
-          id="juicy-ads-1081330"
+          id="juicy-ads-1111576"
           style={{
             width: "300px",
             height: "250px",
@@ -92,7 +92,7 @@ const FooterComponent: React.FC = () => {
 
         {/* Contenedor del anuncio principal */}
         <div
-          id="juicy-ads-1081329"
+          id="juicy-ads-1111577"
           style={{
             width: "908px",
             height: "258px",
@@ -110,7 +110,7 @@ const FooterComponent: React.FC = () => {
 
         {/* Contenedor del nuevo anuncio derecho */}
         <div
-          id="juicy-ads-1081332"
+          id="juicy-ads-1111578"
           style={{
             width: "300px",
             height: "250px",
@@ -139,7 +139,7 @@ const FooterComponent: React.FC = () => {
         }}
       >
         <Typography variant="body2" color="inherit" paragraph>
-          {"© "} {new Date().getFullYear()} XclusivePorn All rights reserved.
+          {"© "} {new Date().getFullYear()} novapornx All rights reserved.
         </Typography>
 
         <Typography variant="body2" color="inherit" paragraph>
@@ -158,7 +158,7 @@ const FooterComponent: React.FC = () => {
         </Typography>
 
         <Typography variant="body2" color="inherit" paragraph>
-          Welcome to XclusivePron.net free porn videos in PREMIUM HD, This site does not store any files on your servers. Xclusiveporn only indexes and links to content provided by other non-affiliated sites. All models appearing on this website are 18 years or older.
+          Welcome to novapornx.com free porn videos in PREMIUM HD, This site does not store any files on your servers. novapornx only indexes and links to content provided by other non-affiliated sites. All models appearing on this website are 18 years or older.
         </Typography>
       </footer>
     </div>
