@@ -5,6 +5,8 @@ import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
 import { useEffect } from "react";
 import { insertVisitorInfo } from "@/api/visitorService";
+import TopVideosSlider from "@/components/TopVideosSlider/TopVideosSlider";
+import FooterComponent from "@/components/footer/Footer";
 
 const getVisitorInfoAndInsert = async (data: any) => {
   await insertVisitorInfo(data);

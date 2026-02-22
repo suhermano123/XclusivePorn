@@ -62,15 +62,23 @@ export async function GET(request: Request) {
 
         const page = parseInt(searchParams.get('page') || '1');
         const pageSize = parseInt(searchParams.get('pageSize') || '24');
+        const orderBy = searchParams.get('orderBy') || 'created_at';
+        const minLikes = parseInt(searchParams.get('minLikes') || '0');
 
         const from = (page - 1) * pageSize;
         const to = from + pageSize - 1;
 
         // Fetch data from Supabase
-        const { data, error, count } = await supabase
+        let query = supabase
             .from('posted_videos')
-            .select('*', { count: 'exact' })
-            .order('created_at', { ascending: false })
+            .select('*', { count: 'exact' });
+
+        if (minLikes > 0) {
+            query = query.gte('likes', minLikes);
+        }
+
+        const { data, error, count } = await query
+            .order(orderBy, { ascending: false })
             .range(from, to);
 
         if (error) {

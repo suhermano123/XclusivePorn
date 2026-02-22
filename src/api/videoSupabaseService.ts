@@ -46,6 +46,18 @@ export const getVideosPaginated = async (pageSize: number, page: number) => {
     }
 };
 
+export const getTopVideosByLikes = async (limit: number = 15) => {
+    try {
+        const response = await fetch(`/api/videos?page=1&pageSize=${limit}&orderBy=likes&minLikes=1`);
+        if (!response.ok) throw new Error(`API error: ${response.statusText}`);
+        const data = await response.json();
+        return data.items as SupabaseVideo[];
+    } catch (error) {
+        console.error('Error fetching top videos:', error);
+        return [];
+    }
+};
+
 export const updateVideoRating = async (uuid: string, type: 'likes' | 'dislikes', currentValue: number) => {
     const { data, error } = await supabase
         .from('posted_videos')

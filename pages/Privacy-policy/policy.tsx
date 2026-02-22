@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button } from '@mui/material';
+import { Typography } from '@mui/material';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
 import Head from 'next/head';
@@ -7,59 +7,44 @@ import { CSSProperties } from 'react';
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
-    <div>
+    <div style={{ backgroundColor: '#000' }}>
       <Head>
         <title>Privacy Policy - novapornx</title>
-        <meta name="description" content="Privacy policy regarding user data and collection practices at novapornx." />
+        <meta name="description" content="Privacy policy and data protection information for novapornx users." />
         <meta name="robots" content="noindex, follow" />
       </Head>
-      <NavBar sx={{ backgroundColor: "#E91E63" }} />
+      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.privacyContainer}>
         <div style={styles.privacyContent}>
           <Typography variant="h5" style={styles.title}>
             Privacy Policy
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            This document details important information regarding the use and disclosure of User Data collected on Pornobae.com.
-            <br />
-            <br />
-            The security of your Data is very important to Pornobae.com and as such we take all appropriate steps to limit the risk that it may be lost, damaged or misused.
-            <br />
-            <br />
-            This site expressly and strictly limits its viewing privileges to adults 18 years of age and over or having attained the age of majority in their community. All persons who do not meet its criteria are strictly forbidden from accessing or viewing the contents of this Site. We do not knowingly seek or collect any personal information or data from persons who have not attained the age of majority.
+            Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use novapornx.
           </Typography>
-
-          <Typography variant="h5" style={styles.title}>
-            DATA COLLECTED:
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px', textAlign: 'left' }}>
+            Information Collection
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            <strong>Personal Information:</strong> Visitors can watch videos without any information being collected and processed. However, the visitor’s IP address will be recorded in the event that there is any misappropriation of information and/or content.
-            <br />
-            <br />
-            <strong>Cookies:</strong> When you visit Pornobae.com, we may send one or more cookies to your computer that uniquely identifies your browser session. Pornobae.com uses both session cookies and persistent cookies. If you remove your persistent cookie, some of the site’s features may not function properly.
-            <br />
-            <br />
-            <strong>Log File Information:</strong> When you visit Pornobae.com, our servers may automatically record certain information that your web browser sends such as your web request, IP address, browser type, browser language, referring URL, platform type, domain names and the date and time of your request.
-            <br />
-            <br />
-            <strong>Emails:</strong> If you contact us, we may keep a record of that correspondence.
+            We may collect certain information automatically when you visit our site, such as your IP address, browser type, and operating system. We do not sell or share this information with third parties.
           </Typography>
-
-          <Typography variant="h5" style={styles.title}>
-            DISCLOSURE OF INFORMATION:
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px', textAlign: 'left' }}>
+            Cookies
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            If under duty to do so, Pornobae.com may release data to comply with any legal obligation, or in order to enforce our Terms of Service and other agreements; or to protect the rights, property or safety of Pornobae.com or our subscribers or others. This includes exchanging information with other companies and organizations including the police and governmental authorities for the purposes of protection against fraud or any other kind of illegal activity whether or not identified in the Terms of Service. It is Pornobae’s policy, whenever possible and legally permissible, to promptly notify you upon an obligation to supply data to any third party.
-            <br />
-            <br />
-            We do not share your personally identifiable information (such as name or email address) with other, third-party companies for their commercial or marketing use without your consent or except as part of a specific program or feature for which you will have the ability to opt-in or opt-out.
+            We use cookies to enhance your experience on our website. Cookies are small files stored on your device that help us remember your preferences and improve site functionality.
           </Typography>
-
-          <Typography variant="h5" style={styles.title}>
-            SECURITY:
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px', textAlign: 'left' }}>
+            Data Security
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            Unfortunately, the transmission of information via the Internet is not completely secure. Pornobae.com uses commercially reasonable physical, managerial and technical safeguards to preserve the integrity and security of your personal information. We cannot, however, ensure or warrant the security of any information you transmit to Pornobae.com and you do so at your own risk.
+            We implement reasonable security measures to protect your personal information from unauthorized access or disclosure. However, no internet transmission is 100% secure.
+          </Typography>
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px', textAlign: 'left' }}>
+            Third-Party Links
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those websites.
           </Typography>
         </div>
       </div>
@@ -70,35 +55,36 @@ const PrivacyPolicyPage: React.FC = () => {
 
 const styles: { [key: string]: CSSProperties } = {
   privacyContainer: {
-    backgroundImage: 'url("https://cdn2.imgpog.com/67b1697889411a038f23f488.jpg")',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    backgroundColor: '#000',
     minHeight: '100vh',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '20px',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Oscurece la imagen de fondo
+    padding: '40px 20px',
   },
   privacyContent: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Fondo blanco semi-transparente para mejorar la legibilidad
-    borderRadius: '8px',
-    padding: '30px',
-    maxWidth: '800px',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '16px',
+    padding: '40px',
+    maxWidth: '900px',
     width: '100%',
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.3)',
+    boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)',
+    color: '#fff',
   },
   title: {
     fontWeight: 'bold',
-    fontSize: '20px',
-    marginBottom: '20px',
+    fontSize: '24px',
+    marginBottom: '24px',
     textAlign: 'center',
+    color: '#f013e5',
   },
   text: {
     fontSize: '16px',
-    lineHeight: '1.6',
-    marginBottom: '15px',
+    lineHeight: '1.8',
+    marginBottom: '20px',
     textAlign: 'justify',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
 };
 

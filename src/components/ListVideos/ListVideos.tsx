@@ -5,6 +5,7 @@ import { Skeleton, Box, Button, Chip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import FooterComponent from "../footer/Footer";
+import TopVideosSlider from "../TopVideosSlider/TopVideosSlider";
 import AgeVerification from "../OlderVerify/OlderVerify";
 import Image from "next/image";
 import { getVisitorId } from "@/api/visitorIdHelper";
@@ -301,6 +302,9 @@ const VideoGrid: React.FC = () => {
               );
             })}
         </Box>
+
+        {/* Slider de los más populares antes del paginador */}
+        <TopVideosSlider />
 
         {/* Paginación */}
         <Box sx={{ display: "flex", justifyContent: "center", marginBottom: '40px', gap: '10px', padding: '20px' }}>
