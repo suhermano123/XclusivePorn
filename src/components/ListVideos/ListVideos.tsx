@@ -177,6 +177,14 @@ const VideoGrid: React.FC = () => {
                     setHoveredVideo(null);
                     setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
                   }}
+                  onTouchStart={() => {
+                    setHoveredVideo(video.uuid);
+                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
+                  }}
+                  onPointerEnter={() => {
+                    setHoveredVideo(video.uuid);
+                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
+                  }}
                   onClick={() => handleClick(video)}
                 >
                   {/* Image/Video Container without overlays */}
@@ -188,6 +196,8 @@ const VideoGrid: React.FC = () => {
                         muted
                         loop
                         playsInline
+                        webkit-playsinline="true"
+                        preload="auto"
                         onLoadedData={() => setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }))}
                         style={{
                           width: "100%",

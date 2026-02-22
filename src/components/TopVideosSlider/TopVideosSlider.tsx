@@ -1,19 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import { Box, Typography, IconButton } from '@mui/material';
 import { SupabaseVideo, getTopVideosByLikes } from '@/api/videoSupabaseService';
 import { useRouter } from 'next/router';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 
 const TopVideosSlider: React.FC = () => {
     const [videos, setVideos] = useState<SupabaseVideo[]>([]);
+    const [isHovered, setIsHovered] = useState(false);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
     useEffect(() => {
         const fetchTopVideos = async () => {
-            const topVideos = await getTopVideosByLikes(15);
+            const topVideos = await getTopVideosByLikes(20);
             setVideos(topVideos);
         };
         fetchTopVideos();
     }, []);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (!isHovered && scrollContainerRef.current) {
+            interval = setInterval(() => {
+                if (scrollContainerRef.current) {
+                    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+                    // Si llegamos al final, volvemos al principio suavemente
+                    if (scrollLeft + clientWidth >= scrollWidth - 5) {
+                        scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        scrollContainerRef.current.scrollBy({ left: 1, behavior: 'auto' });
+                    }
+                }
+            }, 30); // Movimiento suave cada 30ms
+        }
+        return () => clearInterval(interval);
+    }, [isHovered, videos]);
 
     if (videos.length === 0) return null;
 
@@ -28,18 +49,31 @@ const TopVideosSlider: React.FC = () => {
         router.push(`/video/${video.uuid}-${slug}`);
     };
 
-    // Duplicate the array to create a seamless infinite scroll effect
-    const displayVideos = [...videos, ...videos];
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = 600; // Desplazar dos elementos aprox por click
+            scrollContainerRef.current.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     return (
-        <Box sx={{
-            width: '100%',
-            overflow: 'hidden',
-            py: 4,
-            backgroundColor: '#000',
-            borderTop: '1px solid rgba(255,255,255,0.05)',
-            mb: 2
-        }}>
+        <Box
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            sx={{
+                width: '100%',
+                overflow: 'hidden',
+                py: 4,
+                backgroundColor: '#000',
+                borderTop: '1px solid rgba(255,255,255,0.05)',
+                position: 'relative',
+                mb: 2,
+                '&:hover .nav-btn': { opacity: 1 }
+            }}
+        >
             <Typography
                 variant="h6"
                 sx={{
@@ -56,39 +90,84 @@ const TopVideosSlider: React.FC = () => {
                 🔥 MOST POPULAR VIDEOS 🔥
             </Typography>
 
-            <Box
+            {/* Controles de navegación manual */}
+            <IconButton
+                className="nav-btn"
+                onClick={() => scroll('left')}
                 sx={{
-                    display: 'flex',
-                    width: 'max-content',
-                    animation: 'scroll-left 40s linear infinite',
-                    '&:hover': {
-                        animationPlayState: 'paused'
-                    },
-                    '@keyframes scroll-left': {
-                        '0%': { transform: 'translateX(0)' },
-                        '100%': { transform: 'translateX(-50%)' }
-                    }
+                    position: 'absolute',
+                    left: 20,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    bgcolor: 'rgba(0,0,0,0.7)',
+                    color: '#f013e5',
+                    zIndex: 20,
+                    opacity: 0,
+                    transition: 'all 0.3s ease',
+                    border: '1px solid rgba(240, 19, 229, 0.3)',
+                    '&:hover': { bgcolor: 'rgba(240, 19, 229, 0.8)', color: '#fff' },
+                    display: { xs: 'none', md: 'flex' }
                 }}
             >
-                {displayVideos.map((video, index) => (
+                <ChevronLeft fontSize="large" />
+            </IconButton>
+
+            <IconButton
+                className="nav-btn"
+                onClick={() => scroll('right')}
+                sx={{
+                    position: 'absolute',
+                    right: 20,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    bgcolor: 'rgba(0,0,0,0.7)',
+                    color: '#f013e5',
+                    zIndex: 20,
+                    opacity: 0,
+                    transition: 'all 0.3s ease',
+                    border: '1px solid rgba(240, 19, 229, 0.3)',
+                    '&:hover': { bgcolor: 'rgba(240, 19, 229, 0.8)', color: '#fff' },
+                    display: { xs: 'none', md: 'flex' }
+                }}
+            >
+                <ChevronRight fontSize="large" />
+            </IconButton>
+
+            {/* Carrusel de Scroll Real */}
+            <Box
+                ref={scrollContainerRef}
+                sx={{
+                    display: 'flex',
+                    overflowX: 'auto',
+                    gap: 3,
+                    px: 10,
+                    py: 1,
+                    scrollBehavior: 'smooth',
+                    '&::-webkit-scrollbar': { display: 'none' },
+                    msOverflowStyle: 'none',
+                    scrollbarWidth: 'none',
+                }}
+            >
+                {videos.map((video) => (
                     <Box
-                        key={`${video.uuid}-${index}`}
+                        key={video.uuid}
                         onClick={() => handleVideoClick(video)}
                         sx={{
-                            width: '280px',
-                            height: '160px',
-                            mx: 1.5,
+                            flex: '0 0 auto',
+                            width: '300px',
+                            height: '170px',
                             borderRadius: '12px',
                             overflow: 'hidden',
                             cursor: 'pointer',
                             position: 'relative',
-                            transition: 'all 0.3s ease',
-                            border: '2px solid transparent',
+                            transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                            border: '1px solid rgba(255,255,255,0.1)',
                             '&:hover': {
-                                transform: 'translateY(-5px) scale(1.02)',
+                                transform: 'scale(1.05) translateY(-5px)',
                                 borderColor: '#f013e5',
-                                boxShadow: '0 0 20px rgba(240, 19, 229, 0.4)',
-                                '& .overlay': { opacity: 1 }
+                                boxShadow: '0 10px 30px rgba(240, 19, 229, 0.3)',
+                                zIndex: 5,
+                                '& .video-overlay': { opacity: 1 }
                             }
                         }}
                     >
@@ -102,15 +181,15 @@ const TopVideosSlider: React.FC = () => {
                             }}
                         />
                         <Box
-                            className="overlay"
+                            className="video-overlay"
                             sx={{
                                 position: 'absolute',
                                 bottom: 0,
                                 left: 0,
                                 right: 0,
-                                p: 1,
-                                background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
-                                opacity: 0.7,
+                                p: 1.5,
+                                background: 'linear-gradient(transparent, rgba(0,0,0,0.95))',
+                                opacity: 0.8,
                                 transition: 'opacity 0.3s ease'
                             }}
                         >
@@ -123,7 +202,7 @@ const TopVideosSlider: React.FC = () => {
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: 'vertical',
                                     overflow: 'hidden',
-                                    fontSize: '0.75rem',
+                                    fontSize: '0.8rem',
                                     lineHeight: '1.2'
                                 }}
                             >
