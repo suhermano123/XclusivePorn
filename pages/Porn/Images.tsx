@@ -96,9 +96,28 @@ const ImagesPage: React.FC = () => {
     return (
         <div style={{ backgroundColor: "#000", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
             <Head>
-                <title>Porn Images Gallery - novapornx</title>
-                <meta name="description" content="Browse our exclusive collection of adult images." />
+                <title>Premium Adult Image Gallery - novapornx</title>
+                <meta name="description" content="Explore our exclusive collection of high-quality premium adult images. Browse, view, and enjoy the latest galleries, updated daily on novapornx." />
+                <meta name="keywords" content="porn images, adult gallery, sexy photos, erotic images, premium galleries, novapornx" />
+                <link rel="canonical" href="https://novapornx.com/Porn/Images" />
+
+                {/* Open Graph */}
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content="Premium Adult Image Gallery - novapornx" />
+                <meta property="og:description" content="Exclusive collection of high-quality premium adult images. Explore daily updated galleries on novapornx." />
+                <meta property="og:url" content="https://novapornx.com/Porn/Images" />
+                <meta property="og:image" content="https://novapornx.com/assets/backGround.png" />
+
+                {/* Twitter */}
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:title" content="Premium Adult Image Gallery - novapornx" />
+                <meta property="twitter:description" content="Exclusive collection of high-quality premium adult images on novapornx." />
+                <meta property="twitter:image" content="https://novapornx.com/assets/backGround.png" />
             </Head>
+
+            <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
+                Premium Adult Image Gallery - novapornx
+            </h1>
 
             <NavBar sx={{ backgroundColor: "#e91ec4" }} />
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />

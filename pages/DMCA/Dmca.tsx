@@ -2,11 +2,17 @@ import React from 'react';
 import { Typography, Button } from '@mui/material';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
+import Head from 'next/head';
 import { CSSProperties } from 'react';
 
 const DmcaPage: React.FC = () => {
   return (
     <div>
+      <Head>
+        <title>DMCA Policy - novapornx</title>
+        <meta name="description" content="Legal disclaimer and DMCA copyright infringement notice for novapornx." />
+        <meta name="robots" content="noindex, follow" />
+      </Head>
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <div style={styles.dmcaContainer}>
         <div style={styles.dmcaContent}>

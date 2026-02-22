@@ -17,6 +17,7 @@ export interface SupabaseVideo {
     report?: number; // Count of reports
     report_comment?: string; // Concatenated JSON report comments
     preview_images_urls?: string; // JSON array of image URLs/keys
+    actresses?: string; // Comma separated actresses
     // Legacy fields - keep optional if needed or remove if fully migrating
     id_post?: string;
     title?: string;
@@ -63,11 +64,11 @@ export const updateVideoRating = async (uuid: string, type: 'likes' | 'dislikes'
 export const registerVote = async (uuid: string, visitor_id: string, type: 'likes' | 'dislikes', currentValue: number) => {
     const { error: voteError } = await supabase
         .from('video_votes')
-        .insert([{ uuid, visitor_id, type }]); // Changed id_post to uuid. Ensure video_votes table also has uuid column.
+        .insert([{ id_post: uuid, visitor_id, type }]);
 
     if (voteError) {
         if (voteError.code === '23505') {
-            throw new Error('Already voted');
+            return null; // Don't throw, just return null so the UI can handle it gracefully
         }
         throw voteError;
     }

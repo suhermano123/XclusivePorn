@@ -33,28 +33,45 @@ export default function HomeIndex() {
 
   return (
     <div>
-      <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d"></meta>
+      <Head>
+        <title>novapornx - Free Premium Adult Videos | Download & Share in HD</title>
+        <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
+        <link rel="canonical" href="https://novapornx.com" />
+        <meta
+          name="description"
+          content="Watch and download free premium adult videos in high definition. Explore our daily updated collection of top-quality content. Fast streaming and secure downloads."
+        />
+        <meta name="keywords" content="free porn, adult videos, hd porn, download porn, premium videos, novapornx, free sex videos" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://novapornx.com" />
+        <meta property="og:title" content="novapornx - Free Premium Adult Videos in HD" />
+        <meta
+          property="og:description"
+          content="Enjoy free premium adult videos in HD. Download and share top-quality content updated daily on novapornx."
+        />
+        <meta property="og:image" content="https://novapornx.com/assets/backGround.png" />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://novapornx.com" />
+        <meta property="twitter:title" content="novapornx - Free Premium Adult Videos in HD" />
+        <meta
+          property="twitter:description"
+          content="Enjoy free premium adult videos in HD. Download and share top-quality content updated daily on novapornx."
+        />
+        <meta property="twitter:image" content="https://novapornx.com/assets/backGround.png" />
+      </Head>
+
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
-      <>
-        <Head>
-          <title>Free Premium Adult Videos | Download & Share in HD</title>
-          <link rel="canonical" href="https://novapornx.com/Home" />
-          <meta
-            name="description"
-            content="Enjoy free premium adult videos in high definition. Download and share the latest top-quality content, updated daily."
-          />
-          <meta property="og:title" content="Free Premium Adult Videos in HD" />
-          <meta
-            property="og:description"
-            content="Watch and download premium adult videos for free. High-quality content with daily updates, ready to stream and share."
-          />
-          <meta property="og:image" content="/assets/backGround.png" />
-          <meta property="og:type" content="website" />
-        </Head>
 
-        <h1></h1>
-      </>
+      {/* Visually hidden H1 for SEO */}
+      <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
+        novapornx - Free Premium Adult Videos and HD Content
+      </h1>
+
       <VideoGrid />
     </div>
   );

@@ -2,11 +2,17 @@ import React from 'react';
 import { Typography, Button } from '@mui/material';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
+import Head from 'next/head';
 import { CSSProperties } from 'react';
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <div>
+      <Head>
+        <title>Privacy Policy - novapornx</title>
+        <meta name="description" content="Privacy policy regarding user data and collection practices at novapornx." />
+        <meta name="robots" content="noindex, follow" />
+      </Head>
       <NavBar sx={{ backgroundColor: "#E91E63" }} />
       <div style={styles.privacyContainer}>
         <div style={styles.privacyContent}>
@@ -22,7 +28,7 @@ const PrivacyPolicyPage: React.FC = () => {
             <br />
             This site expressly and strictly limits its viewing privileges to adults 18 years of age and over or having attained the age of majority in their community. All persons who do not meet its criteria are strictly forbidden from accessing or viewing the contents of this Site. We do not knowingly seek or collect any personal information or data from persons who have not attained the age of majority.
           </Typography>
-          
+
           <Typography variant="h5" style={styles.title}>
             DATA COLLECTED:
           </Typography>
@@ -38,7 +44,7 @@ const PrivacyPolicyPage: React.FC = () => {
             <br />
             <strong>Emails:</strong> If you contact us, we may keep a record of that correspondence.
           </Typography>
-          
+
           <Typography variant="h5" style={styles.title}>
             DISCLOSURE OF INFORMATION:
           </Typography>

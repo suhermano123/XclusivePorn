@@ -1,18 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../src/api/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+
 export const config = {
     runtime: 'edge',
 };
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: Request) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' });
+        return new Response(JSON.stringify({ message: 'Method not allowed' }), {
+            status: 405,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 
     try {
-        const { data: visitorData } = req.body;
+        const body = await req.json();
+        const { data: visitorData } = body;
 
         const visitorInfo = {
             country: visitorData.country || 'Unknown',
@@ -26,6 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             org: visitorData.org || 'Unknown',
             as_info: visitorData.as || 'Unknown',
             ip: visitorData.query || 'Unknown',
+            date: visitorData.date || new Date().toLocaleString(),
+            video_downloaded: visitorData.video_downloaded || 'None',
             id_visitor: uuidv4(),
         };
 
@@ -35,9 +40,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (error) throw error;
 
-        return res.status(200).json({ success: true });
+        return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
     } catch (error: any) {
         console.error('Supabase Error:', error);
-        return res.status(500).json({ error: error.message });
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }

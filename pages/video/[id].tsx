@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { Box, Typography, Container, CircularProgress, Grid, TextField, Button, Divider, Avatar, Paper, Modal, Backdrop, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Chip } from '@mui/material';
 import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite, CloudDownload } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
+import { trackVisitorAction } from '@/api/visitorService';
 
 const VideoPage = () => {
     const router = useRouter();
@@ -104,18 +105,25 @@ const VideoPage = () => {
 
         try {
             const visitorId = getVisitorId();
-            const updatedVideoData = await registerVote(video.uuid, visitorId, type, type === 'likes' ? video.likes : video.dislikes);
+            const count = type === 'likes' ? (video.likes || 0) : (video.dislikes || 0);
+
+            const updatedVideoData = await registerVote(video.uuid, visitorId, type, count);
 
             if (updatedVideoData) {
-                setVideo({ ...updatedVideoData });
+                // Sincronizar estado local de forma segura preservando campos opcionales si fuera necesario
+                setVideo(prev => prev ? ({ ...prev, ...updatedVideoData }) : updatedVideoData);
+                setHasVoted(type);
+                localStorage.setItem(`voted_${video.uuid}`, type);
             } else {
-                setVideo(prev => prev ? ({ ...prev, [type]: (prev[type] || 0) + 1 }) : null);
+                alert("Ya has reaccionado a este video.");
+                // Sincronizamos el estado de voto local si el servidor dijo que ya votamos
+                setHasVoted(type);
+                localStorage.setItem(`voted_${video.uuid}`, type);
             }
-            setHasVoted(type);
-            localStorage.setItem(`voted_${video.uuid}`, type);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error voting:', error);
+            alert("Hubo un error al procesar tu voto.");
         }
     };
 
@@ -148,7 +156,7 @@ const VideoPage = () => {
                         setVideo(data);
                         const voted = localStorage.getItem(`voted_${data.uuid}`);
                         if (voted === 'likes' || voted === 'dislikes') {
-                            setHasVoted(voted);
+                            setHasVoted(voted as any);
                         }
                         const related = await getRandomVideos(8, data.uuid);
                         setRelatedVideos(related);
@@ -208,6 +216,9 @@ const VideoPage = () => {
         if (video && video.uuid) {
             setIsDownloading(true);
             try {
+                // Registrar información del visitante que descarga incluyendo el video
+                trackVisitorAction(video.video_stream_url);
+
                 // Ahora llamamos al unificador de segmentos
                 const downloadUrl = `/api/download-video?uuid=${video.uuid}`;
 
@@ -248,8 +259,30 @@ const VideoPage = () => {
 
             <Head>
                 <title>{video.titulo} - novapornx</title>
-                <meta name="description" content={video.descripcion || `Watch ${video.titulo} on novapornx`} />
+                <meta name="description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Premium HD quality, available for free streaming and download.`} />
+                {video.tags && <meta name="keywords" content={video.tags} />}
+
+                {/* Canonical */}
+                <link rel="canonical" href={`https://novapornx.com/video/${id}`} />
+
+                {/* Open Graph / Facebook */}
+                <meta property="og:type" content="video.other" />
+                <meta property="og:url" content={`https://novapornx.com/video/${id}`} />
+                <meta property="og:title" content={`${video.titulo} - novapornx`} />
+                <meta property="og:description" content={video.descripcion || `Watch ${video.titulo} on novapornx in premium HD quality.`} />
+                <meta property="og:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
+
+                {/* Twitter */}
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:url" content={`https://novapornx.com/video/${id}`} />
+                <meta property="twitter:title" content={`${video.titulo} - novapornx`} />
+                <meta property="twitter:description" content={video.descripcion || `Watch ${video.titulo} on novapornx.`} />
+                <meta property="twitter:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
             </Head>
+
+            <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
+                {video.titulo} - Watch Free on novapornx
+            </h1>
 
             <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
                 <Box sx={{ mb: 2 }}>
@@ -283,38 +316,58 @@ const VideoPage = () => {
                     {/* Voting and Report Buttons */}
                     <Stack direction="row" spacing={2} sx={{ mb: 4, flexWrap: 'wrap', gap: 2 }}>
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             startIcon={<ThumbUp />}
                             onClick={() => handleVote('likes')}
                             disabled={!!hasVoted}
                             sx={{
-                                bgcolor: hasVoted ? 'rgba(255,255,255,0.05)' : 'rgba(76, 175, 80, 0.1)',
-                                color: '#4caf50',
-                                '&:hover': { bgcolor: 'rgba(76, 175, 80, 0.2)' },
+                                color: hasVoted === 'likes' ? '#4caf50' : 'rgba(76, 175, 80, 0.7)',
+                                borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(76, 175, 80, 0.3)',
+                                backgroundColor: hasVoted === 'likes' ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
+                                '&:hover': {
+                                    borderColor: '#4caf50',
+                                    backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                                    color: '#4caf50'
+                                },
                                 borderRadius: '10px',
                                 textTransform: 'none',
                                 fontWeight: 'bold',
-                                px: 3
+                                px: 3,
+                                '&.Mui-disabled': {
+                                    color: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.3)',
+                                    borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.1)',
+                                    opacity: 1
+                                }
                             }}
                         >
-                            {video.likes || 0}
+                            {video.likes ?? 0}
                         </Button>
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             startIcon={<ThumbDown />}
                             onClick={() => handleVote('dislikes')}
                             disabled={!!hasVoted}
                             sx={{
-                                bgcolor: hasVoted ? 'rgba(255,255,255,0.05)' : 'rgba(244, 67, 54, 0.1)',
-                                color: '#f44336',
-                                '&:hover': { bgcolor: 'rgba(244, 67, 54, 0.2)' },
+                                color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(244, 67, 54, 0.7)',
+                                borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(244, 67, 54, 0.3)',
+                                backgroundColor: hasVoted === 'dislikes' ? 'rgba(244, 67, 54, 0.1)' : 'transparent',
+                                '&:hover': {
+                                    borderColor: '#f44336',
+                                    backgroundColor: 'rgba(244, 67, 54, 0.05)',
+                                    color: '#f44336'
+                                },
                                 borderRadius: '10px',
                                 textTransform: 'none',
                                 fontWeight: 'bold',
-                                px: 3
+                                px: 3,
+                                '&.Mui-disabled': {
+                                    color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.3)',
+                                    borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.1)',
+                                    opacity: 1
+                                }
                             }}
                         >
-                            {video.dislikes || 0}
+                            {video.dislikes ?? 0}
                         </Button>
 
                         <Button
@@ -362,6 +415,34 @@ const VideoPage = () => {
                         <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc', mb: 2 }}>
                             {video.descripcion || "Sin descripción disponible."}
                         </Typography>
+
+                        {video.actresses && video.actresses.trim() !== "" && (
+                            <Box sx={{ mb: 2, mt: 1 }}>
+                                <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.5)', mb: 1, textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.75rem' }}>
+                                    Actrices:
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                    {video.actresses.split(',').map((actress, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={actress.trim()}
+                                            size="small"
+                                            sx={{
+                                                backgroundColor: 'rgba(240, 19, 229, 0.1)',
+                                                color: '#f013e5',
+                                                fontWeight: 'bold',
+                                                borderRadius: '6px',
+                                                border: '1px solid rgba(240, 19, 229, 0.3)',
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(240, 19, 229, 0.2)',
+                                                    borderColor: '#f013e5'
+                                                }
+                                            }}
+                                        />
+                                    ))}
+                                </Box>
+                            </Box>
+                        )}
 
                         {video.tags && (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>

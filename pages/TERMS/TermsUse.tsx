@@ -2,11 +2,17 @@ import React from 'react';
 import { Typography, Button } from '@mui/material';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
+import Head from 'next/head';
 import { CSSProperties } from 'react';
 
 const TermsUsePage: React.FC = () => {
   return (
     <div>
+      <Head>
+        <title>Terms and Conditions - novapornx</title>
+        <meta name="description" content="Terms and conditions for using novapornx services. Legal agreement and user requirements." />
+        <meta name="robots" content="noindex, follow" />
+      </Head>
       <NavBar sx={{ backgroundColor: "#E91E63" }} />
       <div style={styles.termsContainer}>
         <div style={styles.termsContent}>
