@@ -1,18 +1,13 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { getVideoById, SupabaseVideo, registerVote, getRandomVideos, addCommentToVideo, addReportToVideo } from '@/api/videoSupabaseService';
-import VideoPlayer from '@/components/VideoPlayer/VideoPlayer';
+import React, { useEffect, useState, useRef } from 'react';
+import { getVideoById, getVideoByTitle, SupabaseVideo, registerVote, getRandomVideos, addCommentToVideo, addReportToVideo } from '@/api/videoSupabaseService';
+import VideoPlayer, { VideoPlayerRef } from '@/components/VideoPlayer/VideoPlayer';
 import NavBar from '@/components/NavBar/NavBar';
 import NavMenu from '@/components/NavMenu/NavMenu';
 import FooterComponent from '@/components/footer/Footer';
 import Head from 'next/head';
-import { Box, Typography, Container, CircularProgress, Grid, TextField, Button, Divider, Avatar, Paper, Modal, Backdrop, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import { ThumbUp, ThumbDown, ChatBubble, Flag } from '@mui/icons-material';
-import ListVideos from '@/components/ListVideos/ListVideos'; // Or reuse the grid component logic? 
-// Actually ListVideos is a full page component. We might need a simpler VideoCard or just use ListVideos if it accepts props to rendering a specific list.
-// Checking ListVideos, it manages its own state and fetching. 
-// We should probably create a simpler list or just map over videos here using the same card style from ListVideos (which is inline).
-// Or better, let's just make a simple grid here for now to avoid refactoring ListVideos.
+import { Box, Typography, Container, CircularProgress, Grid, TextField, Button, Divider, Avatar, Paper, Modal, Backdrop, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Chip } from '@mui/material';
+import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
 
 const VideoPage = () => {
@@ -24,13 +19,12 @@ const VideoPage = () => {
     const [hasVoted, setHasVoted] = useState<'likes' | 'dislikes' | null>(null);
     const [newCommentText, setNewCommentText] = useState("");
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const videoPlayerRef = useRef<VideoPlayerRef>(null);
 
     // Parse comments from string: "{obj}. {obj}"
     const parseComments = (commentStr?: string) => {
         if (!commentStr) return [];
         try {
-            // Split by ". " but be careful not to split inside JSON strings. 
-            // However, assuming user's literal format "{}. {}"
             return commentStr.split(". ").map(s => {
                 try {
                     return JSON.parse(s);
@@ -104,18 +98,12 @@ const VideoPage = () => {
         }
     };
 
-    // Parse comments from string: "{obj}. {obj}"
-
-    // Visitor ID logic - handled by getVisitorId() when needed
-
     const handleVote = async (type: 'likes' | 'dislikes') => {
         if (!video || hasVoted) return;
 
         try {
             const visitorId = getVisitorId();
-            console.log("Votando:", type, "UUID:", video.uuid, "Current:", type === 'likes' ? video.likes : video.dislikes);
             const updatedVideoData = await registerVote(video.uuid, visitorId, type, type === 'likes' ? video.likes : video.dislikes);
-            console.log("Respuesta del servidor:", updatedVideoData);
 
             if (updatedVideoData) {
                 setVideo({ ...updatedVideoData });
@@ -123,8 +111,6 @@ const VideoPage = () => {
                 setVideo(prev => prev ? ({ ...prev, [type]: (prev[type] || 0) + 1 }) : null);
             }
             setHasVoted(type);
-
-            // Persist vote locally to prevent re-vote in this session/browser
             localStorage.setItem(`voted_${video.uuid}`, type);
 
         } catch (error) {
@@ -137,18 +123,26 @@ const VideoPage = () => {
             const fetchVideo = async () => {
                 setLoading(true);
                 try {
-                    const data = await getVideoById(id as string);
-                    setVideo(data);
+                    const idStr = id as string;
+                    // Detect if the id is a UUID format
+                    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idStr);
 
-                    // Check if already voted locally
-                    const voted = localStorage.getItem(`voted_${id}`);
-                    if (voted === 'likes' || voted === 'dislikes') {
-                        setHasVoted(voted);
+                    let data;
+                    if (isUuid) {
+                        data = await getVideoById(idStr);
+                    } else {
+                        data = await getVideoByTitle(idStr);
                     }
 
-                    // Fetch related videos
-                    const related = await getRandomVideos(8, id as string); // Fetch 8 random videos
-                    setRelatedVideos(related);
+                    if (data) {
+                        setVideo(data);
+                        const voted = localStorage.getItem(`voted_${data.uuid}`);
+                        if (voted === 'likes' || voted === 'dislikes') {
+                            setHasVoted(voted);
+                        }
+                        const related = await getRandomVideos(8, data.uuid);
+                        setRelatedVideos(related);
+                    }
 
                 } catch (error) {
                     console.error("Error loading video:", error);
@@ -160,7 +154,6 @@ const VideoPage = () => {
         }
     }, [id]);
 
-    // Hover logic for recommendations
     const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
     const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
 
@@ -200,8 +193,16 @@ const VideoPage = () => {
         );
     }
 
-    const handleClickRecommendation = (uuid: string) => {
-        router.push(`/video/${uuid}`);
+    const handleClickRecommendation = (vid: SupabaseVideo) => {
+        const title = vid.titulo || vid.title || "video";
+        const slug = title
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-');         // Replace multiple - with single -
+
+        router.push(`/video/${slug}`);
     };
 
     return (
@@ -217,103 +218,252 @@ const VideoPage = () => {
             <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
                 <Box sx={{ mb: 2 }}>
                     <VideoPlayer
+                        ref={videoPlayerRef}
                         videoEmbedUrl={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=stream`}
                         poster={video.imagen_url}
+                        autoplay={false}
+                        muted={true}
                     />
                 </Box>
 
-                {/* Video Info Section */}
-                <Box sx={{ color: '#fff', mb: 4 }}>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        justifyContent: 'space-between',
-                        alignItems: { xs: 'flex-start', md: 'center' },
-                        gap: 2,
-                        mb: 2
-                    }}>
-                        <Box>
-                            <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                                {video.titulo}
-                            </Typography>
-                            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 'medium' }}>
-                                Publicado el {new Date(video.created_at || Date.now()).toLocaleDateString()}
-                            </Typography>
-                        </Box>
-
-                        {/* Voting Section */}
-                        <Box sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 3,
-                            backgroundColor: 'rgba(255,255,255,0.05)',
-                            padding: '10px 20px',
-                            borderRadius: '30px',
-                            border: '1px solid rgba(255,255,255,0.1)'
-                        }}>
-                            <Box
-                                sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', '&:hover': { transform: 'scale(1.1)' }, transition: 'transform 0.2s' }}
-                                onClick={() => handleVote('likes')}
-                            >
-                                <ThumbUp
-                                    className={hasVoted === 'likes' ? 'like-animation' : ''}
-                                    sx={{ fontSize: '24px', color: hasVoted === 'likes' ? '#f013e5' : '#fff' }}
-                                />
-                                <Typography sx={{ fontWeight: 'bold' }}>{video.likes || 0}</Typography>
+                {/* Info and Comments Section */}
+                <Box sx={{ p: 3 }}>
+                    <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', pb: 3, mb: 3 }}>
+                        <Typography variant="h4" sx={{ color: '#fff', fontWeight: 'bold', mb: 1.5, fontSize: { xs: '1.5rem', md: '2rem' } }}>
+                            {video.titulo}
+                        </Typography>
+                        <Stack direction="row" spacing={2} sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', alignItems: 'center' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <AccessTime sx={{ fontSize: '1rem' }} />
+                                {video.duracion || "Unknown"}
                             </Box>
-                            <Box
-                                sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', '&:hover': { transform: 'scale(1.1)' }, transition: 'transform 0.2s' }}
-                                onClick={() => handleVote('dislikes')}
-                            >
-                                <ThumbDown
-                                    className={hasVoted === 'dislikes' ? 'dislike-animation' : ''}
-                                    sx={{ fontSize: '24px', color: hasVoted === 'dislikes' ? '#888' : '#fff' }}
-                                />
-                                <Typography sx={{ fontWeight: 'bold' }}>{video.dislikes || 0}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <CalendarToday sx={{ fontSize: '1rem' }} />
+                                {video.created_at ? new Date(video.created_at).toLocaleDateString() : 'N/A'}
                             </Box>
-                            <Box
-                                sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', '&:hover': { transform: 'scale(1.1)' }, transition: 'transform 0.2s' }}
-                                onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
-                            >
-                                <ChatBubble sx={{ fontSize: '22px', color: '#fff' }} />
-                                <Typography sx={{ fontWeight: 'bold' }}>{parseComments(video.comment).length}</Typography>
-                            </Box>
-
-                            <Divider orientation="vertical" flexItem sx={{ bgcolor: 'rgba(255,255,255,0.1)', mx: 1 }} />
-
-                            <Button
-                                startIcon={<Flag />}
-                                onClick={handleReport}
-                                sx={{
-                                    color: '#f013e5',
-                                    fontWeight: 'bold',
-                                    textTransform: 'none',
-                                    fontSize: '14px',
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(240, 19, 229, 0.1)',
-                                        transform: 'scale(1.05)'
-                                    },
-                                    transition: 'all 0.2s'
-                                }}
-                            >
-                                Report
-                            </Button>
-                        </Box>
+                        </Stack>
                     </Box>
+
+                    {/* Voting and Report Buttons */}
+                    <Stack direction="row" spacing={2} sx={{ mb: 4, flexWrap: 'wrap', gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            startIcon={<ThumbUp />}
+                            onClick={() => handleVote('likes')}
+                            disabled={!!hasVoted}
+                            sx={{
+                                bgcolor: hasVoted ? 'rgba(255,255,255,0.05)' : 'rgba(76, 175, 80, 0.1)',
+                                color: '#4caf50',
+                                '&:hover': { bgcolor: 'rgba(76, 175, 80, 0.2)' },
+                                borderRadius: '10px',
+                                textTransform: 'none',
+                                fontWeight: 'bold',
+                                px: 3
+                            }}
+                        >
+                            {video.likes || 0}
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<ThumbDown />}
+                            onClick={() => handleVote('dislikes')}
+                            disabled={!!hasVoted}
+                            sx={{
+                                bgcolor: hasVoted ? 'rgba(255,255,255,0.05)' : 'rgba(244, 67, 54, 0.1)',
+                                color: '#f44336',
+                                '&:hover': { bgcolor: 'rgba(244, 67, 54, 0.2)' },
+                                borderRadius: '10px',
+                                textTransform: 'none',
+                                fontWeight: 'bold',
+                                px: 3
+                            }}
+                        >
+                            {video.dislikes || 0}
+                        </Button>
+
+                        <div style={{ flexGrow: 1 }} />
+
+                        <Button
+                            variant="outlined"
+                            startIcon={<Flag />}
+                            onClick={handleReport}
+                            sx={{
+                                color: 'rgba(255,255,255,0.6)',
+                                borderColor: 'rgba(255,255,255,0.2)',
+                                '&:hover': { borderColor: '#fff', color: '#fff', bgcolor: 'rgba(255,255,255,0.05)' },
+                                borderRadius: '10px',
+                                textTransform: 'none'
+                            }}
+                        >
+                            Reportar
+                        </Button>
+                    </Stack>
 
                     <Box sx={{ p: 2.5, backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '12px', borderLeft: '4px solid #f013e5', mb: 4 }}>
-                        <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc' }}>
+                        <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc', mb: 2 }}>
                             {video.descripcion || "Sin descripción disponible."}
                         </Typography>
+
+                        {video.tags && (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+                                {video.tags.split(',').map((tag, index) => (
+                                    <Chip
+                                        key={index}
+                                        label={tag.trim()}
+                                        size="small"
+                                        icon={<Favorite sx={{ fontSize: '14px !important', color: '#f013e5 !important' }} />}
+                                        sx={{
+                                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                            color: '#fff',
+                                            borderRadius: '6px',
+                                            border: '1px solid rgba(240, 19, 229, 0.2)',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(240, 19, 229, 0.1)',
+                                                borderColor: '#f013e5'
+                                            },
+                                            '& .MuiChip-icon': {
+                                                marginLeft: '8px'
+                                            }
+                                        }}
+                                    />
+                                ))}
+                            </Box>
+                        )}
                     </Box>
 
+                    {/* Preview Images Slider */}
+                    {video.preview_images_urls && (
+                        <Box sx={{ mt: 6, mb: 4 }}>
+                            <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                                Capturas del Video
+                            </Typography>
+                            <Box
+                                sx={{
+                                    width: '100%',
+                                    overflow: 'hidden',
+                                    position: 'relative',
+                                    borderRadius: '12px',
+                                    backgroundColor: 'rgba(255,255,255,0.02)',
+                                    py: 3,
+                                    cursor: 'pointer',
+                                    '&:hover .marquee-content': {
+                                        animationPlayState: 'paused'
+                                    }
+                                }}
+                            >
+                                <Box
+                                    className="marquee-content"
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 3,
+                                        width: 'max-content',
+                                        animation: 'marquee-scroll 50s linear infinite',
+                                        '@keyframes marquee-scroll': {
+                                            '0%': { transform: 'translateX(0)' },
+                                            '100%': { transform: 'translateX(-50%)' }
+                                        }
+                                    }}
+                                >
+                                    {(() => {
+                                        try {
+                                            const parsed = JSON.parse(video.preview_images_urls);
+                                            if (!Array.isArray(parsed)) return null;
+
+                                            const getLabel = (url: string) => {
+                                                const filename = url.split('/').pop() || "";
+                                                const match = filename.match(/(\d+_\d+)/);
+                                                return match ? match[1].replace('_', ':') : "";
+                                            };
+
+                                            const timeToSeconds = (label: string) => {
+                                                if (!label) return 0;
+                                                const parts = label.split(':').map(Number);
+                                                if (parts.length === 2) {
+                                                    return parts[0] * 60 + parts[1];
+                                                }
+                                                return 0;
+                                            };
+
+                                            const displayList = [...parsed, ...parsed];
+
+                                            return displayList.map((url: string, idx: number) => {
+                                                let finalUrl = url;
+                                                if (url.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
+                                                    finalUrl = url.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
+                                                } else if (!url.startsWith('http')) {
+                                                    finalUrl = `/capturas-proxy/${url}`;
+                                                }
+
+                                                const timestampLabel = getLabel(url);
+                                                const seconds = timeToSeconds(timestampLabel);
+
+                                                return (
+                                                    <Box
+                                                        key={idx}
+                                                        sx={{
+                                                            width: '220px',
+                                                            flexShrink: 0,
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            alignItems: 'center',
+                                                            gap: 1.5
+                                                        }}
+                                                        onClick={() => {
+                                                            if (videoPlayerRef.current) {
+                                                                videoPlayerRef.current.seekTo(seconds);
+                                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Box
+                                                            sx={{
+                                                                width: '100%',
+                                                                aspectRatio: '16/9',
+                                                                borderRadius: '8px',
+                                                                overflow: 'hidden',
+                                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                                transition: 'all 0.3s ease',
+                                                                '&:hover': {
+                                                                    borderColor: '#f013e5',
+                                                                    boxShadow: '0 0 20px rgba(240, 19, 229, 0.4)',
+                                                                    transform: 'scale(1.02)'
+                                                                }
+                                                            }}
+                                                        >
+                                                            <img
+                                                                src={finalUrl}
+                                                                alt={`Capture ${idx}`}
+                                                                loading="lazy"
+                                                                style={{
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    objectFit: 'cover'
+                                                                }}
+                                                            />
+                                                        </Box>
+                                                        {timestampLabel && (
+                                                            <Typography sx={{ color: '#fff', fontSize: '13px', fontWeight: 'bold', opacity: 0.8 }}>
+                                                                {timestampLabel}
+                                                            </Typography>
+                                                        )}
+                                                    </Box>
+                                                );
+                                            });
+                                        } catch (e) {
+                                            return null;
+                                        }
+                                    })()}
+                                </Box>
+                            </Box>
+                        </Box>
+                    )}
+
                     {/* Comments Section */}
-                    <Box id="comments-section" sx={{ mt: 4, mb: 6 }}>
+                    <Box id="comments-section" sx={{ mt: 6, mb: 6 }}>
                         <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
                             Comentarios ({parseComments(video.comment).length})
                         </Typography>
 
-                        {/* Add Comment Form */}
                         <Box sx={{ mb: 4, backgroundColor: 'rgba(255,255,255,0.03)', p: 3, borderRadius: '12px' }}>
                             <TextField
                                 fullWidth
@@ -351,7 +501,6 @@ const VideoPage = () => {
                             </Box>
                         </Box>
 
-                        {/* Comments List */}
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             {parseComments(video.comment).length > 0 ? (
                                 parseComments(video.comment).reverse().map((c: any, index: number) => (
@@ -390,7 +539,18 @@ const VideoPage = () => {
                             Videos Relacionados
                         </Typography>
 
-                        <div style={styles.gridContainer}>
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns: {
+                                    xs: "repeat(2, 1fr)",
+                                    sm: "repeat(3, 1fr)",
+                                    md: "repeat(4, 1fr)"
+                                },
+                                gap: "15px",
+                                padding: "0",
+                            }}
+                        >
                             {relatedVideos.map((vid: SupabaseVideo) => {
                                 const previewUrl = vid.preview_url || vid.preview;
                                 const thumbnails = (previewUrl && !previewUrl.endsWith('.mp4') && !previewUrl.endsWith('.webm'))
@@ -412,7 +572,7 @@ const VideoPage = () => {
                                             setCurrentPreview((prev) => ({ ...prev, [vid.uuid]: 0 }));
                                         }}
                                         onMouseLeave={() => setHoveredVideo(null)}
-                                        onClick={() => handleClickRecommendation(vid.uuid)}
+                                        onClick={() => handleClickRecommendation(vid)}
                                     >
                                         <div style={styles.thumbnailContainer}>
                                             {isHovered && isVideoPreview ? (
@@ -445,7 +605,7 @@ const VideoPage = () => {
                                     </Box>
                                 );
                             })}
-                        </div>
+                        </Box>
                     </Box>
                 )}
             </Container>
@@ -622,7 +782,7 @@ const VideoPage = () => {
     );
 };
 
-// Styles copied/adapted from ListVideos
+// Styles adapted from ListVideos
 const styles: { [key: string]: any } = {
     gridContainer: {
         display: "grid",
@@ -655,33 +815,28 @@ const styles: { [key: string]: any } = {
         width: "100%",
         height: "100%",
         objectFit: "cover",
-        borderRadius: "8px 8px 0 0",
-        display: "block",
+        borderRadius: "8px",
     },
     metadataArea: {
         padding: "10px",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#111",
+        gap: "4px",
     },
     videoTitle: {
         color: "#fff",
-        fontSize: "12px",
-        fontWeight: "700",
+        fontSize: "14px",
+        fontWeight: "bold",
         margin: 0,
+        display: "-webkit-box",
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical",
         overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        lineHeight: "1.4",
     },
     durationLabel: {
-        fontSize: "10px",
-        color: "#aaa",
-        fontWeight: "bold",
-        backgroundColor: "rgba(255,255,255,0.05)",
-        padding: "2px 6px",
-        borderRadius: "4px",
-    },
+        color: "rgba(255,255,255,0.6)",
+        fontSize: "12px",
+    }
 };
 
 export default VideoPage;

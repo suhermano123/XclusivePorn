@@ -13,8 +13,10 @@ export interface SupabaseVideo {
     dislikes: number;
     created_at?: string;
     comment?: string; // New field for concatenated JSON comments
+    tags?: string; // Comma separated tags
     report?: number; // Count of reports
     report_comment?: string; // Concatenated JSON report comments
+    preview_images_urls?: string; // JSON array of image URLs/keys
     // Legacy fields - keep optional if needed or remove if fully migrating
     id_post?: string;
     title?: string;
@@ -86,6 +88,23 @@ export const getVideoById = async (uuid: string) => {
         return data as SupabaseVideo;
     } catch (error) {
         console.error('Error fetching video by ID (proxy):', error);
+        return null;
+    }
+};
+
+export const getVideoByTitle = async (title: string) => {
+    try {
+        const response = await fetch(`/api/videos?titulo=${encodeURIComponent(title)}`);
+
+        if (!response.ok) {
+            console.error('Error fetching video by Title from API:', response.statusText);
+            return null;
+        }
+
+        const data = await response.json();
+        return data as SupabaseVideo;
+    } catch (error) {
+        console.error('Error fetching video by Title (proxy):', error);
         return null;
     }
 };

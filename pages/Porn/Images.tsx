@@ -170,7 +170,8 @@ const ImagesPage: React.FC = () => {
                                     src={img.image_url}
                                     alt={img.title || img.filename || "Image"}
                                     fill
-                                    unoptimized
+                                    sizes="(max-width: 600px) 50vw, (max-width: 900px) 33vw, (max-width: 1200px) 25vw, (max-width: 1536px) 20vw, 16vw"
+                                    quality={30}
                                     style={{
                                         objectFit: "cover",
                                         transition: "transform 0.3s ease",
@@ -326,6 +327,7 @@ const ImagesPage: React.FC = () => {
                             <img
                                 src={selectedImage.image_url}
                                 alt={selectedImage.title || selectedImage.filename || "Image"}
+                                loading="eager"
                                 style={{
                                     maxWidth: "90vw",
                                     maxHeight: "90vh",

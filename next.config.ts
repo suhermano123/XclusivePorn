@@ -11,6 +11,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev',
+      },
+      {
+        protocol: 'https',
         hostname: 'xmoviescdn.online',
       },
       {
@@ -28,6 +32,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '**.phncdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gegdnoqjglidnijpmhay.supabase.co',
       }
     ],
   },
@@ -36,6 +44,10 @@ const nextConfig = {
       {
         source: '/media-proxy/:path*',
         destination: 'https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev/:path*',
+      },
+      {
+        source: '/capturas-proxy/:path*',
+        destination: 'https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev/:path*',
       },
       {
         source: '/image-proxy/:path*',

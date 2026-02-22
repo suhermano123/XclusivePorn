@@ -35,10 +35,23 @@ export default function NavMenu(props: any) {
   const handleAdClicImages = () => {
     router.push("/Porn/Images");
 
-    
+
   };
 
+  const [isMobile, setIsMobile] = React.useState(false);
+
   React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  React.useEffect(() => {
+    if (isMobile) return; // Don't load ads on mobile
+
     const loadAdScript = () => {
       if (
         !document.querySelector(
@@ -81,7 +94,7 @@ export default function NavMenu(props: any) {
     };
 
     loadAdScript();
-  }, []);
+  }, [isMobile]);
 
   return (
     <div>
@@ -107,34 +120,34 @@ export default function NavMenu(props: any) {
         <Grid item>
           <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
             <Button style={{
-                color: "white",
-                display: "flex",
-                alignItems: "center", // Asegura la alineación vertical
-                justifyContent: "center", // Centra el contenido horizontalmente
-                gap: "5px", // Espaciado entre el icono y el texto
-              }} onClick={ handleMoviesClick}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
+              color: "white",
+              display: "flex",
+              alignItems: "center", // Asegura la alineación vertical
+              justifyContent: "center", // Centra el contenido horizontalmente
+              gap: "5px", // Espaciado entre el icono y el texto
+            }} onClick={handleMoviesClick}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
           </Tooltip>
         </Grid>
         <Grid item>
           <Tooltip disableFocusListener disableTouchListener title="Porn stars">
             <Button style={{
-                color: "white",
-                display: "flex",
-                alignItems: "center", // Asegura la alineación vertical
-                justifyContent: "center", // Centra el contenido horizontalmente
-                gap: "5px", // Espaciado entre el icono y el texto
-              }} onClick={handleAdClicImages}> <FavoriteIcon />PORN IMAGES</Button>
+              color: "white",
+              display: "flex",
+              alignItems: "center", // Asegura la alineación vertical
+              justifyContent: "center", // Centra el contenido horizontalmente
+              gap: "5px", // Espaciado entre el icono y el texto
+            }} onClick={handleAdClicImages}> <FavoriteIcon />PORN IMAGES</Button>
           </Tooltip>
         </Grid>
         <Grid item>
           <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
             <Button style={{
-                color: "white",
-                display: "flex",
-                alignItems: "center", // Asegura la alineación vertical
-                justifyContent: "center", // Centra el contenido horizontalmente
-                gap: "5px", // Espaciado entre el icono y el texto
-              }} onClick={ handleAdClickCams}> <Diversity1Icon /> CAMS</Button>
+              color: "white",
+              display: "flex",
+              alignItems: "center", // Asegura la alineación vertical
+              justifyContent: "center", // Centra el contenido horizontalmente
+              gap: "5px", // Espaciado entre el icono y el texto
+            }} onClick={handleAdClickCams}> <Diversity1Icon /> CAMS</Button>
           </Tooltip>
         </Grid>
         <Grid item>
@@ -144,31 +157,33 @@ export default function NavMenu(props: any) {
         </Grid>
       </Grid>
 
-      {/* Espacio para anuncios, ahora en línea (uno al lado del otro) */}
-      <div
-        style={{
-          width: "100%",
-          height: "60px", // Ajusta la altura según el espacio necesario para el anuncio
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "6px", 
-          marginBottom: "6px",// Espacio entre el NavMenu y los anuncios
-          gap: "20px", // Espaciado entre anuncios
-        }}
-      >
-        <div id="juicy-ads-banner-1" style={{ width: "468px", height: "60px" }}>
-          <Typography variant="h6" align="center" color="textSecondary">
-            
-          </Typography>
-        </div>
+      {/* Espacio para anuncios, ahora en línea (uno al lado del otro) - Hidden on mobile */}
+      {!isMobile && (
+        <div
+          style={{
+            width: "100%",
+            height: "60px", // Ajusta la altura según el espacio necesario para el anuncio
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "6px",
+            marginBottom: "6px",// Espacio entre el NavMenu y los anuncios
+            gap: "20px", // Espaciado entre anuncios
+          }}
+        >
+          <div id="juicy-ads-banner-1" style={{ width: "468px", height: "60px" }}>
+            <Typography variant="h6" align="center" color="textSecondary">
 
-        <div id="juicy-ads-banner-2" style={{ width: "468px", height: "60px" }}>
-          <Typography variant="h6" align="center" color="textSecondary">
-            
-          </Typography>
+            </Typography>
+          </div>
+
+          <div id="juicy-ads-banner-2" style={{ width: "468px", height: "60px" }}>
+            <Typography variant="h6" align="center" color="textSecondary">
+
+            </Typography>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

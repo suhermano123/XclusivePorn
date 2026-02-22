@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
@@ -9,17 +9,25 @@ if (typeof window !== "undefined") {
   (window as any).videojs = videojs;
 }
 
-const VideoPlayer = ({
-  videoEmbedUrl,
-  poster,
-  title,
-  date,
-}: {
+export interface VideoPlayerRef {
+  seekTo: (seconds: number) => void;
+}
+
+const VideoPlayer = forwardRef<VideoPlayerRef, {
   videoEmbedUrl: string;
   poster: string;
   title?: string;
   date?: string;
-}) => {
+  muted?: boolean;
+  autoplay?: boolean;
+}>(({
+  videoEmbedUrl,
+  poster,
+  title,
+  date,
+  muted = false,
+  autoplay = false,
+}, ref) => {
   const isFullUrl = videoEmbedUrl?.startsWith('http') || videoEmbedUrl?.startsWith('//') || videoEmbedUrl?.startsWith('/');
   const { url, loading, error } = useWasabiObjectUrl(isFullUrl ? '' : videoEmbedUrl);
 
@@ -30,7 +38,26 @@ const VideoPlayer = ({
     videoUrl = videoUrl.replace('https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev', '/media-proxy');
   }
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const [showAdLayer, setShowAdLayer] = useState(true);
+
+  // Automatically hide ad layer on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setShowAdLayer(false);
+    }
+  }, [isMobile]);
+
   let firstThumbnail = poster?.split(",")[0].trim();
 
   // Bypass CORS for the poster as well
@@ -40,6 +67,18 @@ const VideoPlayer = ({
 
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
+
+  // Expose seekTo method to parent
+  useImperativeHandle(ref, () => ({
+    seekTo: (seconds: number) => {
+      if (playerRef.current) {
+        playerRef.current.currentTime(seconds);
+        playerRef.current.play();
+        // Hide ad layer if seeking to a specific part
+        setShowAdLayer(false);
+      }
+    }
+  }));
 
   // Initialize and update video.js
   useEffect(() => {
@@ -64,7 +103,8 @@ const VideoPlayer = ({
     videoRef.current.appendChild(videoElement);
 
     const player = (playerRef.current = videojs(videoElement, {
-      autoplay: true,
+      autoplay: autoplay,
+      muted: muted,
       controls: true,
       responsive: true,
       fluid: true,
@@ -108,14 +148,13 @@ const VideoPlayer = ({
     }));
 
     return () => {
-      // We only dispose on unmount, not on videoUrl change
-      // Handled by another effect or below
+      // Disposable logic handled in separate effect
     };
-  }, [videoUrl, loading, error, firstThumbnail]);
+  }, [videoUrl, loading, error, firstThumbnail, autoplay, muted]);
 
-  // JuicyAds Float Ad
+  // JuicyAds Float Ad - Only on Desktop
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && !isMobile) {
       (window as any).juicy_adzone = '1111582';
 
       if (!document.querySelector(`script[src="https://poweredby.jads.co/js/jfc.js"]`)) {
@@ -127,7 +166,7 @@ const VideoPlayer = ({
         document.body.appendChild(script);
       }
     }
-  }, []);
+  }, [isMobile]);
 
   // Handle cleanup on unmount
   useEffect(() => {
@@ -190,6 +229,8 @@ const VideoPlayer = ({
       )}
     </div>
   );
-};
+});
+
+VideoPlayer.displayName = "VideoPlayer";
 
 export default VideoPlayer;

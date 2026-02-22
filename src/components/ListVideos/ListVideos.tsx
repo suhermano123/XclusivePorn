@@ -12,6 +12,7 @@ import { getVisitorId } from "@/api/visitorIdHelper";
 const VideoGrid: React.FC = () => {
   const [videoL, setVideoL] = useState<SupabaseVideo[]>([]);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
+  const [loadingPreviews, setLoadingPreviews] = useState<{ [key: string]: boolean }>({});
   const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
   const router = useRouter();
 
@@ -68,9 +69,16 @@ const VideoGrid: React.FC = () => {
   }, [hoveredVideo, videoL]);
 
   const handleClick = (video: SupabaseVideo) => {
-    // Navigate to the video page using uuid
-    const url = `/video/${video.uuid || video.id_post}`;
-    router.push(url);
+    // Navigate to the video page using title as slug
+    const title = video.titulo || video.title || "video";
+    const slug = title
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-');         // Replace multiple - with single -
+
+    router.push(`/video/${slug}`);
   };
 
   const handleRating = async (e: React.MouseEvent, uuid: string, type: 'likes' | 'dislikes', currentValue: number) => {
@@ -112,7 +120,20 @@ const VideoGrid: React.FC = () => {
     <div>
       <AgeVerification />
       <div style={styles.container}>
-        <div style={styles.gridContainer}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(2, 1fr)",
+              sm: "repeat(3, 1fr)",
+              md: "repeat(4, 1fr)",
+              lg: "repeat(5, 1fr)",
+              xl: "repeat(6, 1fr)"
+            },
+            gap: "15px",
+            padding: "15px",
+          }}
+        >
           {videoL.length === 0
             ? Array(15)
               .fill(0)
@@ -148,20 +169,25 @@ const VideoGrid: React.FC = () => {
                   sx={styles.videoCardSx}
                   onMouseEnter={() => {
                     setHoveredVideo(video.uuid);
+                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
                     setCurrentPreview((prev) => ({ ...prev, [video.uuid]: 0 }));
                   }}
-                  onMouseLeave={() => setHoveredVideo(null)}
+                  onMouseLeave={() => {
+                    setHoveredVideo(null);
+                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
+                  }}
                   onClick={() => handleClick(video)}
                 >
                   {/* Image/Video Container without overlays */}
                   <div style={styles.thumbnailContainer}>
-                    {isHovered && isVideoPreview ? (
+                    {isHovered && (video.video_stream_url || isVideoPreview) ? (
                       <video
-                        src={`/api/media?uuid=${video.uuid}&type=preview`}
+                        src={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=preview`}
                         autoPlay
                         muted
                         loop
                         playsInline
+                        onLoadedData={() => setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }))}
                         style={{
                           width: "100%",
                           height: "100%",
@@ -178,7 +204,40 @@ const VideoGrid: React.FC = () => {
                         alt={video.titulo || video.title || 'Video'}
                         style={styles.thumbnail}
                         unoptimized={true}
+                        onLoad={() => {
+                          if (isHovered) {
+                            setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
+                          }
+                        }}
                       />
+                    )}
+
+                    {isHovered && loadingPreviews[video.uuid] && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          inset: 0,
+                          backgroundColor: "rgba(0,0,0,0.4)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          zIndex: 2,
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src="/assets/loader.png"
+                          sx={{
+                            width: "50px",
+                            height: "50px",
+                            animation: "spin 2s linear infinite",
+                            "@keyframes spin": {
+                              "0%": { transform: "rotate(0deg)" },
+                              "100%": { transform: "rotate(360deg)" },
+                            },
+                          }}
+                        />
+                      </Box>
                     )}
                   </div>
 
@@ -241,7 +300,7 @@ const VideoGrid: React.FC = () => {
                 </Box>
               );
             })}
-        </div>
+        </Box>
 
         {/* Paginación */}
         <Box sx={{ display: "flex", justifyContent: "center", marginBottom: '40px', gap: '10px', padding: '20px' }}>
@@ -298,8 +357,9 @@ const styles: { [key: string]: any } = {
     backgroundColor: "#000",
   },
   gridContainer: {
+    // This style object is partially superseded by the sx prop in the component render,
+    // but kept here for reference or fallback.
     display: "grid",
-    gridTemplateColumns: "repeat(5, 1fr)",
     gap: "15px",
     padding: "15px",
   },
