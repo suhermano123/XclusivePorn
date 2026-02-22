@@ -7,7 +7,7 @@ import NavMenu from '@/components/NavMenu/NavMenu';
 import FooterComponent from '@/components/footer/Footer';
 import Head from 'next/head';
 import { Box, Typography, Container, CircularProgress, Grid, TextField, Button, Divider, Avatar, Paper, Modal, Backdrop, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Chip } from '@mui/material';
-import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite } from '@mui/icons-material';
+import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite, CloudDownload } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
 
 const VideoPage = () => {
@@ -19,6 +19,7 @@ const VideoPage = () => {
     const [hasVoted, setHasVoted] = useState<'likes' | 'dislikes' | null>(null);
     const [newCommentText, setNewCommentText] = useState("");
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
     const videoPlayerRef = useRef<VideoPlayerRef>(null);
 
     // Parse comments from string: "{obj}. {obj}"
@@ -202,6 +203,32 @@ const VideoPage = () => {
         );
     }
 
+
+    const handleDownload = async () => {
+        if (video && video.uuid) {
+            setIsDownloading(true);
+            try {
+                // Ahora llamamos al unificador de segmentos
+                const downloadUrl = `/api/download-video?uuid=${video.uuid}`;
+
+                // Creamos un link invisible para forzar la descarga del flujo unido
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', `${video.titulo || 'video'}.mp4`);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+            } catch (err) {
+                console.error("Download error:", err);
+                alert("Error al procesar la descarga");
+            } finally {
+                // Damos un margen pequeño para que el navegador inicie la descarga
+                setTimeout(() => setIsDownloading(false), 2000);
+            }
+        }
+    };
+
     const handleClickRecommendation = (vid: SupabaseVideo) => {
         const title = vid.titulo || vid.title || "video";
         const slug = title
@@ -290,7 +317,30 @@ const VideoPage = () => {
                             {video.dislikes || 0}
                         </Button>
 
-                        <div style={{ flexGrow: 1 }} />
+                        <Button
+                            variant="contained"
+                            onClick={handleDownload}
+                            disabled={isDownloading}
+                            sx={{
+                                backgroundColor: '#f013e5',
+                                '&:hover': { backgroundColor: '#d011c5' },
+                                borderRadius: '10px',
+                                textTransform: 'none',
+                                fontWeight: 'bold',
+                                px: 3,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1
+                            }}
+                        >
+                            {isDownloading ? (
+                                <CircularProgress size={20} sx={{ color: '#fff' }} />
+                            ) : (
+                                <Box component="img" src="/assets/loader.png" sx={{ width: 20, height: 20 }} />
+                            )}
+                            {isDownloading ? 'Generando...' : 'Download'}
+                            {!isDownloading && <Favorite sx={{ fontSize: 16, ml: 0.5 }} />}
+                        </Button>
 
                         <Button
                             variant="outlined"

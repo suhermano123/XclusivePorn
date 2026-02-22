@@ -180,9 +180,9 @@ const VideoGrid: React.FC = () => {
                 >
                   {/* Image/Video Container without overlays */}
                   <div style={styles.thumbnailContainer}>
-                    {isHovered && (video.video_stream_url || isVideoPreview) ? (
+                    {isHovered && isVideoPreview ? (
                       <video
-                        src={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=preview`}
+                        src={`/api/media?uuid=${video.uuid}&type=preview`}
                         autoPlay
                         muted
                         loop
