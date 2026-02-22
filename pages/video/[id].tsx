@@ -124,14 +124,23 @@ const VideoPage = () => {
                 setLoading(true);
                 try {
                     const idStr = id as string;
-                    // Detect if the id is a UUID format
-                    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idStr);
+
+                    // Case 1: Pattern UUID-title (professional SEO style)
+                    // UUID is exactly 36 characters
+                    const potentialUuid = idStr.length >= 36 ? idStr.substring(0, 36) : "";
+                    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(potentialUuid);
 
                     let data;
                     if (isUuid) {
-                        data = await getVideoById(idStr);
+                        data = await getVideoById(potentialUuid);
                     } else {
-                        data = await getVideoByTitle(idStr);
+                        // Case 2: Legacy or Title-only URL
+                        // Try by UUID directly (maybe the full param is a UUID)
+                        data = await getVideoById(idStr);
+                        if (!data) {
+                            // If still not found, search by the slug/title
+                            data = await getVideoByTitle(idStr);
+                        }
                     }
 
                     if (data) {
@@ -202,7 +211,7 @@ const VideoPage = () => {
             .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
             .replace(/\-\-+/g, '-');         // Replace multiple - with single -
 
-        router.push(`/video/${slug}`);
+        router.push(`/video/${vid.uuid}-${slug}`);
     };
 
     return (

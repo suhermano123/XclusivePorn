@@ -69,7 +69,7 @@ const VideoGrid: React.FC = () => {
   }, [hoveredVideo, videoL]);
 
   const handleClick = (video: SupabaseVideo) => {
-    // Navigate to the video page using title as slug
+    // Navigate to the video page using uuid and title as slug
     const title = video.titulo || video.title || "video";
     const slug = title
       .toLowerCase()
@@ -78,7 +78,7 @@ const VideoGrid: React.FC = () => {
       .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
       .replace(/\-\-+/g, '-');         // Replace multiple - with single -
 
-    router.push(`/video/${slug}`);
+    router.push(`/video/${video.uuid}-${slug}`);
   };
 
   const handleRating = async (e: React.MouseEvent, uuid: string, type: 'likes' | 'dislikes', currentValue: number) => {
