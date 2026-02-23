@@ -11,6 +11,66 @@ import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favori
 import { getVisitorId } from '@/api/visitorIdHelper';
 import { trackVisitorAction } from '@/api/visitorService';
 
+// Styles adapted from ListVideos
+const styles: { [key: string]: any } = {
+    gridContainer: {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+        gap: "15px",
+        padding: "0",
+    },
+    videoCardSx: {
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        borderRadius: "12px",
+        transition: "all 0.25s ease-in-out",
+        cursor: "pointer",
+        backgroundColor: "#111",
+        border: "1px solid rgba(255,255,255,0.05)",
+        "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: "0 12px 24px rgba(0, 0, 0, 0.5)",
+            borderColor: "#f013e5",
+            zIndex: 10,
+        }
+    },
+    thumbnailContainer: {
+        position: "relative",
+        width: "100%",
+        aspectRatio: "16/9",
+        backgroundColor: "#000",
+        overflow: "hidden",
+    },
+    thumbnail: {
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        borderRadius: "8px",
+    },
+    metadataArea: {
+        padding: "10px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+    },
+    videoTitle: {
+        color: "#fff",
+        fontSize: "13px",
+        fontWeight: "bold",
+        margin: 0,
+        display: "-webkit-box",
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical",
+        overflow: "hidden",
+        lineHeight: "1.2"
+    },
+    durationLabel: {
+        color: "rgba(255,255,255,0.5)",
+        fontSize: "11px",
+    }
+};
+
 const VideoPage = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -284,470 +344,474 @@ const VideoPage = () => {
                 {video.titulo} - Watch Free on novapornx
             </h1>
 
-            <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
-                <Box sx={{ mb: 2 }}>
-                    <VideoPlayer
-                        ref={videoPlayerRef}
-                        videoEmbedUrl={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=stream`}
-                        poster={video.imagen_url}
-                        autoplay={false}
-                        muted={true}
-                    />
-                </Box>
+            <Container maxWidth="xl" sx={{ flexGrow: 1, py: { xs: 2, md: 4 } }}>
+                <Grid container spacing={4}>
+                    {/* Left Column: Player and Main Content */}
+                    <Grid item xs={12} lg={8.5}>
+                        <Box sx={{ mb: 2 }}>
+                            <VideoPlayer
+                                ref={videoPlayerRef}
+                                videoEmbedUrl={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=stream`}
+                                poster={video.imagen_url}
+                                autoplay={false}
+                                muted={true}
+                            />
+                        </Box>
 
-                {/* Info and Comments Section */}
-                <Box sx={{ p: 3 }}>
-                    <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', pb: 3, mb: 3 }}>
-                        <Typography variant="h4" sx={{ color: '#fff', fontWeight: 'bold', mb: 1.5, fontSize: { xs: '1.5rem', md: '2rem' } }}>
-                            {video.titulo}
-                        </Typography>
-                        <Stack direction="row" spacing={2} sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', alignItems: 'center' }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <AccessTime sx={{ fontSize: '1rem' }} />
-                                {video.duracion || "Unknown"}
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <CalendarToday sx={{ fontSize: '1rem' }} />
-                                {video.created_at ? new Date(video.created_at).toLocaleDateString() : 'N/A'}
-                            </Box>
-                        </Stack>
-                    </Box>
-
-                    {/* Voting and Report Buttons */}
-                    <Stack direction="row" spacing={2} sx={{ mb: 4, flexWrap: 'wrap', gap: 2 }}>
-                        <Button
-                            variant="outlined"
-                            startIcon={<ThumbUp />}
-                            onClick={() => handleVote('likes')}
-                            disabled={!!hasVoted}
-                            sx={{
-                                color: hasVoted === 'likes' ? '#4caf50' : 'rgba(76, 175, 80, 0.7)',
-                                borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(76, 175, 80, 0.3)',
-                                backgroundColor: hasVoted === 'likes' ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                                '&:hover': {
-                                    borderColor: '#4caf50',
-                                    backgroundColor: 'rgba(76, 175, 80, 0.05)',
-                                    color: '#4caf50'
-                                },
-                                borderRadius: '10px',
-                                textTransform: 'none',
-                                fontWeight: 'bold',
-                                px: 3,
-                                '&.Mui-disabled': {
-                                    color: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.3)',
-                                    borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.1)',
-                                    opacity: 1
-                                }
-                            }}
-                        >
-                            {video.likes ?? 0}
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            startIcon={<ThumbDown />}
-                            onClick={() => handleVote('dislikes')}
-                            disabled={!!hasVoted}
-                            sx={{
-                                color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(244, 67, 54, 0.7)',
-                                borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(244, 67, 54, 0.3)',
-                                backgroundColor: hasVoted === 'dislikes' ? 'rgba(244, 67, 54, 0.1)' : 'transparent',
-                                '&:hover': {
-                                    borderColor: '#f44336',
-                                    backgroundColor: 'rgba(244, 67, 54, 0.05)',
-                                    color: '#f44336'
-                                },
-                                borderRadius: '10px',
-                                textTransform: 'none',
-                                fontWeight: 'bold',
-                                px: 3,
-                                '&.Mui-disabled': {
-                                    color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.3)',
-                                    borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.1)',
-                                    opacity: 1
-                                }
-                            }}
-                        >
-                            {video.dislikes ?? 0}
-                        </Button>
-
-                        <Button
-                            variant="contained"
-                            onClick={handleDownload}
-                            disabled={isDownloading}
-                            sx={{
-                                backgroundColor: '#f013e5',
-                                '&:hover': { backgroundColor: '#d011c5' },
-                                borderRadius: '10px',
-                                textTransform: 'none',
-                                fontWeight: 'bold',
-                                px: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
-                            }}
-                        >
-                            {isDownloading ? (
-                                <CircularProgress size={20} sx={{ color: '#fff' }} />
-                            ) : (
-                                <Box component="img" src="/assets/loader.png" sx={{ width: 20, height: 20 }} />
-                            )}
-                            {isDownloading ? 'Generando...' : 'Download'}
-                            {!isDownloading && <Favorite sx={{ fontSize: 16, ml: 0.5 }} />}
-                        </Button>
-
-                        <Button
-                            variant="outlined"
-                            startIcon={<Flag />}
-                            onClick={handleReport}
-                            sx={{
-                                color: 'rgba(255,255,255,0.6)',
-                                borderColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': { borderColor: '#fff', color: '#fff', bgcolor: 'rgba(255,255,255,0.05)' },
-                                borderRadius: '10px',
-                                textTransform: 'none'
-                            }}
-                        >
-                            Reportar
-                        </Button>
-                    </Stack>
-
-                    <Box sx={{ p: 2.5, backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '12px', borderLeft: '4px solid #f013e5', mb: 4 }}>
-                        <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc', mb: 2 }}>
-                            {video.descripcion || "Sin descripción disponible."}
-                        </Typography>
-
-                        {video.actresses && video.actresses.trim() !== "" && (
-                            <Box sx={{ mb: 2, mt: 1 }}>
-                                <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.5)', mb: 1, textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.75rem' }}>
-                                    Actrices:
+                        {/* Info and Comments Section */}
+                        <Box sx={{ p: 3 }}>
+                            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', pb: 3, mb: 3 }}>
+                                <Typography variant="h4" sx={{ color: '#fff', fontWeight: 'bold', mb: 1.5, fontSize: { xs: '1.5rem', md: '2rem' } }}>
+                                    {video.titulo}
                                 </Typography>
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                    {video.actresses.split(',').map((actress, index) => (
-                                        <Chip
-                                            key={index}
-                                            label={actress.trim()}
-                                            size="small"
+                                <Stack direction="row" spacing={2} sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', alignItems: 'center' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                        <AccessTime sx={{ fontSize: '1rem' }} />
+                                        {video.duracion || "Unknown"}
+                                    </Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                        <CalendarToday sx={{ fontSize: '1rem' }} />
+                                        {video.created_at ? new Date(video.created_at).toLocaleDateString() : 'N/A'}
+                                    </Box>
+                                </Stack>
+                            </Box>
+
+                            {/* Voting and Report Buttons */}
+                            <Stack direction="row" spacing={2} sx={{ mb: 4, flexWrap: 'wrap', gap: 2 }}>
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<ThumbUp />}
+                                    onClick={() => handleVote('likes')}
+                                    disabled={!!hasVoted}
+                                    sx={{
+                                        color: hasVoted === 'likes' ? '#4caf50' : 'rgba(76, 175, 80, 0.7)',
+                                        borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(76, 175, 80, 0.3)',
+                                        backgroundColor: hasVoted === 'likes' ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
+                                        '&:hover': {
+                                            borderColor: '#4caf50',
+                                            backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                                            color: '#4caf50'
+                                        },
+                                        borderRadius: '10px',
+                                        textTransform: 'none',
+                                        fontWeight: 'bold',
+                                        px: 3,
+                                        '&.Mui-disabled': {
+                                            color: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.3)',
+                                            borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.1)',
+                                            opacity: 1
+                                        }
+                                    }}
+                                >
+                                    {video.likes ?? 0}
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<ThumbDown />}
+                                    onClick={() => handleVote('dislikes')}
+                                    disabled={!!hasVoted}
+                                    sx={{
+                                        color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(244, 67, 54, 0.7)',
+                                        borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(244, 67, 54, 0.3)',
+                                        backgroundColor: hasVoted === 'dislikes' ? 'rgba(244, 67, 54, 0.1)' : 'transparent',
+                                        '&:hover': {
+                                            borderColor: '#f44336',
+                                            backgroundColor: 'rgba(244, 67, 54, 0.05)',
+                                            color: '#f44336'
+                                        },
+                                        borderRadius: '10px',
+                                        textTransform: 'none',
+                                        fontWeight: 'bold',
+                                        px: 3,
+                                        '&.Mui-disabled': {
+                                            color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.3)',
+                                            borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.1)',
+                                            opacity: 1
+                                        }
+                                    }}
+                                >
+                                    {video.dislikes ?? 0}
+                                </Button>
+
+                                <Button
+                                    variant="contained"
+                                    onClick={handleDownload}
+                                    disabled={isDownloading}
+                                    sx={{
+                                        backgroundColor: '#f013e5',
+                                        '&:hover': { backgroundColor: '#d011c5' },
+                                        borderRadius: '10px',
+                                        textTransform: 'none',
+                                        fontWeight: 'bold',
+                                        px: 3,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 1
+                                    }}
+                                >
+                                    {isDownloading ? (
+                                        <CircularProgress size={20} sx={{ color: '#fff' }} />
+                                    ) : (
+                                        <Box component="img" src="/assets/loader.png" sx={{ width: 20, height: 20 }} />
+                                    )}
+                                    {isDownloading ? 'Generando...' : 'Download'}
+                                    {!isDownloading && <Favorite sx={{ fontSize: 16, ml: 0.5 }} />}
+                                </Button>
+
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<Flag />}
+                                    onClick={handleReport}
+                                    sx={{
+                                        color: 'rgba(255,255,255,0.6)',
+                                        borderColor: 'rgba(255,255,255,0.2)',
+                                        '&:hover': { borderColor: '#fff', color: '#fff', bgcolor: 'rgba(255,255,255,0.05)' },
+                                        borderRadius: '10px',
+                                        textTransform: 'none'
+                                    }}
+                                >
+                                    Reportar
+                                </Button>
+                            </Stack>
+
+                            <Box sx={{ p: 2.5, backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '12px', borderLeft: '4px solid #f013e5', mb: 4 }}>
+                                <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc', mb: 2 }}>
+                                    {video.descripcion || "Sin descripción disponible."}
+                                </Typography>
+
+                                {video.actresses && video.actresses.trim() !== "" && (
+                                    <Box sx={{ mb: 2, mt: 1 }}>
+                                        <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.5)', mb: 1, textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.75rem' }}>
+                                            Actrices:
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                            {video.actresses.split(',').map((actress, index) => (
+                                                <Chip
+                                                    key={index}
+                                                    label={actress.trim()}
+                                                    size="small"
+                                                    sx={{
+                                                        backgroundColor: 'rgba(240, 19, 229, 0.1)',
+                                                        color: '#f013e5',
+                                                        fontWeight: 'bold',
+                                                        borderRadius: '6px',
+                                                        border: '1px solid rgba(240, 19, 229, 0.3)',
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(240, 19, 229, 0.2)',
+                                                            borderColor: '#f013e5'
+                                                        }
+                                                    }}
+                                                />
+                                            ))}
+                                        </Box>
+                                    </Box>
+                                )}
+
+                                {video.tags && (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+                                        {video.tags.split(',').map((tag, index) => (
+                                            <Chip
+                                                key={index}
+                                                label={tag.trim()}
+                                                size="small"
+                                                icon={<Favorite sx={{ fontSize: '14px !important', color: '#f013e5 !important' }} />}
+                                                sx={{
+                                                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                                    color: '#fff',
+                                                    borderRadius: '6px',
+                                                    border: '1px solid rgba(240, 19, 229, 0.2)',
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(240, 19, 229, 0.1)',
+                                                        borderColor: '#f013e5'
+                                                    },
+                                                    '& .MuiChip-icon': {
+                                                        marginLeft: '8px'
+                                                    }
+                                                }}
+                                            />
+                                        ))}
+                                    </Box>
+                                )}
+                            </Box>
+
+                            {/* Preview Images Slider */}
+                            {video.preview_images_urls && (
+                                <Box sx={{ mt: 6, mb: 4 }}>
+                                    <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                                        Capturas del Video
+                                    </Typography>
+                                    <Box
+                                        sx={{
+                                            width: '100%',
+                                            overflow: 'hidden',
+                                            position: 'relative',
+                                            borderRadius: '12px',
+                                            backgroundColor: 'rgba(255,255,255,0.02)',
+                                            py: 3,
+                                            cursor: 'pointer',
+                                            '&:hover .marquee-content': {
+                                                animationPlayState: 'paused'
+                                            }
+                                        }}
+                                    >
+                                        <Box
+                                            className="marquee-content"
                                             sx={{
-                                                backgroundColor: 'rgba(240, 19, 229, 0.1)',
-                                                color: '#f013e5',
-                                                fontWeight: 'bold',
-                                                borderRadius: '6px',
-                                                border: '1px solid rgba(240, 19, 229, 0.3)',
-                                                '&:hover': {
-                                                    backgroundColor: 'rgba(240, 19, 229, 0.2)',
-                                                    borderColor: '#f013e5'
+                                                display: 'flex',
+                                                gap: 3,
+                                                width: 'max-content',
+                                                animation: 'marquee-scroll 50s linear infinite',
+                                                '@keyframes marquee-scroll': {
+                                                    '0%': { transform: 'translateX(0)' },
+                                                    '100%': { transform: 'translateX(-50%)' }
                                                 }
                                             }}
-                                        />
-                                    ))}
-                                </Box>
-                            </Box>
-                        )}
+                                        >
+                                            {(() => {
+                                                try {
+                                                    const parsed = JSON.parse(video.preview_images_urls);
+                                                    if (!Array.isArray(parsed)) return null;
 
-                        {video.tags && (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-                                {video.tags.split(',').map((tag, index) => (
-                                    <Chip
-                                        key={index}
-                                        label={tag.trim()}
-                                        size="small"
-                                        icon={<Favorite sx={{ fontSize: '14px !important', color: '#f013e5 !important' }} />}
+                                                    const getLabel = (url: string) => {
+                                                        const filename = url.split('/').pop() || "";
+                                                        const match = filename.match(/(\d+_\d+)/);
+                                                        return match ? match[1].replace('_', ':') : "";
+                                                    };
+
+                                                    const timeToSeconds = (label: string) => {
+                                                        if (!label) return 0;
+                                                        const parts = label.split(':').map(Number);
+                                                        if (parts.length === 2) {
+                                                            return parts[0] * 60 + parts[1];
+                                                        }
+                                                        return 0;
+                                                    };
+
+                                                    const displayList = [...parsed, ...parsed];
+
+                                                    return displayList.map((url: string, idx: number) => {
+                                                        let finalUrl = url;
+                                                        if (url.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
+                                                            finalUrl = url.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
+                                                        } else if (!url.startsWith('http')) {
+                                                            finalUrl = `/capturas-proxy/${url}`;
+                                                        }
+
+                                                        const timestampLabel = getLabel(url);
+                                                        const seconds = timeToSeconds(timestampLabel);
+
+                                                        return (
+                                                            <Box
+                                                                key={idx}
+                                                                sx={{
+                                                                    width: '220px',
+                                                                    flexShrink: 0,
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                    alignItems: 'center',
+                                                                    gap: 1.5
+                                                                }}
+                                                                onClick={() => {
+                                                                    if (videoPlayerRef.current) {
+                                                                        videoPlayerRef.current.seekTo(seconds);
+                                                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Box
+                                                                    sx={{
+                                                                        width: '100%',
+                                                                        aspectRatio: '16/9',
+                                                                        borderRadius: '8px',
+                                                                        overflow: 'hidden',
+                                                                        border: '1px solid rgba(255,255,255,0.1)',
+                                                                        transition: 'all 0.3s ease',
+                                                                        '&:hover': {
+                                                                            borderColor: '#f013e5',
+                                                                            boxShadow: '0 0 20px rgba(240, 19, 229, 0.4)',
+                                                                            transform: 'scale(1.02)'
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <img
+                                                                        src={finalUrl}
+                                                                        alt={`Capture ${idx}`}
+                                                                        loading="lazy"
+                                                                        style={{
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            objectFit: 'cover'
+                                                                        }}
+                                                                    />
+                                                                </Box>
+                                                                {timestampLabel && (
+                                                                    <Typography sx={{ color: '#fff', fontSize: '13px', fontWeight: 'bold', opacity: 0.8 }}>
+                                                                        {timestampLabel}
+                                                                    </Typography>
+                                                                )}
+                                                            </Box>
+                                                        );
+                                                    });
+                                                } catch (e) {
+                                                    return null;
+                                                }
+                                            })()}
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            )}
+
+                            {/* Comments Section */}
+                            <Box id="comments-section" sx={{ mt: 6, mb: 6 }}>
+                                <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                                    Comentarios ({parseComments(video.comment).length})
+                                </Typography>
+
+                                <Box sx={{ mb: 4, backgroundColor: 'rgba(255,255,255,0.03)', p: 3, borderRadius: '12px' }}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        placeholder="Escribe tu comentario..."
+                                        value={newCommentText}
+                                        onChange={(e) => setNewCommentText(e.target.value)}
                                         sx={{
-                                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                                            color: '#fff',
-                                            borderRadius: '6px',
-                                            border: '1px solid rgba(240, 19, 229, 0.2)',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(240, 19, 229, 0.1)',
-                                                borderColor: '#f013e5'
-                                            },
-                                            '& .MuiChip-icon': {
-                                                marginLeft: '8px'
+                                            backgroundColor: 'rgba(0,0,0,0.3)',
+                                            borderRadius: '8px',
+                                            '& .MuiOutlinedInput-root': {
+                                                color: '#fff',
+                                                '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+                                                '&:hover fieldset': { borderColor: '#f013e5' },
+                                                '&.Mui-focused fieldset': { borderColor: '#f013e5' },
                                             }
                                         }}
                                     />
-                                ))}
-                            </Box>
-                        )}
-                    </Box>
+                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                                        <Button
+                                            variant="contained"
+                                            onClick={handleAddComment}
+                                            disabled={isSubmittingComment || !newCommentText.trim()}
+                                            sx={{
+                                                backgroundColor: '#f013e5',
+                                                '&:hover': { backgroundColor: '#e91ec4' },
+                                                fontWeight: 'bold',
+                                                borderRadius: '20px',
+                                                px: 4
+                                            }}
+                                        >
+                                            {isSubmittingComment ? 'Publicando...' : 'Publicar Comentario'}
+                                        </Button>
+                                    </Box>
+                                </Box>
 
-                    {/* Preview Images Slider */}
-                    {video.preview_images_urls && (
-                        <Box sx={{ mt: 6, mb: 4 }}>
-                            <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                                Capturas del Video
-                            </Typography>
-                            <Box
-                                sx={{
-                                    width: '100%',
-                                    overflow: 'hidden',
-                                    position: 'relative',
-                                    borderRadius: '12px',
-                                    backgroundColor: 'rgba(255,255,255,0.02)',
-                                    py: 3,
-                                    cursor: 'pointer',
-                                    '&:hover .marquee-content': {
-                                        animationPlayState: 'paused'
-                                    }
-                                }}
-                            >
-                                <Box
-                                    className="marquee-content"
-                                    sx={{
-                                        display: 'flex',
-                                        gap: 3,
-                                        width: 'max-content',
-                                        animation: 'marquee-scroll 50s linear infinite',
-                                        '@keyframes marquee-scroll': {
-                                            '0%': { transform: 'translateX(0)' },
-                                            '100%': { transform: 'translateX(-50%)' }
-                                        }
-                                    }}
-                                >
-                                    {(() => {
-                                        try {
-                                            const parsed = JSON.parse(video.preview_images_urls);
-                                            if (!Array.isArray(parsed)) return null;
-
-                                            const getLabel = (url: string) => {
-                                                const filename = url.split('/').pop() || "";
-                                                const match = filename.match(/(\d+_\d+)/);
-                                                return match ? match[1].replace('_', ':') : "";
-                                            };
-
-                                            const timeToSeconds = (label: string) => {
-                                                if (!label) return 0;
-                                                const parts = label.split(':').map(Number);
-                                                if (parts.length === 2) {
-                                                    return parts[0] * 60 + parts[1];
-                                                }
-                                                return 0;
-                                            };
-
-                                            const displayList = [...parsed, ...parsed];
-
-                                            return displayList.map((url: string, idx: number) => {
-                                                let finalUrl = url;
-                                                if (url.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
-                                                    finalUrl = url.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
-                                                } else if (!url.startsWith('http')) {
-                                                    finalUrl = `/capturas-proxy/${url}`;
-                                                }
-
-                                                const timestampLabel = getLabel(url);
-                                                const seconds = timeToSeconds(timestampLabel);
-
-                                                return (
-                                                    <Box
-                                                        key={idx}
-                                                        sx={{
-                                                            width: '220px',
-                                                            flexShrink: 0,
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            alignItems: 'center',
-                                                            gap: 1.5
-                                                        }}
-                                                        onClick={() => {
-                                                            if (videoPlayerRef.current) {
-                                                                videoPlayerRef.current.seekTo(seconds);
-                                                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Box
-                                                            sx={{
-                                                                width: '100%',
-                                                                aspectRatio: '16/9',
-                                                                borderRadius: '8px',
-                                                                overflow: 'hidden',
-                                                                border: '1px solid rgba(255,255,255,0.1)',
-                                                                transition: 'all 0.3s ease',
-                                                                '&:hover': {
-                                                                    borderColor: '#f013e5',
-                                                                    boxShadow: '0 0 20px rgba(240, 19, 229, 0.4)',
-                                                                    transform: 'scale(1.02)'
-                                                                }
-                                                            }}
-                                                        >
-                                                            <img
-                                                                src={finalUrl}
-                                                                alt={`Capture ${idx}`}
-                                                                loading="lazy"
-                                                                style={{
-                                                                    width: '100%',
-                                                                    height: '100%',
-                                                                    objectFit: 'cover'
-                                                                }}
-                                                            />
-                                                        </Box>
-                                                        {timestampLabel && (
-                                                            <Typography sx={{ color: '#fff', fontSize: '13px', fontWeight: 'bold', opacity: 0.8 }}>
-                                                                {timestampLabel}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    {parseComments(video.comment).length > 0 ? (
+                                        parseComments(video.comment).reverse().map((c: any, index: number) => (
+                                            <Paper key={index} sx={{ p: 2, backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <Box sx={{ display: 'flex', gap: 2 }}>
+                                                    <Avatar sx={{ bgcolor: '#f013e5', fontSize: '14px' }}>U</Avatar>
+                                                    <Box sx={{ flexGrow: 1 }}>
+                                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                                            <Typography variant="subtitle2" sx={{ color: '#f013e5', fontWeight: 'bold' }}>
+                                                                Anónimo
                                                             </Typography>
-                                                        )}
+                                                            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)' }}>
+                                                                {c.date ? new Date(c.date).toLocaleDateString() : 'Recientemente'}
+                                                            </Typography>
+                                                        </Box>
+                                                        <Typography variant="body2" sx={{ color: '#eee', lineHeight: 1.5 }}>
+                                                            {c.text}
+                                                        </Typography>
                                                     </Box>
-                                                );
-                                            });
-                                        } catch (e) {
-                                            return null;
-                                        }
-                                    })()}
+                                                </Box>
+                                            </Paper>
+                                        ))
+                                    ) : (
+                                        <Typography sx={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', py: 4 }}>
+                                            No hay comentarios todavía. ¡Sé el primero en comentar!
+                                        </Typography>
+                                    )}
                                 </Box>
                             </Box>
                         </Box>
-                    )}
 
-                    {/* Comments Section */}
-                    <Box id="comments-section" sx={{ mt: 6, mb: 6 }}>
-                        <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                            Comentarios ({parseComments(video.comment).length})
-                        </Typography>
+                    </Grid>
 
-                        <Box sx={{ mb: 4, backgroundColor: 'rgba(255,255,255,0.03)', p: 3, borderRadius: '12px' }}>
-                            <TextField
-                                fullWidth
-                                multiline
-                                rows={3}
-                                placeholder="Escribe tu comentario..."
-                                value={newCommentText}
-                                onChange={(e) => setNewCommentText(e.target.value)}
-                                sx={{
-                                    backgroundColor: 'rgba(0,0,0,0.3)',
-                                    borderRadius: '8px',
-                                    '& .MuiOutlinedInput-root': {
-                                        color: '#fff',
-                                        '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
-                                        '&:hover fieldset': { borderColor: '#f013e5' },
-                                        '&.Mui-focused fieldset': { borderColor: '#f013e5' },
-                                    }
-                                }}
-                            />
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                                <Button
-                                    variant="contained"
-                                    onClick={handleAddComment}
-                                    disabled={isSubmittingComment || !newCommentText.trim()}
-                                    sx={{
-                                        backgroundColor: '#f013e5',
-                                        '&:hover': { backgroundColor: '#e91ec4' },
-                                        fontWeight: 'bold',
-                                        borderRadius: '20px',
-                                        px: 4
-                                    }}
-                                >
-                                    {isSubmittingComment ? 'Publicando...' : 'Publicar Comentario'}
-                                </Button>
-                            </Box>
-                        </Box>
+                    {/* Right Column: Recommendations Sidebar */}
+                    <Grid item xs={12} lg={3.5}>
+                        <Box sx={{
+                            position: { lg: 'sticky' },
+                            top: { lg: 24 },
+                            maxHeight: { lg: 'calc(100vh - 48px)' },
+                            overflowY: { lg: 'auto' },
+                            pr: { lg: 1 },
+                            '&::-webkit-scrollbar': { width: '4px' },
+                            '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(240, 19, 229, 0.3)', borderRadius: '10px' }
+                        }}>
+                            <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2, fontSize: '1.1rem' }}>
+                                Videos Relacionados
+                            </Typography>
 
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            {parseComments(video.comment).length > 0 ? (
-                                parseComments(video.comment).reverse().map((c: any, index: number) => (
-                                    <Paper key={index} sx={{ p: 2, backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <Avatar sx={{ bgcolor: '#f013e5', fontSize: '14px' }}>U</Avatar>
-                                            <Box sx={{ flexGrow: 1 }}>
-                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                                                    <Typography variant="subtitle2" sx={{ color: '#f013e5', fontWeight: 'bold' }}>
-                                                        Anónimo
-                                                    </Typography>
-                                                    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)' }}>
-                                                        {c.date ? new Date(c.date).toLocaleDateString() : 'Recientemente'}
-                                                    </Typography>
-                                                </Box>
-                                                <Typography variant="body2" sx={{ color: '#eee', lineHeight: 1.5 }}>
-                                                    {c.text}
-                                                </Typography>
+                            <Grid container spacing={1.5}>
+                                {relatedVideos.map((vid: SupabaseVideo) => {
+                                    const previewUrl = vid.preview_url || vid.preview;
+                                    const thumbnails = (previewUrl && !previewUrl.endsWith('.mp4') && !previewUrl.endsWith('.webm'))
+                                        ? previewUrl.split(",").map(u => u.trim()).filter(Boolean)
+                                        : [];
+
+                                    const isHovered = hoveredVideo === vid.uuid;
+                                    const isVideoPreview = previewUrl && (previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm'));
+                                    const currentImg = (isHovered && thumbnails.length > 0)
+                                        ? thumbnails[currentPreview[vid.uuid] || 0]
+                                        : (vid.imagen_url || vid.img_src);
+
+                                    return (
+                                        <Grid item xs={6} sm={4} lg={6} key={vid.uuid}>
+                                            <Box
+                                                sx={styles.videoCardSx}
+                                                onMouseEnter={() => {
+                                                    setHoveredVideo(vid.uuid);
+                                                    setCurrentPreview((prev) => ({ ...prev, [vid.uuid]: 0 }));
+                                                }}
+                                                onMouseLeave={() => setHoveredVideo(null)}
+                                                onClick={() => handleClickRecommendation(vid)}
+                                            >
+                                                <div style={styles.thumbnailContainer}>
+                                                    {isHovered && isVideoPreview ? (
+                                                        <video
+                                                            src={`/api/media?uuid=${vid.uuid}&type=preview`}
+                                                            autoPlay
+                                                            muted
+                                                            loop
+                                                            playsInline
+                                                            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }}
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            src={currentImg || '/assets/placeholder.png'}
+                                                            alt={vid.titulo}
+                                                            style={styles.thumbnail}
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div style={styles.metadataArea}>
+                                                    <p style={styles.videoTitle}>{vid.titulo}</p>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
+                                                        <span style={styles.durationLabel}>
+                                                            ⏳ {(vid.duracion_segundos && vid.duracion_segundos > 0)
+                                                                ? `${Math.floor(vid.duracion_segundos / 60)}:${(vid.duracion_segundos % 60).toString().padStart(2, '0')}`
+                                                                : (vid.duracion || "0:00")}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </Box>
-                                        </Box>
-                                    </Paper>
-                                ))
-                            ) : (
-                                <Typography sx={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', py: 4 }}>
-                                    No hay comentarios todavía. ¡Sé el primero en comentar!
-                                </Typography>
-                            )}
+                                        </Grid>
+                                    );
+                                })}
+                            </Grid>
                         </Box>
-                    </Box>
-                </Box>
-
-                {/* Recommended Videos Section */}
-                {relatedVideos.length > 0 && (
-                    <Box sx={{ mt: 6 }}>
-                        <Typography variant="h6" sx={{ color: '#fff', mb: 2, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                            Videos Relacionados
-                        </Typography>
-
-                        <Box
-                            sx={{
-                                display: "grid",
-                                gridTemplateColumns: {
-                                    xs: "repeat(2, 1fr)",
-                                    sm: "repeat(3, 1fr)",
-                                    md: "repeat(4, 1fr)"
-                                },
-                                gap: "15px",
-                                padding: "0",
-                            }}
-                        >
-                            {relatedVideos.map((vid: SupabaseVideo) => {
-                                const previewUrl = vid.preview_url || vid.preview;
-                                const thumbnails = (previewUrl && !previewUrl.endsWith('.mp4') && !previewUrl.endsWith('.webm'))
-                                    ? previewUrl.split(",").map(u => u.trim()).filter(Boolean)
-                                    : [];
-
-                                const isHovered = hoveredVideo === vid.uuid;
-                                const isVideoPreview = previewUrl && (previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm'));
-                                const currentImg = (isHovered && thumbnails.length > 0)
-                                    ? thumbnails[currentPreview[vid.uuid] || 0]
-                                    : (vid.imagen_url || vid.img_src);
-
-                                return (
-                                    <Box
-                                        key={vid.uuid}
-                                        sx={styles.videoCardSx}
-                                        onMouseEnter={() => {
-                                            setHoveredVideo(vid.uuid);
-                                            setCurrentPreview((prev) => ({ ...prev, [vid.uuid]: 0 }));
-                                        }}
-                                        onMouseLeave={() => setHoveredVideo(null)}
-                                        onClick={() => handleClickRecommendation(vid)}
-                                    >
-                                        <div style={styles.thumbnailContainer}>
-                                            {isHovered && isVideoPreview ? (
-                                                <video
-                                                    src={`/api/media?uuid=${vid.uuid}&type=preview`}
-                                                    autoPlay
-                                                    muted
-                                                    loop
-                                                    playsInline
-                                                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }}
-                                                />
-                                            ) : (
-                                                <img
-                                                    src={currentImg || '/assets/placeholder.png'}
-                                                    alt={vid.titulo}
-                                                    style={styles.thumbnail}
-                                                />
-                                            )}
-                                        </div>
-                                        <div style={styles.metadataArea}>
-                                            <p style={styles.videoTitle}>{vid.titulo}</p>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-                                                <span style={styles.durationLabel}>
-                                                    ⏳ {(vid.duracion_segundos && vid.duracion_segundos > 0)
-                                                        ? `${Math.floor(vid.duracion_segundos / 60)}:${(vid.duracion_segundos % 60).toString().padStart(2, '0')}`
-                                                        : (vid.duracion || "0:00")}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Box>
-                                );
-                            })}
-                        </Box>
-                    </Box>
-                )}
+                    </Grid>
+                </Grid>
             </Container>
 
             {/* Report Video Modal */}
@@ -922,61 +986,5 @@ const VideoPage = () => {
     );
 };
 
-// Styles adapted from ListVideos
-const styles: { [key: string]: any } = {
-    gridContainer: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-        gap: "15px",
-        padding: "0",
-    },
-    videoCardSx: {
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        borderRadius: "12px",
-        transition: "all 0.25s ease-in-out",
-        cursor: "pointer",
-        backgroundColor: "#111",
-        "&:hover": {
-            transform: "translateY(-4px)",
-            boxShadow: "0 12px 24px rgba(0, 0, 0, 0.5)",
-            zIndex: 10,
-        }
-    },
-    thumbnailContainer: {
-        position: "relative",
-        width: "100%",
-        aspectRatio: "16/9",
-        backgroundColor: "#000",
-        overflow: "hidden",
-    },
-    thumbnail: {
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        borderRadius: "8px",
-    },
-    metadataArea: {
-        padding: "10px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-    },
-    videoTitle: {
-        color: "#fff",
-        fontSize: "14px",
-        fontWeight: "bold",
-        margin: 0,
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: "vertical",
-        overflow: "hidden",
-    },
-    durationLabel: {
-        color: "rgba(255,255,255,0.6)",
-        fontSize: "12px",
-    }
-};
 
 export default VideoPage;
