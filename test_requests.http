@@ -1,0 +1,19 @@
+### Probar el servicio de descarga de videos
+
+# Variable para la URL base
+@baseUrl = http://localhost:8000
+
+### 1. Verificar si el servicio está activo
+GET {{baseUrl}}/
+Accept: application/json
+
+### 2. Iniciar procesamiento de un video
+# Cambia la URL en el cuerpo del JSON por el video que quieras procesar
+POST https://novapornapi.onrender.com/api/v1/download
+Content-Type: application/json
+
+{
+    "url": "https://xhamster.com/videos/quick-anal-on-the-farm-with-hot-stepcousin-xhDaV9H#"
+}
+
+

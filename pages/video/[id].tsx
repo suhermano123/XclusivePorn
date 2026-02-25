@@ -338,6 +338,28 @@ const VideoPage = () => {
                 <meta property="twitter:title" content={`${video.titulo} - novapornx`} />
                 <meta property="twitter:description" content={video.descripcion || `Watch ${video.titulo} on novapornx.`} />
                 <meta property="twitter:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
+
+                {/* JSON-LD Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "VideoObject",
+                            "name": video.titulo,
+                            "description": video.descripcion || `Watch ${video.titulo} in HD on novapornx.`,
+                            "thumbnailUrl": [video.imagen_url || "https://novapornx.com/assets/backGround.png"],
+                            "uploadDate": video.created_at || new Date().toISOString(),
+                            "duration": video.duracion ? `PT${video.duracion.replace(':', 'M')}S` : "PT0M0S",
+                            "embedUrl": `https://novapornx.com/video/${id}`,
+                            "interactionStatistic": {
+                                "@type": "InteractionCounter",
+                                "interactionType": { "@type": "LikeAction" },
+                                "userInteractionCount": video.likes || 0
+                            }
+                        })
+                    }}
+                />
             </Head>
 
             <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>

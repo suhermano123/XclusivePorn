@@ -151,6 +151,19 @@ export default function NavMenu(props: any) {
           </Tooltip>
         </Grid>
         <Grid item>
+          <Tooltip disableFocusListener title="Video Downloader">
+            <Button style={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
+            }} onClick={() => router.push("/VideoDownloader")}>
+              <CloudDownloadIcon /> VIDEO DOWNLOADER
+            </Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
           <ClickAwayListener onClickAway={handleTooltipClose}>
             <div></div>
           </ClickAwayListener>

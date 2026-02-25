@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ['ffmpeg-static', 'fluent-ffmpeg'],
   eslint: {
     ignoreDuringBuilds: true,
   },
