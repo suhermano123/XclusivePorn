@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Head from "next/head";
-import { Box, Button, Typography, TextField, CircularProgress, Alert, Paper, Grid, Card, CardMedia, CardContent, Divider } from "@mui/material";
+import { Box, Button, Typography, TextField, CircularProgress, Alert, Paper, Grid, Card, CardMedia, CardContent, Divider, LinearProgress } from "@mui/material";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import FooterComponent from "@/components/footer/Footer";
@@ -27,6 +27,7 @@ const VideoDownloader: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [videoData, setVideoData] = useState<VideoData | null>(null);
+    const [downloadProgress, setDownloadProgress] = useState<{ [key: string]: number }>({});
 
     const handleDownload = async () => {
         if (!url) return;
@@ -60,6 +61,48 @@ const VideoDownloader: React.FC = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleStartDownload = (download: DownloadOption) => {
+        if (!download.url.includes('.m3u8')) {
+            window.open(download.url, '_blank');
+            return;
+        }
+
+        const taskId = Math.random().toString(36).substring(7);
+        const resolutionId = download.resolution || 'default';
+        setDownloadProgress((prev) => ({ ...prev, [resolutionId]: 0 }));
+
+        const checkProgress = setInterval(async () => {
+            try {
+                const res = await fetch(`/api/progress?taskId=${taskId}`);
+                const data = await res.json();
+                if (data && typeof data.progress === 'number') {
+                    setDownloadProgress((prev) => ({ ...prev, [resolutionId]: data.progress }));
+                    if (data.progress >= 100) {
+                        clearInterval(checkProgress);
+                        setTimeout(() => {
+                            setDownloadProgress((prev) => {
+                                const newP = { ...prev };
+                                delete newP[resolutionId];
+                                return newP;
+                            });
+                        }, 5000);
+                    }
+                }
+            } catch (e) {
+                // Ignore fetch errors during polling
+            }
+        }, 1500);
+
+        const downloadUrl = `/api/download-m3u8?url=${encodeURIComponent(download.url)}&title=${encodeURIComponent(videoData?.title || '')}&taskId=${taskId}&duration=${videoData?.duration || 0}`;
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = downloadUrl;
+        document.body.appendChild(iframe);
+
+        // Limpiamos el iframe en 2 minutos (por seguridad)
+        setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 120000);
     };
 
     return (
@@ -212,31 +255,57 @@ const VideoDownloader: React.FC = () => {
                                             </Typography>
                                             <Grid container spacing={2}>
                                                 {videoData.downloads && videoData.downloads.length > 0 ? (
-                                                    videoData.downloads.map((download, index) => (
-                                                        <Grid item xs={12} sm={6} md={4} key={index}>
-                                                            <Button
-                                                                variant="outlined"
-                                                                fullWidth
-                                                                href={download.url.includes('.m3u8') ? `/api/download-m3u8?url=${encodeURIComponent(download.url)}&title=${encodeURIComponent(videoData.title)}` : download.url}
-                                                                target={download.url.includes('.m3u8') ? "_self" : "_blank"}
-                                                                rel="noopener noreferrer"
-                                                                startIcon={<DownloadIcon />}
-                                                                sx={{
-                                                                    color: "#fff",
-                                                                    borderColor: "rgba(255,255,255,0.3)",
-                                                                    borderRadius: "10px",
-                                                                    textTransform: "none",
-                                                                    py: 1,
-                                                                    "&:hover": {
-                                                                        borderColor: "#f013e5",
-                                                                        backgroundColor: "rgba(240, 19, 229, 0.1)"
-                                                                    }
-                                                                }}
-                                                            >
-                                                                {download.resolution || download.ext || "Descargar"}
-                                                            </Button>
-                                                        </Grid>
-                                                    ))
+                                                    Array.from(new Map(videoData.downloads.map(item => [item.resolution || item.url, item])).values()).map((download, index) => {
+                                                        const resolutionId = download.resolution || 'default';
+                                                        const progress = downloadProgress[resolutionId];
+                                                        const isDownloading = progress !== undefined;
+
+                                                        return (
+                                                            <Grid item xs={12} sm={6} md={4} key={index}>
+                                                                <Box sx={{ position: 'relative', width: '100%' }}>
+                                                                    <Button
+                                                                        variant="outlined"
+                                                                        fullWidth
+                                                                        onClick={() => handleStartDownload(download)}
+                                                                        disabled={isDownloading}
+                                                                        startIcon={isDownloading ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
+                                                                        sx={{
+                                                                            color: isDownloading ? "rgba(255,255,255,0.7)" : "#fff",
+                                                                            borderColor: isDownloading ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.3)",
+                                                                            borderRadius: "10px",
+                                                                            textTransform: "none",
+                                                                            py: 1,
+                                                                            "&:hover": {
+                                                                                borderColor: "#f013e5",
+                                                                                backgroundColor: "rgba(240, 19, 229, 0.1)"
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        {isDownloading ? `Procesando... ${progress}%` : (download.resolution || download.ext || "Descargar")}
+                                                                    </Button>
+                                                                    {isDownloading && (
+                                                                        <LinearProgress
+                                                                            variant="determinate"
+                                                                            value={progress}
+                                                                            color="secondary"
+                                                                            sx={{
+                                                                                position: 'absolute',
+                                                                                bottom: -4,
+                                                                                left: 4,
+                                                                                right: 4,
+                                                                                height: 4,
+                                                                                borderRadius: 2,
+                                                                                backgroundColor: 'rgba(255,255,255,0.1)',
+                                                                                '& .MuiLinearProgress-bar': {
+                                                                                    backgroundColor: '#f013e5'
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                </Box>
+                                                            </Grid>
+                                                        );
+                                                    })
                                                 ) : (
                                                     <Grid item xs={12}>
                                                         <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)" }}>

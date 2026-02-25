@@ -12,6 +12,8 @@ if (ffmpegStatic) {
 export async function GET(req: NextRequest) {
     const url = req.nextUrl.searchParams.get('url');
     const titleRaw = req.nextUrl.searchParams.get('title') || 'video_descargado';
+    const taskId = req.nextUrl.searchParams.get('taskId');
+    const duration = parseInt(req.nextUrl.searchParams.get('duration') || "0");
     const safeTitle = titleRaw.replace(/[^a-zA-Z0-9_\u00C0-\u017F \-]/g, '').trim().substring(0, 100) || 'video';
 
     if (!url) {
@@ -19,6 +21,13 @@ export async function GET(req: NextRequest) {
     }
 
     const tempFilePath = path.join(os.tmpdir(), `video_${Date.now()}_${Math.random().toString(36).substring(7)}.mkv`);
+
+    if (taskId) {
+        if (!(globalThis as any).__ffmpegProgress) {
+            (globalThis as any).__ffmpegProgress = {};
+        }
+        (globalThis as any).__ffmpegProgress[taskId] = 0;
+    }
 
     try {
         console.log("Iniciando descarga local del M3U8 a archivo temporal:", tempFilePath);
@@ -32,6 +41,18 @@ export async function GET(req: NextRequest) {
                     '-c copy'
                 ])
                 .outputFormat('matroska')
+                .on('progress', (progress) => {
+                    if (taskId && duration > 0 && progress.timemark) {
+                        try {
+                            const [h, m, s] = progress.timemark.split(':').map(parseFloat);
+                            const currentSecs = (h * 3600) + (m * 60) + s;
+                            let percent = Math.round((currentSecs / duration) * 100);
+                            if (percent > 100) percent = 100;
+                            // Guardar en la variable global compartida
+                            (globalThis as any).__ffmpegProgress[taskId] = percent;
+                        } catch (e) { }
+                    }
+                })
                 .on('error', (err) => {
                     console.error('Error FFmpeg de procesamiento local:', err.message);
                     reject(err);
@@ -52,6 +73,9 @@ export async function GET(req: NextRequest) {
                 fileStream.on('data', (chunk) => controller.enqueue(chunk));
                 fileStream.on('end', () => {
                     controller.close();
+                    if (taskId && (globalThis as any).__ffmpegProgress) {
+                        (globalThis as any).__ffmpegProgress[taskId] = 100;
+                    }
                     // Limpiar el archivo cuando se envíe la última parte
                     fs.unlink(tempFilePath, (err) => {
                         if (err) console.error("Error borrando archivo temporal final:", err);
