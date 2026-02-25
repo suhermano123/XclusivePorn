@@ -7,8 +7,12 @@ export async function GET(req: NextRequest) {
     }
 
     // Leemos el progreso desde la variable global
-    const progressMap = (globalThis as any).__ffmpegProgress || {};
-    const progress = progressMap[taskId] !== undefined ? progressMap[taskId] : 0;
+    const statusMap = (globalThis as any).__ffmpegStatus || {};
+    const task = statusMap[taskId];
 
-    return NextResponse.json({ progress });
+    if (!task) {
+        return NextResponse.json({ progress: 0, status: 'unknown' });
+    }
+
+    return NextResponse.json({ progress: task.progress, status: task.status });
 }

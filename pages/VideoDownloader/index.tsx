@@ -63,7 +63,7 @@ const VideoDownloader: React.FC = () => {
         }
     };
 
-    const handleStartDownload = (download: DownloadOption) => {
+    const handleStartDownload = async (download: DownloadOption) => {
         if (!download.url.includes('.m3u8')) {
             window.open(download.url, '_blank');
             return;
@@ -73,14 +73,49 @@ const VideoDownloader: React.FC = () => {
         const resolutionId = download.resolution || 'default';
         setDownloadProgress((prev) => ({ ...prev, [resolutionId]: 0 }));
 
+        try {
+            // Start processing entirely in the background
+            const startRes = await fetch(`/api/process-m3u8`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: download.url,
+                    title: videoData?.title || '',
+                    taskId: taskId,
+                    duration: videoData?.duration || 0
+                })
+            });
+            if (!startRes.ok) {
+                console.error("Fallo al iniciar procesamiento");
+                setTimeout(() => setDownloadProgress((p) => { const n = { ...p }; delete n[resolutionId]; return n; }), 2000);
+                return;
+            }
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+
         const checkProgress = setInterval(async () => {
             try {
                 const res = await fetch(`/api/progress?taskId=${taskId}`);
                 const data = await res.json();
+
                 if (data && typeof data.progress === 'number') {
                     setDownloadProgress((prev) => ({ ...prev, [resolutionId]: data.progress }));
-                    if (data.progress >= 100) {
+
+                    if (data.progress >= 100 && data.status === 'completed') {
                         clearInterval(checkProgress);
+
+                        // Una vez finalizado por el backend, procedemos a descargar verdaderamente el archivo resultante
+                        const downloadUrl = `/api/download-file?taskId=${taskId}&title=${encodeURIComponent(videoData?.title || '')}`;
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = downloadUrl;
+                        document.body.appendChild(iframe);
+
+                        // Limpiamos el iframe en 30 minutos
+                        setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1800000);
+
                         setTimeout(() => {
                             setDownloadProgress((prev) => {
                                 const newP = { ...prev };
@@ -88,21 +123,21 @@ const VideoDownloader: React.FC = () => {
                                 return newP;
                             });
                         }, 5000);
+                    } else if (data.status === 'error' || data.status === 'unknown') {
+                        clearInterval(checkProgress);
+                        setTimeout(() => {
+                            setDownloadProgress((prev) => {
+                                const newP = { ...prev };
+                                delete newP[resolutionId];
+                                return newP;
+                            });
+                        }, 2000);
                     }
                 }
             } catch (e) {
                 // Ignore fetch errors during polling
             }
         }, 1500);
-
-        const downloadUrl = `/api/download-m3u8?url=${encodeURIComponent(download.url)}&title=${encodeURIComponent(videoData?.title || '')}&taskId=${taskId}&duration=${videoData?.duration || 0}`;
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = downloadUrl;
-        document.body.appendChild(iframe);
-
-        // Limpiamos el iframe en 2 minutos (por seguridad)
-        setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 120000);
     };
 
     return (
