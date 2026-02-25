@@ -3,7 +3,7 @@ import ffmpeg from "fluent-ffmpeg";
 import ffmpegStatic from "ffmpeg-static";
 import path from "path";
 import os from "os";
-
+export const runtime = 'edge'
 if (ffmpegStatic) {
     ffmpeg.setFfmpegPath(ffmpegStatic);
 }

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import fs from "fs";
 import { Readable } from "stream";
-
+export const runtime = 'edge'
 export async function GET(req: NextRequest) {
     const taskId = req.nextUrl.searchParams.get('taskId');
     const titleRaw = req.nextUrl.searchParams.get('title') || 'video_descargado';

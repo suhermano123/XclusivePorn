@@ -4,7 +4,7 @@ import ffmpegStatic from "ffmpeg-static";
 import fs from "fs";
 import path from "path";
 import os from "os";
-
+export const runtime = 'edge'
 if (ffmpegStatic) {
     ffmpeg.setFfmpegPath(ffmpegStatic);
 }

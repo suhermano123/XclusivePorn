@@ -141,10 +141,46 @@ const VideoDownloader: React.FC = () => {
     };
 
     return (
-        <div style={{ backgroundColor: "#000", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <main style={{ backgroundColor: "#000", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+            {/* Agregado elemento semántico <main> en lugar de un <div> genérico. Mejora la accesibilidad y el SEO. */}
             <Head>
-                <title>Video Downloader - novapornx</title>
-                <meta name="description" content="Descarga tus videos favoritos fácilmente con nuestro descargador de video premium. Solo pega el enlace y comienza a descargar." />
+                {/* Meta Etiquetas Básicas Optimizadas para Motores de Búsqueda */}
+                <title>Descargador de Videos XclusivePorn - Rápido, Gratis y Alta Calidad</title>
+                <meta name="description" content="Descarga tus videos favoritos fácilmente con nuestro descargador de video premium. Compatible con formato MP4, 1080p y 4K. Solo pega el enlace y comienza a descargar GRATIS." />
+                <meta name="keywords" content="descargador de videos, descargar gratis, bajar video mp4, xnxx downloader, xhamster downloader, pornhub downloader, guardar video, downloader online" />
+                <meta name="robots" content="index, follow" /> {/* Permite a Google indexar y seguir la página */}
+                <meta name="author" content="XclusivePorn" />
+
+                {/* Etiquetas Open Graph (OG) para que se vea genial al compartir en Redes Sociales, Discord o WhatsApp */}
+                <meta property="og:title" content="Descargador de Videos XclusivePorn - Alta Velocidad" />
+                <meta property="og:description" content="La herramienta definitiva para bajar tus videos favoritos en calidad máxima, sin límites." />
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content="XclusivePorn" />
+
+                {/* Etiquetas Twitter Card para Twitter/X */}
+                <meta name="twitter:card" content="summary" />
+                <meta name="twitter:title" content="Descargador de Videos Gratis - XclusivePorn" />
+                <meta name="twitter:description" content="Descarga rápido y seguro en formato MP4 y máxima calidad." />
+
+                {/* Structured Data (JSON-LD) - Genera un 'Rich Snippet' en Google definiendo esto como una herramienta de software */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "WebApplication",
+                            "name": "XclusivePorn Video Downloader",
+                            "applicationCategory": "MultimediaApplication",
+                            "operatingSystem": "All",
+                            "description": "Herramienta gratuita para descargar videos de múltiples plataformas online en formato MP4 sin límites ni esperas.",
+                            "offers": {
+                                "@type": "Offer",
+                                "price": "0",
+                                "priceCurrency": "USD"
+                            }
+                        })
+                    }}
+                />
             </Head>
 
             <NavBar sx={{ backgroundColor: "#e91ec4" }} />
@@ -177,7 +213,8 @@ const VideoDownloader: React.FC = () => {
                     <Box sx={{ position: "relative", zIndex: 1 }}>
                         <CloudDownloadIcon sx={{ fontSize: 70, color: "#f013e5", mb: 2 }} />
 
-                        <Typography variant="h3" sx={{
+                        {/* Cambio importante de SEO: Toda página debe tener UN único elemento H1. component="h1" le dice a Google que es el tema principal, pero visualmente mantenemos variant="h3" */}
+                        <Typography variant="h3" component="h1" sx={{
                             color: "#fff",
                             fontWeight: 900,
                             mb: 1,
@@ -187,8 +224,9 @@ const VideoDownloader: React.FC = () => {
                             VIDEO DOWNLOADER
                         </Typography>
 
-                        <Typography variant="h6" sx={{ color: "rgba(255,255,255,0.5)", mb: 5, fontWeight: 400 }}>
-                            Introduce el enlace del video para comenzar la descarga
+                        {/* Convertimos el subtítulo principal en un <H2> para estructurar jerárquicamente */}
+                        <Typography component="h2" variant="h6" sx={{ color: "rgba(255,255,255,0.5)", mb: 5, fontWeight: 400 }}>
+                            Introduce el enlace del video para comenzar la descarga en alta calidad
                         </Typography>
 
                         <Box sx={{ mb: 4 }}>
@@ -362,8 +400,8 @@ const VideoDownloader: React.FC = () => {
                         Plataformas Compatibles
                     </Typography>
                     <Grid container spacing={3} justifyContent="center">
-                        {['XNXX', 'XHamster', 'Pornhub', 'SpankBang'].map((platform) => (
-                            <Grid item xs={6} sm={3} key={platform}>
+                        {['XNXX', 'XHamster', 'Pornhub', 'SpankBang', 'Eporner', 'HQPorner'].map((platform) => (
+                            <Grid item xs={6} sm={4} md={3} key={platform}>
                                 <Box sx={{
                                     px: 4, py: 2,
                                     borderRadius: "16px",
@@ -395,7 +433,7 @@ const VideoDownloader: React.FC = () => {
                     to { opacity: 1; transform: translateY(0); }
                 }
             `}</style>
-        </div>
+        </main >
     );
 };
 
