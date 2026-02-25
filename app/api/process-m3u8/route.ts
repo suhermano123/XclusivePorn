@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
                         }
                     } catch (e) { }
                 }
-            })
+            })//videos
             .on('error', (err) => {
                 console.error('Error procesando FFmpeg Asíncrono:', err.message);
                 if ((globalThis as any).__ffmpegStatus[taskId]) {
