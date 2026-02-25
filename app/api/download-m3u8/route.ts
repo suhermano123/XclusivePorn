@@ -9,6 +9,8 @@ if (ffmpegStatic) {
 
 export async function GET(req: NextRequest) {
     const url = req.nextUrl.searchParams.get('url');
+    const titleRaw = req.nextUrl.searchParams.get('title') || 'video_descargado';
+    const safeTitle = titleRaw.replace(/[^a-zA-Z0-9_\u00C0-\u017F \-]/g, '').trim().substring(0, 100) || 'video';
 
     if (!url) {
         return new Response("Missing URL parameter", { status: 400 });
@@ -24,11 +26,9 @@ export async function GET(req: NextRequest) {
                         '-headers', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n'
                     ])
                     .outputOptions([
-                        '-c copy',
-                        '-bsf:a aac_adtstoasc',
-                        '-movflags frag_keyframe+empty_moov'
+                        '-c copy'
                     ])
-                    .outputFormat('mp4')
+                    .outputFormat('matroska')
                     .on('start', (commandLine) => {
                         console.log('Iniciando FFmpeg Stream API:', commandLine);
                     })
@@ -54,8 +54,8 @@ export async function GET(req: NextRequest) {
 
         return new Response(stream, {
             headers: {
-                'Content-Disposition': 'attachment; filename="video_descargado.mp4"',
-                'Content-Type': 'video/mp4',
+                'Content-Disposition': `attachment; filename="${safeTitle}.mkv"`,
+                'Content-Type': 'video/x-matroska',
                 'Cache-Control': 'no-cache, no-store, must-revalidate'
             }
         });

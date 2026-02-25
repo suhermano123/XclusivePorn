@@ -217,7 +217,7 @@ const VideoDownloader: React.FC = () => {
                                                             <Button
                                                                 variant="outlined"
                                                                 fullWidth
-                                                                href={download.url.includes('.m3u8') ? `/api/download-m3u8?url=${encodeURIComponent(download.url)}` : download.url}
+                                                                href={download.url.includes('.m3u8') ? `/api/download-m3u8?url=${encodeURIComponent(download.url)}&title=${encodeURIComponent(videoData.title)}` : download.url}
                                                                 target={download.url.includes('.m3u8') ? "_self" : "_blank"}
                                                                 rel="noopener noreferrer"
                                                                 startIcon={<DownloadIcon />}
