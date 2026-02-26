@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState, useRef } from 'react';
-import { getVideoById, getVideoByTitle, SupabaseVideo, registerVote, getRandomVideos, addCommentToVideo, addReportToVideo } from '@/api/videoSupabaseService';
+import { getVideoById, getVideoByTitle, SupabaseVideo, registerVote, getRandomVideos, addCommentToVideo, addReportToVideo, incrementVideoViews } from '@/api/videoSupabaseService';
 import VideoPlayer, { VideoPlayerRef } from '@/components/VideoPlayer/VideoPlayer';
 import NavBar from '@/components/NavBar/NavBar';
 import NavMenu from '@/components/NavMenu/NavMenu';
 import FooterComponent from '@/components/footer/Footer';
 import Head from 'next/head';
 import { Box, Typography, Container, CircularProgress, Grid, TextField, Button, Divider, Avatar, Paper, Modal, Backdrop, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Chip } from '@mui/material';
-import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite, CloudDownload } from '@mui/icons-material';
+import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite, CloudDownload, Visibility } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
 import { trackVisitorAction } from '@/api/visitorService';
 
@@ -82,6 +82,19 @@ const VideoPage = () => {
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const videoPlayerRef = useRef<VideoPlayerRef>(null);
+    const viewedRef = useRef(false);
+
+    const handlePlay = async () => {
+        if (!viewedRef.current && video) {
+            viewedRef.current = true;
+            try {
+                await incrementVideoViews(video.uuid, video.views || 0);
+                setVideo(prev => prev ? { ...prev, views: (prev.views || 0) + 1 } : prev);
+            } catch (error) {
+                console.error("Error incrementing views:", error);
+            }
+        }
+    };
 
     // Parse comments from string: "{obj}. {obj}"
     const parseComments = (commentStr?: string) => {
@@ -226,6 +239,8 @@ const VideoPage = () => {
                     console.error("Error loading video:", error);
                 } finally {
                     setLoading(false);
+                    // Reset view counter when video changes
+                    viewedRef.current = false;
                 }
             };
             fetchVideo();
@@ -377,6 +392,7 @@ const VideoPage = () => {
                                 poster={video.imagen_url}
                                 autoplay={false}
                                 muted={true}
+                                onPlay={handlePlay}
                             />
                         </Box>
 
@@ -390,6 +406,10 @@ const VideoPage = () => {
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                         <AccessTime sx={{ fontSize: '1rem' }} />
                                         {video.duracion || "Unknown"}
+                                    </Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#00bcd4' }}>
+                                        <Visibility sx={{ fontSize: '1rem' }} />
+                                        {video.views || 0}
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                         <CalendarToday sx={{ fontSize: '1rem' }} />
@@ -819,11 +839,16 @@ const VideoPage = () => {
                                                 <div style={styles.metadataArea}>
                                                     <p style={styles.videoTitle}>{vid.titulo}</p>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-                                                        <span style={styles.durationLabel}>
-                                                            ⏳ {(vid.duracion_segundos && vid.duracion_segundos > 0)
-                                                                ? `${Math.floor(vid.duracion_segundos / 60)}:${(vid.duracion_segundos % 60).toString().padStart(2, '0')}`
-                                                                : (vid.duracion || "0:00")}
-                                                        </span>
+                                                        <Box sx={{ display: 'flex', gap: 1.5 }}>
+                                                            <span style={{ fontSize: "11px", color: "#ccc", display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                                <Visibility sx={{ fontSize: '12px', color: '#00bcd4' }} /> {vid.views || 0}
+                                                            </span>
+                                                            <span style={styles.durationLabel}>
+                                                                ⏳ {(vid.duracion_segundos && vid.duracion_segundos > 0)
+                                                                    ? `${Math.floor(vid.duracion_segundos / 60)}:${(vid.duracion_segundos % 60).toString().padStart(2, '0')}`
+                                                                    : (vid.duracion || "0:00")}
+                                                            </span>
+                                                        </Box>
                                                     </div>
                                                 </div>
                                             </Box>

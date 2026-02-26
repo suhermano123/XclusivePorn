@@ -4,6 +4,7 @@ import { getVideosPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
 import { Skeleton, Box, Button, Chip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import FooterComponent from "../footer/Footer";
 import TopVideosSlider from "../TopVideosSlider/TopVideosSlider";
 import AgeVerification from "../OlderVerify/OlderVerify";
@@ -289,6 +290,17 @@ const VideoGrid: React.FC = () => {
                         >
                           <HeartBrokenIcon sx={{ fontSize: '14px', color: '#888' }} />
                           <span style={styles.statsText}>{video.dislikes || 0}</span>
+                        </Box>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2px',
+                            cursor: 'default',
+                          }}
+                        >
+                          <VisibilityIcon sx={{ fontSize: '14px', color: '#00bcd4', ml: 1 }} />
+                          <span style={styles.statsText}>{video.views || 0}</span>
                         </Box>
                       </Box>
                       <span style={styles.durationLabel}>

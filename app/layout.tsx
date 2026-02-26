@@ -15,6 +15,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Premium Adult Videos for Free - Download in HD",
   description: "Enjoy premium adult videos in high quality, free of charge, with fast download options. Explore exclusive HD content.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/assets/logo.png', type: 'image/png' }
+    ],
+    apple: [
+      { url: '/assets/logo.png', type: 'image/png' }
+    ]
+  }
 };
 
 

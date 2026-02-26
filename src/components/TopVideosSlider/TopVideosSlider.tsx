@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import { SupabaseVideo, getTopVideosByLikes } from '@/api/videoSupabaseService';
 import { useRouter } from 'next/router';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, Visibility } from '@mui/icons-material';
 
 const TopVideosSlider: React.FC = () => {
     const [videos, setVideos] = useState<SupabaseVideo[]>([]);
@@ -208,6 +208,12 @@ const TopVideosSlider: React.FC = () => {
                             >
                                 {video.titulo}
                             </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5, color: '#00bcd4' }}>
+                                <Visibility sx={{ fontSize: '12px' }} />
+                                <Typography variant="caption" sx={{ fontSize: '10px', fontWeight: 'bold' }}>
+                                    {video.views || 0}
+                                </Typography>
+                            </Box>
                         </Box>
                     </Box>
                 ))}

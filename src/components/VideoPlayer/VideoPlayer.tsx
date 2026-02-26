@@ -20,6 +20,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   date?: string;
   muted?: boolean;
   autoplay?: boolean;
+  onPlay?: () => void;
 }>(({
   videoEmbedUrl,
   poster,
@@ -27,6 +28,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   date,
   muted = false,
   autoplay = false,
+  onPlay,
 }, ref) => {
   const isFullUrl = videoEmbedUrl?.startsWith('http') || videoEmbedUrl?.startsWith('//') || videoEmbedUrl?.startsWith('/');
   const { url, loading, error } = useWasabiObjectUrl(isFullUrl ? '' : videoEmbedUrl);
@@ -146,6 +148,13 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
     }, () => {
       console.log("Player ready");
     }));
+
+    if (onPlay) {
+      player.on("play", () => {
+        onPlay();
+        // optionally only trigger once: player.off("play")
+      });
+    }
 
     return () => {
       // Disposable logic handled in separate effect

@@ -25,6 +25,7 @@ export interface SupabaseVideo {
     img_src?: string;
     from?: string;
     href?: string;
+    views?: number;
 }
 
 export const getVideosPaginated = async (pageSize: number, page: number) => {
@@ -195,6 +196,21 @@ export const addReportToVideo = async (uuid: string, reportData: { email: string
 
     if (error) {
         console.error('Error adding report:', error);
+        throw error;
+    }
+    return data as SupabaseVideo;
+};
+
+export const incrementVideoViews = async (uuid: string, currentViews: number = 0) => {
+    const { data, error } = await supabase
+        .from('posted_videos')
+        .update({ views: currentViews + 1 })
+        .eq('uuid', uuid)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error incrementing views:', error);
         throw error;
     }
     return data as SupabaseVideo;
