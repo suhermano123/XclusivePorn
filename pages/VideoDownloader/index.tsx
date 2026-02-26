@@ -7,33 +7,59 @@ import FooterComponent from "@/components/footer/Footer";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import DownloadIcon from "@mui/icons-material/Download";
 
-interface DownloadOption {
+interface TaskStatus {
+    status: string;
     url: string;
-    ext: string;
-    resolution: string;
-    width?: number;
-}
-
-interface VideoData {
-    title: string;
-    thumbnail: string;
-    duration: number;
-    best_resolution: string;
-    downloads: DownloadOption[];
+    progress?: number;
+    upload_progress?: number;
+    download_url?: string;
+    details?: {
+        title: string;
+        thumbnail: string;
+    };
 }
 
 const VideoDownloader: React.FC = () => {
     const [url, setUrl] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [videoData, setVideoData] = useState<VideoData | null>(null);
-    const [downloadProgress, setDownloadProgress] = useState<{ [key: string]: number }>({});
+    const [taskStatus, setTaskStatus] = useState<TaskStatus | null>(null);
+    const [taskId, setTaskId] = useState<string | null>(null);
+
+    // Polling effect for task status
+    React.useEffect(() => {
+        if (!taskId) return;
+
+        const checkProgress = setInterval(async () => {
+            try {
+                const res = await fetch(`/api/status/${taskId}`);
+                if (!res.ok) throw new Error("Status API error");
+
+                const data: TaskStatus = await res.json();
+                setTaskStatus(data);
+
+                if (data.status === 'completed' || data.status === 'error' || data.status === 'failed') {
+                    clearInterval(checkProgress);
+                    setLoading(false);
+                    if (data.status === 'error' || data.status === 'failed') {
+                        setError("Ocurrió un error al procesar el video en los servidores.");
+                    }
+                }
+            } catch (e) {
+                console.error("Error polling status:", e);
+                // We keep polling in case it's a transient network error
+            }
+        }, 3000);
+
+        return () => clearInterval(checkProgress);
+    }, [taskId]);
 
     const handleDownload = async () => {
         if (!url) return;
         setLoading(true);
         setError(null);
-        setVideoData(null);
+        setTaskStatus(null);
+        setTaskId(null);
 
         try {
             const response = await fetch('/api/downloader', {
@@ -46,98 +72,26 @@ const VideoDownloader: React.FC = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                if (data.status === 'success' && data.data) {
-                    setVideoData(data.data);
+                if (data.task_id) {
+                    setTaskId(data.task_id);
                     setUrl("");
+                } else if (data.status === 'success' || data.url) {
+                    // Fallback in case API returns immediate result
+                    setTaskStatus(data);
+                    setLoading(false);
                 } else {
-                    setError("No se pudo obtener la información del video. Comprueba el enlace.");
+                    setError("No se pudo iniciar el proceso del video. Comprueba el enlace.");
+                    setLoading(false);
                 }
             } else {
                 setError("Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.");
+                setLoading(false);
             }
         } catch (err) {
             console.error("Error downloading video:", err);
             setError("Ocurrió un error al conectar con el servidor.");
-        } finally {
             setLoading(false);
         }
-    };
-
-    const handleStartDownload = async (download: DownloadOption) => {
-        if (!download.url.includes('.m3u8')) {
-            window.open(download.url, '_blank');
-            return;
-        }
-
-        const taskId = Math.random().toString(36).substring(7);
-        const resolutionId = download.resolution || 'default';
-        setDownloadProgress((prev) => ({ ...prev, [resolutionId]: 0 }));
-
-        try {
-            // Start processing entirely in the background
-            const startRes = await fetch(`/api/process-m3u8`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    url: download.url,
-                    title: videoData?.title || '',
-                    taskId: taskId,
-                    duration: videoData?.duration || 0
-                })
-            });
-            if (!startRes.ok) {
-                console.error("Fallo al iniciar procesamiento");
-                setTimeout(() => setDownloadProgress((p) => { const n = { ...p }; delete n[resolutionId]; return n; }), 2000);
-                return;
-            }
-        } catch (e) {
-            console.error(e);
-            return;
-        }
-
-        const checkProgress = setInterval(async () => {
-            try {
-                const res = await fetch(`/api/progress?taskId=${taskId}`);
-                const data = await res.json();
-
-                if (data && typeof data.progress === 'number') {
-                    setDownloadProgress((prev) => ({ ...prev, [resolutionId]: data.progress }));
-
-                    if (data.progress >= 100 && data.status === 'completed') {
-                        clearInterval(checkProgress);
-
-                        // Una vez finalizado por el backend, procedemos a descargar verdaderamente el archivo resultante
-                        const downloadUrl = `/api/download-file?taskId=${taskId}&title=${encodeURIComponent(videoData?.title || '')}`;
-                        const iframe = document.createElement('iframe');
-                        iframe.style.display = 'none';
-                        iframe.src = downloadUrl;
-                        document.body.appendChild(iframe);
-
-                        // Limpiamos el iframe en 30 minutos
-                        setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1800000);
-
-                        setTimeout(() => {
-                            setDownloadProgress((prev) => {
-                                const newP = { ...prev };
-                                delete newP[resolutionId];
-                                return newP;
-                            });
-                        }, 5000);
-                    } else if (data.status === 'error' || data.status === 'unknown') {
-                        clearInterval(checkProgress);
-                        setTimeout(() => {
-                            setDownloadProgress((prev) => {
-                                const newP = { ...prev };
-                                delete newP[resolutionId];
-                                return newP;
-                            });
-                        }, 2000);
-                    }
-                }
-            } catch (e) {
-                // Ignore fetch errors during polling
-            }
-        }, 1500);
     };
 
     return (
@@ -199,7 +153,7 @@ const VideoDownloader: React.FC = () => {
                 <Paper sx={{
                     p: { xs: 3, md: 6 },
                     width: "100%",
-                    maxWidth: videoData ? 900 : 700,
+                    maxWidth: (taskStatus || loading) ? 900 : 700,
                     transition: "max-width 0.5s ease",
                     borderRadius: 6,
                     backgroundColor: "rgba(255, 255, 255, 0.03)",
@@ -295,10 +249,10 @@ const VideoDownloader: React.FC = () => {
                             </Alert>
                         )}
 
-                        {videoData && (
+                        {taskStatus && taskStatus.details && (
                             <Box sx={{ mt: 5, textAlign: "left", animation: "fadeIn 0.5s ease" }}>
                                 <Typography variant="h5" sx={{ color: "#fff", fontWeight: "bold", mb: 2 }}>
-                                    Resultado
+                                    Resultado del Proceso
                                 </Typography>
                                 <Card sx={{
                                     display: 'flex',
@@ -311,82 +265,68 @@ const VideoDownloader: React.FC = () => {
                                     <CardMedia
                                         component="img"
                                         sx={{ width: { xs: '100%', md: 350 }, height: { xs: 200, md: 'auto' }, objectFit: 'cover' }}
-                                        image={videoData.thumbnail}
-                                        alt={videoData.title}
+                                        image={taskStatus.details.thumbnail}
+                                        alt={taskStatus.details.title}
                                     />
                                     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                        <CardContent sx={{ flex: '1 0 auto', p: 3 }}>
-                                            <Typography component="div" variant="h6" sx={{ color: "#fff", fontWeight: "bold", mb: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                                {videoData.title}
-                                            </Typography>
-                                            <Typography variant="subtitle1" color="text.secondary" component="div" sx={{ color: "rgba(255,255,255,0.7)", mb: 2 }}>
-                                                Mejor resolución: {videoData.best_resolution || 'Desconocida'}
+                                        <CardContent sx={{ flex: '1 0 auto', p: 3, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                            <Typography component="div" variant="h6" sx={{ color: "#fff", fontWeight: "bold", mb: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                {taskStatus.details.title}
                                             </Typography>
                                             <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mb: 3 }} />
-                                            <Typography variant="subtitle2" sx={{ color: "#f013e5", mb: 2, fontWeight: "bold", letterSpacing: "1px" }}>
-                                                ENLACES DE DESCARGA:
-                                            </Typography>
-                                            <Grid container spacing={2}>
-                                                {videoData.downloads && videoData.downloads.length > 0 ? (
-                                                    Array.from(new Map(videoData.downloads.map(item => [item.resolution || item.url, item])).values()).map((download, index) => {
-                                                        const resolutionId = download.resolution || 'default';
-                                                        const progress = downloadProgress[resolutionId];
-                                                        const isDownloading = progress !== undefined;
 
-                                                        return (
-                                                            <Grid item xs={12} sm={6} md={4} key={index}>
-                                                                <Box sx={{ position: 'relative', width: '100%' }}>
-                                                                    <Button
-                                                                        variant="outlined"
-                                                                        fullWidth
-                                                                        onClick={() => handleStartDownload(download)}
-                                                                        disabled={isDownloading}
-                                                                        startIcon={isDownloading ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
-                                                                        sx={{
-                                                                            color: isDownloading ? "rgba(255,255,255,0.7)" : "#fff",
-                                                                            borderColor: isDownloading ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.3)",
-                                                                            borderRadius: "10px",
-                                                                            textTransform: "none",
-                                                                            py: 1,
-                                                                            "&:hover": {
-                                                                                borderColor: "#f013e5",
-                                                                                backgroundColor: "rgba(240, 19, 229, 0.1)"
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        {isDownloading ? `Procesando... ${progress}%` : (download.resolution || download.ext || "Descargar")}
-                                                                    </Button>
-                                                                    {isDownloading && (
-                                                                        <LinearProgress
-                                                                            variant="determinate"
-                                                                            value={progress}
-                                                                            color="secondary"
-                                                                            sx={{
-                                                                                position: 'absolute',
-                                                                                bottom: -4,
-                                                                                left: 4,
-                                                                                right: 4,
-                                                                                height: 4,
-                                                                                borderRadius: 2,
-                                                                                backgroundColor: 'rgba(255,255,255,0.1)',
-                                                                                '& .MuiLinearProgress-bar': {
-                                                                                    backgroundColor: '#f013e5'
-                                                                                }
-                                                                            }}
-                                                                        />
-                                                                    )}
-                                                                </Box>
-                                                            </Grid>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    <Grid item xs={12}>
-                                                        <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)" }}>
-                                                            No hay enlaces de descarga directos disponibles.
+                                            {(taskStatus.status === 'processing' || taskStatus.status === 'uploading') && (() => {
+                                                const globalProgress = taskStatus.status === 'processing'
+                                                    ? (taskStatus.progress || 0) * 0.5
+                                                    : 50 + (taskStatus.upload_progress || 0) * 0.5;
+
+                                                const label = taskStatus.status === 'processing'
+                                                    ? `Procesando / Descargando... ${globalProgress.toFixed(1)}%`
+                                                    : `Subiendo a R2 / Preparando enlace... ${globalProgress.toFixed(1)}%`;
+
+                                                return (
+                                                    <Box sx={{ mb: 3 }}>
+                                                        <Typography variant="subtitle2" sx={{ color: "#fff", mb: 1 }}>
+                                                            {label}
                                                         </Typography>
-                                                    </Grid>
-                                                )}
-                                            </Grid>
+                                                        <LinearProgress
+                                                            variant="determinate"
+                                                            value={globalProgress}
+                                                            sx={{
+                                                                height: 10, borderRadius: 5, backgroundColor: 'rgba(255,255,255,0.1)',
+                                                                '& .MuiLinearProgress-bar': { backgroundColor: taskStatus.status === 'processing' ? '#f013e5' : '#4caf50', transition: 'transform 0.4s linear' }
+                                                            }}
+                                                        />
+                                                    </Box>
+                                                );
+                                            })()}
+
+                                            {taskStatus.status === 'completed' && taskStatus.download_url && (
+                                                <Button
+                                                    variant="contained"
+                                                    fullWidth
+                                                    href={taskStatus.download_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    startIcon={<DownloadIcon />}
+                                                    sx={{
+                                                        py: 2,
+                                                        borderRadius: "16px",
+                                                        fontSize: "1.1rem",
+                                                        fontWeight: "bold",
+                                                        backgroundColor: "#4caf50",
+                                                        color: "#fff",
+                                                        transition: "all 0.3s ease",
+                                                        "&:hover": {
+                                                            backgroundColor: "#388e3c",
+                                                            transform: "translateY(-2px)",
+                                                            boxShadow: "0 10px 20px rgba(76, 175, 80, 0.4)",
+                                                        },
+                                                    }}
+                                                >
+                                                    DESCARGAR VIDEO AHORA (MP4)
+                                                </Button>
+                                            )}
                                         </CardContent>
                                     </Box>
                                 </Card>
