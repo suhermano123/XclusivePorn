@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { getVideosPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
 import { Skeleton, Box, Button, Chip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -70,20 +71,8 @@ const VideoGrid: React.FC = () => {
     }
   }, [hoveredVideo, videoL]);
 
-  const handleClick = (video: SupabaseVideo) => {
-    // Navigate to the video page using uuid and title as slug
-    const title = video.titulo || video.title || "video";
-    const slug = title
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')           // Replace spaces with -
-      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-      .replace(/\-\-+/g, '-');         // Replace multiple - with single -
-
-    router.push(`/video/${video.uuid}-${slug}`);
-  };
-
   const handleRating = async (e: React.MouseEvent, uuid: string, type: 'likes' | 'dislikes', currentValue: number) => {
+    e.preventDefault();
     e.stopPropagation();
 
     if (votedVideos.has(uuid)) {
@@ -154,173 +143,178 @@ const VideoGrid: React.FC = () => {
 
               const isHovered = hoveredVideo === video.uuid;
 
-              // Determine what to show
-              // If hovering and we have a video preview url, show video.
-              // If hovering and we have image thumbnails, show rotating thumbnails.
-              // Otherwise show main image.
-
               const isVideoPreview = previewUrl && (previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm'));
 
               const currentImg = (isHovered && thumbnails.length > 0)
                 ? thumbnails[currentPreview[video.uuid] || 0]
                 : (video.imagen_url || video.img_src);
 
-              return (
-                <Box
-                  key={video.uuid || video.id_post}
-                  sx={styles.videoCardSx}
-                  onMouseEnter={() => {
-                    setHoveredVideo(video.uuid);
-                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
-                    setCurrentPreview((prev) => ({ ...prev, [video.uuid]: 0 }));
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredVideo(null);
-                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
-                  }}
-                  onTouchStart={() => {
-                    setHoveredVideo(video.uuid);
-                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
-                  }}
-                  onPointerEnter={() => {
-                    setHoveredVideo(video.uuid);
-                    setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
-                  }}
-                  onClick={() => handleClick(video)}
-                >
-                  {/* Image/Video Container without overlays */}
-                  <div style={styles.thumbnailContainer}>
-                    {isHovered && isVideoPreview ? (
-                      <video
-                        src={`/api/media?uuid=${video.uuid}&type=preview`}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        webkit-playsinline="true"
-                        preload="auto"
-                        onLoadedData={() => setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }))}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        priority
-                        height={200}
-                        width={300}
-                        src={currentImg || video.imagen_url || video.img_src || '/assets/placeholder.png'} // Fallback
-                        alt={video.titulo || video.title || 'Video'}
-                        style={styles.thumbnail}
-                        unoptimized={true}
-                        onLoad={() => {
-                          if (isHovered) {
-                            setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
-                          }
-                        }}
-                      />
-                    )}
+              const videoTitle = video.titulo || video.title || "video";
+              const slug = videoTitle
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-');
+              const videoUrl = `/video/${video.uuid}-${slug}`;
 
-                    {isHovered && loadingPreviews[video.uuid] && (
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          inset: 0,
-                          backgroundColor: "rgba(0,0,0,0.4)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          zIndex: 2,
-                        }}
-                      >
-                        <Box
-                          component="img"
-                          src="/assets/loader.png"
-                          sx={{
-                            width: "50px",
-                            height: "50px",
-                            animation: "spin 2s linear infinite",
-                            "@keyframes spin": {
-                              "0%": { transform: "rotate(0deg)" },
-                              "100%": { transform: "rotate(360deg)" },
-                            },
+              return (
+                <Link href={videoUrl} key={video.uuid || video.id_post} passHref legacyBehavior>
+                  <Box
+                    component="a"
+                    sx={{ ...styles.videoCardSx, textDecoration: 'none' }}
+                    onMouseEnter={() => {
+                      setHoveredVideo(video.uuid);
+                      setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
+                      setCurrentPreview((prev) => ({ ...prev, [video.uuid]: 0 }));
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredVideo(null);
+                      setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
+                    }}
+                    onTouchStart={() => {
+                      setHoveredVideo(video.uuid);
+                      setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
+                    }}
+                    onPointerEnter={() => {
+                      setHoveredVideo(video.uuid);
+                      setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: true }));
+                    }}
+                  >
+                    {/* Image/Video Container without overlays */}
+                    <div style={styles.thumbnailContainer}>
+                      {isHovered && isVideoPreview ? (
+                        <video
+                          src={`/api/media?uuid=${video.uuid}&type=preview`}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          webkit-playsinline="true"
+                          preload="auto"
+                          onLoadedData={() => setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }))}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "8px",
                           }}
                         />
+                      ) : (
+                        <Image
+                          priority
+                          height={200}
+                          width={300}
+                          src={currentImg || video.imagen_url || video.img_src || '/assets/placeholder.png'} // Fallback
+                          alt={`Ver ${videoTitle} en novaporn gratis (novapornx)`}
+                          style={styles.thumbnail}
+                          unoptimized={true}
+                          onLoad={() => {
+                            if (isHovered) {
+                              setLoadingPreviews((prev) => ({ ...prev, [video.uuid]: false }));
+                            }
+                          }}
+                        />
+                      )}
+
+                      {isHovered && loadingPreviews[video.uuid] && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            inset: 0,
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            zIndex: 2,
+                          }}
+                        >
+                          <Box
+                            component="img"
+                            src="/assets/loader.png"
+                            sx={{
+                              width: "50px",
+                              height: "50px",
+                              animation: "spin 2s linear infinite",
+                              "@keyframes spin": {
+                                "0%": { transform: "rotate(0deg)" },
+                                "100%": { transform: "rotate(360deg)" },
+                              },
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </div>
+
+                    {/* Metadata Area Below Video */}
+                    <div style={styles.metadataArea}>
+                      <h2 style={styles.videoTitle}>{videoTitle}</h2>
+
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Box
+                            onClick={(e) => handleRating(e, video.uuid, 'likes', video.likes || 0)}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                              cursor: votedVideos.has(video.uuid) ? 'default' : 'pointer',
+                              opacity: votedVideos.has(video.uuid) ? 0.5 : 1,
+                              pointerEvents: votedVideos.has(video.uuid) ? 'none' : 'auto',
+                              '&:hover': { transform: 'scale(1.2)' },
+                              transition: 'transform 0.2s'
+                            }}
+                          >
+                            <FavoriteIcon sx={{ fontSize: '14px', color: '#f013e5' }} />
+                            <span style={styles.statsText}>{video.likes || 0}</span>
+                          </Box>
+                          <Box
+                            onClick={(e) => handleRating(e, video.uuid, 'dislikes', video.dislikes || 0)}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                              cursor: votedVideos.has(video.uuid) ? 'default' : 'pointer',
+                              opacity: votedVideos.has(video.uuid) ? 0.5 : 1,
+                              pointerEvents: votedVideos.has(video.uuid) ? 'none' : 'auto',
+                              '&:hover': { transform: 'scale(1.2)' },
+                              transition: 'transform 0.2s'
+                            }}
+                          >
+                            <HeartBrokenIcon sx={{ fontSize: '14px', color: '#888' }} />
+                            <span style={styles.statsText}>{video.dislikes || 0}</span>
+                          </Box>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                              cursor: 'default',
+                            }}
+                          >
+                            <VisibilityIcon sx={{ fontSize: '14px', color: '#00bcd4', ml: 1 }} />
+                            <span style={styles.statsText}>{video.views || 0}</span>
+                          </Box>
+                        </Box>
+                        <span style={styles.durationLabel}>
+                          ⏳ {(video.duracion_segundos && video.duracion_segundos > 0)
+                            ? `${Math.floor(video.duracion_segundos / 60)}:${(video.duracion_segundos % 60).toString().padStart(2, '0')}`
+                            : (video.duracion || "0:00")}
+                        </span>
                       </Box>
-                    )}
-                  </div>
 
-                  {/* Metadata Area Below Video */}
-                  <div style={styles.metadataArea}>
-                    <p style={styles.videoTitle}>{video.titulo || video.title}</p>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Box
-                          onClick={(e) => handleRating(e, video.uuid, 'likes', video.likes || 0)}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px',
-                            cursor: votedVideos.has(video.uuid) ? 'default' : 'pointer',
-                            opacity: votedVideos.has(video.uuid) ? 0.5 : 1,
-                            pointerEvents: votedVideos.has(video.uuid) ? 'none' : 'auto',
-                            '&:hover': { transform: 'scale(1.2)' },
-                            transition: 'transform 0.2s'
-                          }}
-                        >
-                          <FavoriteIcon sx={{ fontSize: '14px', color: '#f013e5' }} />
-                          <span style={styles.statsText}>{video.likes || 0}</span>
-                        </Box>
-                        <Box
-                          onClick={(e) => handleRating(e, video.uuid, 'dislikes', video.dislikes || 0)}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px',
-                            cursor: votedVideos.has(video.uuid) ? 'default' : 'pointer',
-                            opacity: votedVideos.has(video.uuid) ? 0.5 : 1,
-                            pointerEvents: votedVideos.has(video.uuid) ? 'none' : 'auto',
-                            '&:hover': { transform: 'scale(1.2)' },
-                            transition: 'transform 0.2s'
-                          }}
-                        >
-                          <HeartBrokenIcon sx={{ fontSize: '14px', color: '#888' }} />
-                          <span style={styles.statsText}>{video.dislikes || 0}</span>
-                        </Box>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px',
-                            cursor: 'default',
-                          }}
-                        >
-                          <VisibilityIcon sx={{ fontSize: '14px', color: '#00bcd4', ml: 1 }} />
-                          <span style={styles.statsText}>{video.views || 0}</span>
-                        </Box>
-                      </Box>
-                      <span style={styles.durationLabel}>
-                        ⏳ {(video.duracion_segundos && video.duracion_segundos > 0)
-                          ? `${Math.floor(video.duracion_segundos / 60)}:${(video.duracion_segundos % 60).toString().padStart(2, '0')}`
-                          : (video.duracion || "0:00")}
-                      </span>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
-                      {/* 
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
+                        {/* 
                       <Chip
                         label={video.from}
                         size="small"
                         sx={styles.sourceChip}
                       />
                       */}
-                    </Box>
-                  </div>
-                </Box>
+                      </Box>
+                    </div>
+                  </Box>
+                </Link>
               );
             })}
         </Box>
