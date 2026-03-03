@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Premium Adult Videos for Free - Download in HD",
-  description: "Enjoy premium adult videos in high quality, free of charge, with fast download options. Explore exclusive HD content.",
+  title: "novapornx - Premium Adult Videos for Free (novaporn) | HD Content",
+  description: "Welcome to novapornx! Enjoy premium adult videos in high quality, free of charge, with fast download options. Explore exclusive HD content on novaporn today.",
+  keywords: "novaporn, novapornx, free porn, adult videos, hd porn, premium adult content",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

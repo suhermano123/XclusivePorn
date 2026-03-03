@@ -333,9 +333,9 @@ const VideoPage = () => {
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
 
             <Head>
-                <title>{video.titulo} - novapornx</title>
-                <meta name="description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Premium HD quality, available for free streaming and download.`} />
-                {video.tags && <meta name="keywords" content={video.tags} />}
+                <title>{video.titulo} - novapornx (novaporn)</title>
+                <meta name="description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Premium HD quality adult videos on novaporn, available for free streaming and download.`} />
+                {video.tags && <meta name="keywords" content={`${video.tags}, novaporn, novapornx, free porn, adult videos`} />}
 
                 {/* Canonical */}
                 <link rel="canonical" href={`https://novapornx.com/video/${id}`} />
@@ -343,15 +343,15 @@ const VideoPage = () => {
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="video.other" />
                 <meta property="og:url" content={`https://novapornx.com/video/${id}`} />
-                <meta property="og:title" content={`${video.titulo} - novapornx`} />
-                <meta property="og:description" content={video.descripcion || `Watch ${video.titulo} on novapornx in premium HD quality.`} />
+                <meta property="og:title" content={`${video.titulo} - novapornx (novaporn)`} />
+                <meta property="og:description" content={video.descripcion || `Watch ${video.titulo} on novapornx in premium HD quality. Free porn videos on novaporn.`} />
                 <meta property="og:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
 
                 {/* Twitter */}
                 <meta property="twitter:card" content="summary_large_image" />
                 <meta property="twitter:url" content={`https://novapornx.com/video/${id}`} />
-                <meta property="twitter:title" content={`${video.titulo} - novapornx`} />
-                <meta property="twitter:description" content={video.descripcion || `Watch ${video.titulo} on novapornx.`} />
+                <meta property="twitter:title" content={`${video.titulo} - novapornx (novaporn)`} />
+                <meta property="twitter:description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Free HD porn videos on novaporn.`} />
                 <meta property="twitter:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
 
                 {/* JSON-LD Structured Data */}
@@ -362,7 +362,7 @@ const VideoPage = () => {
                             "@context": "https://schema.org",
                             "@type": "VideoObject",
                             "name": video.titulo,
-                            "description": video.descripcion || `Watch ${video.titulo} in HD on novapornx.`,
+                            "description": video.descripcion || `Watch ${video.titulo} in HD on novapornx (novaporn).`,
                             "thumbnailUrl": [video.imagen_url || "https://novapornx.com/assets/backGround.png"],
                             "uploadDate": video.created_at || new Date().toISOString(),
                             "duration": video.duracion ? `PT${video.duracion.replace(':', 'M')}S` : "PT0M0S",
@@ -378,7 +378,7 @@ const VideoPage = () => {
             </Head>
 
             <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
-                {video.titulo} - Watch Free on novapornx
+                {video.titulo} - Watch Free Adult Videos on novapornx (novaporn)
             </h1>
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: { xs: 2, md: 4 } }}>

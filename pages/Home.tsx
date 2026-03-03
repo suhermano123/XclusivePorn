@@ -55,32 +55,32 @@ export default function HomeIndex() {
   return (
     <div>
       <Head>
-        <title>novapornx - Free Premium Adult Videos | Download & Share in HD</title>
+        <title>novapornx (novaporn) - Free Premium Adult HD Videos</title>
         <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
         <link rel="canonical" href="https://novapornx.com" />
         <meta
           name="description"
-          content="Watch and download free premium adult videos in high definition. Explore our daily updated collection of top-quality content. Fast streaming and secure downloads."
+          content="Welcome to novapornx! Watch and download free premium adult videos in HD on novaporn. Explore our daily updated collection of top-quality porn content."
         />
-        <meta name="keywords" content="free porn, adult videos, hd porn, download porn, premium videos, novapornx, free sex videos" />
+        <meta name="keywords" content="novaporn, novapornx, nova porn, free porn, adult videos, hd porn, download porn, premium videos, free sex videos" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://novapornx.com" />
-        <meta property="og:title" content="novapornx - Free Premium Adult Videos in HD" />
+        <meta property="og:title" content="novapornx (novaporn) - Premium Adult HD Videos" />
         <meta
           property="og:description"
-          content="Enjoy free premium adult videos in HD. Download and share top-quality content updated daily on novapornx."
+          content="Welcome to novapornx! Watch and download free premium adult videos in HD on novaporn. Explore our daily updated collection."
         />
         <meta property="og:image" content="https://novapornx.com/assets/backGround.png" />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://novapornx.com" />
-        <meta property="twitter:title" content="novapornx - Free Premium Adult Videos in HD" />
+        <meta property="twitter:title" content="novapornx (novaporn) - Premium Adult HD Videos" />
         <meta
           property="twitter:description"
-          content="Enjoy free premium adult videos in HD. Download and share top-quality content updated daily on novapornx."
+          content="Welcome to novapornx! Watch and download free premium adult videos in HD on novaporn."
         />
         <meta property="twitter:image" content="https://novapornx.com/assets/backGround.png" />
       </Head>
@@ -90,7 +90,7 @@ export default function HomeIndex() {
 
       {/* Visually hidden H1 for SEO */}
       <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
-        novapornx - Free Premium Adult Videos and HD Content
+        novapornx (novaporn) - Watch and Download Free Premium Adult HD Videos
       </h1>
 
       <VideoGrid />
