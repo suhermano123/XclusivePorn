@@ -149,6 +149,58 @@ export const getRandomVideos = async (count: number = 10, excludeUuid?: string):
     }
 };
 
+export const getRelatedVideosByTags = async (tags: string | undefined, limit: number = 30, excludeUuid?: string): Promise<SupabaseVideo[]> => {
+    try {
+        if (!tags || tags.trim() === '') return getRandomVideos(limit, excludeUuid);
+
+        const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+        if (tagsArray.length === 0) return getRandomVideos(limit, excludeUuid);
+
+        // Limit the search to a few tags to avoid huge OR queries
+        const mainTags = tagsArray.slice(0, 5);
+        const orQuery = mainTags.map(tag => `tags.ilike.%${tag}%`).join(',');
+
+        let query = supabase.from('posted_videos').select('*').or(orQuery).limit(limit);
+
+        if (excludeUuid) {
+            query = query.neq('uuid', excludeUuid);
+        }
+
+        const { data, error } = await query;
+        if (error) {
+            console.error('Error fetching by tags:', error);
+            return getRandomVideos(limit, excludeUuid);
+        }
+
+        let videos = data as SupabaseVideo[];
+
+        // If we didn't get enough related videos, fill the rest with random videos
+        if (videos.length < limit) {
+            const remaining = limit - videos.length;
+            const extra = await getRandomVideos(remaining, excludeUuid);
+
+            // Deduplicate
+            const existingUuids = new Set(videos.map(v => v.uuid));
+            for (const v of extra) {
+                if (!existingUuids.has(v.uuid)) {
+                    videos.push(v);
+                }
+            }
+        }
+
+        // Shuffle recommended videos so they don't look exactly the same if reloading
+        for (let i = videos.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [videos[i], videos[j]] = [videos[j], videos[i]];
+        }
+
+        return videos.slice(0, limit);
+    } catch (error) {
+        console.error('Error fetching related videos by tags:', error);
+        return getRandomVideos(limit, excludeUuid);
+    }
+};
+
 export const addCommentToVideo = async (uuid: string, newCommentObj: any, currentComments: string = "") => {
     const commentStr = JSON.stringify({
         ...newCommentObj,
@@ -211,6 +263,34 @@ export const incrementVideoViews = async (uuid: string, currentViews: number = 0
 
     if (error) {
         console.error('Error incrementing views:', error);
+        throw error;
+    }
+    return data as SupabaseVideo;
+};
+
+export const deleteVideoByUuid = async (uuid: string) => {
+    const { error } = await supabase
+        .from('posted_videos')
+        .delete()
+        .eq('uuid', uuid);
+
+    if (error) {
+        console.error('Error deleting video:', error);
+        throw error;
+    }
+    return true;
+};
+
+export const clearCommentsByUuid = async (uuid: string) => {
+    const { data, error } = await supabase
+        .from('posted_videos')
+        .update({ comment: '' })
+        .eq('uuid', uuid)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error clearing comments:', error);
         throw error;
     }
     return data as SupabaseVideo;

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState, useRef } from 'react';
-import { getVideoById, getVideoByTitle, SupabaseVideo, registerVote, getRandomVideos, addCommentToVideo, addReportToVideo, incrementVideoViews } from '@/api/videoSupabaseService';
+import { getVideoById, getVideoByTitle, SupabaseVideo, registerVote, getRelatedVideosByTags, addCommentToVideo, addReportToVideo, incrementVideoViews } from '@/api/videoSupabaseService';
 import VideoPlayer, { VideoPlayerRef } from '@/components/VideoPlayer/VideoPlayer';
 import NavBar from '@/components/NavBar/NavBar';
 import NavMenu from '@/components/NavMenu/NavMenu';
@@ -231,7 +231,7 @@ const VideoPage = () => {
                         if (voted === 'likes' || voted === 'dislikes') {
                             setHasVoted(voted as any);
                         }
-                        const related = await getRandomVideos(8, data.uuid);
+                        const related = await getRelatedVideosByTags(data.tags, 30, data.uuid);
                         setRelatedVideos(related);
                     }
 
