@@ -327,6 +327,25 @@ const VideoPage = () => {
         router.push(`/video/${vid.uuid}-${slug}`);
     };
 
+    // Helper: convierte cualquier URL de CDN externo a una ruta local proxied para evitar CORS
+    const toProxiedUrl = (url?: string | null): string => {
+        if (!url) return '/assets/placeholder.png';
+        if (url.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
+            return url.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
+        }
+        if (url.includes('pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev')) {
+            return url.replace('https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev', '/media-proxy');
+        }
+        if (url.includes('xmoviescdn.online')) {
+            return url.replace('https://xmoviescdn.online', '/image-proxy');
+        }
+        // Si solo es el nombre de archivo (ej: UUID.webp sin protocolo ni slash)
+        if (!url.startsWith('http') && !url.startsWith('/')) {
+            return `/capturas-proxy/${url}`;
+        }
+        return url;
+    };
+
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <NavBar sx={{ backgroundColor: "#e91ec4" }} />
@@ -798,14 +817,14 @@ const VideoPage = () => {
                                 {relatedVideos.map((vid: SupabaseVideo) => {
                                     const previewUrl = vid.preview_url || vid.preview;
                                     const thumbnails = (previewUrl && !previewUrl.endsWith('.mp4') && !previewUrl.endsWith('.webm'))
-                                        ? previewUrl.split(",").map(u => u.trim()).filter(Boolean)
+                                        ? previewUrl.split(",").map(u => toProxiedUrl(u.trim())).filter(Boolean)
                                         : [];
 
                                     const isHovered = hoveredVideo === vid.uuid;
                                     const isVideoPreview = previewUrl && (previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm'));
                                     const currentImg = (isHovered && thumbnails.length > 0)
                                         ? thumbnails[currentPreview[vid.uuid] || 0]
-                                        : (vid.imagen_url || vid.img_src);
+                                        : toProxiedUrl(vid.imagen_url || vid.img_src);
 
                                     return (
                                         <Grid item xs={6} sm={4} lg={6} key={vid.uuid}>
@@ -830,7 +849,7 @@ const VideoPage = () => {
                                                         />
                                                     ) : (
                                                         <img
-                                                            src={currentImg || '/assets/placeholder.png'}
+                                                            src={currentImg}
                                                             alt={vid.titulo}
                                                             style={styles.thumbnail}
                                                         />

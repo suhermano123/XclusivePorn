@@ -19,10 +19,11 @@ const VideoGrid: React.FC = () => {
   const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
   const router = useRouter();
 
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [votedVideos, setVotedVideos] = useState<Set<string>>(new Set());
-  const videosPerPage = 30;
+  const videosPerPage = 26;
 
   const loadVideos = async (page: number) => {
     try {

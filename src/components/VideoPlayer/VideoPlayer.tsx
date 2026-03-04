@@ -62,9 +62,18 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
 
   let firstThumbnail = poster?.split(",")[0].trim();
 
-  // Bypass CORS for the poster as well
-  if (firstThumbnail?.includes('xmoviescdn.online')) {
+  // Bypass CORS for the poster — route through Next.js proxy rewrites
+  if (firstThumbnail?.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
+    firstThumbnail = firstThumbnail.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
+  } else if (firstThumbnail?.includes('pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev')) {
+    firstThumbnail = firstThumbnail.replace('https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev', '/media-proxy');
+  } else if (firstThumbnail?.includes('xmoviescdn.online')) {
     firstThumbnail = firstThumbnail.replace('https://xmoviescdn.online', '/image-proxy');
+  }
+
+  // Si solo es un nombre de archivo (sin http), asumir que es del bucket de capturas
+  if (firstThumbnail && !firstThumbnail.startsWith('http') && !firstThumbnail.startsWith('/')) {
+    firstThumbnail = `/capturas-proxy/${firstThumbnail}`;
   }
 
   const videoRef = useRef<HTMLDivElement>(null);
