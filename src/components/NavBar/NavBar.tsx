@@ -16,6 +16,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -220,17 +221,16 @@ export default function PrimarySearchAppBar(props: any) {
             <MenuIcon />
           </IconButton>
 
-          <Box
-            sx={{ cursor: "pointer" }}
-            onClick={() => router.push("/")}
-          >
-            <img
-              src="/assets/oficial_logo.png"
-              width={170}
-              height={30}
-              alt="Logo oficial"
-            />
-          </Box>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex' }} passHref>
+            <Box sx={{ cursor: "pointer" }}>
+              <img
+                src="/assets/oficial_logo.png"
+                width={170}
+                height={30}
+                alt="Logo oficial"
+              />
+            </Box>
+          </Link>
 
           <Search sx={{ flexGrow: { xs: 1, md: 0 }, minWidth: { md: '400px' }, display: 'flex' }}>
             <SearchIconWrapper>
@@ -272,8 +272,9 @@ export default function PrimarySearchAppBar(props: any) {
           </Search>
 
           <Button
+            component={Link}
+            href="/categories"
             variant="contained"
-            onClick={() => router.push('/categories')}
             sx={{
               display: { xs: 'none', md: 'flex' },
               ml: 2,

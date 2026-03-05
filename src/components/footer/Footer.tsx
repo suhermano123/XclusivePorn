@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Link, useMediaQuery } from "@mui/material";
-import { useRouter } from "next/router";
+import { Typography, Link as MuiLink, useMediaQuery } from "@mui/material";
+import Link from "next/link";
 
 const FooterComponent: React.FC = () => {
-  const router = useRouter();
-
-  const handleRedirect = (path: string) => {
-    router.push(path);
-  };
   const [renderCount, setRenderCount] = useState(0);
   const isMobile = useMediaQuery("(max-width:600px)");
   useEffect(() => {
@@ -143,18 +138,18 @@ const FooterComponent: React.FC = () => {
         </Typography>
 
         <Typography variant="body2" color="inherit" paragraph>
-          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/DMCA/Dmca")}>
+          <MuiLink component={Link} href="/DMCA/Dmca" color="inherit" style={{ margin: "0 15px" }}>
             DMCA
-          </Link>
-          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/TERMS/TermsUse")}>
+          </MuiLink>
+          <MuiLink component={Link} href="/TERMS/TermsUse" color="inherit" style={{ margin: "0 15px" }}>
             Terms of Use
-          </Link>
-          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/Privacy-policy/policy")}>
+          </MuiLink>
+          <MuiLink component={Link} href="/Privacy-policy/policy" color="inherit" style={{ margin: "0 15px" }}>
             Privacy Policy
-          </Link>
-          <Link href="#" color="inherit" style={{ margin: "0 15px" }} onClick={() => handleRedirect("/faq")}>
+          </MuiLink>
+          <MuiLink component={Link} href="/faq" color="inherit" style={{ margin: "0 15px" }}>
             FAQ
-          </Link>
+          </MuiLink>
         </Typography>
 
         <Typography variant="body2" color="inherit" paragraph>

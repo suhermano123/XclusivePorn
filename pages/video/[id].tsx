@@ -311,6 +311,9 @@ const VideoPage = () => {
     if (loading) {
         return (
             <Box sx={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000', color: '#fff' }}>
+                <Head>
+                    <title>Loading Video - novapornx</title>
+                </Head>
                 <CircularProgress color="secondary" />
             </Box>
         );
@@ -319,6 +322,9 @@ const VideoPage = () => {
     if (!video) {
         return (
             <Box sx={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000', color: '#fff' }}>
+                <Head>
+                    <title>Video Not Found - novapornx</title>
+                </Head>
                 <Typography variant="h5">Video not found</Typography>
             </Box>
         );

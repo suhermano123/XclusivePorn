@@ -3,7 +3,8 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { useRouter } from "next/router"; // Importa el hook useRouter
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { Typography } from "@mui/material";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
@@ -12,7 +13,7 @@ import Diversity1Icon from '@mui/icons-material/Diversity1';
 
 export default function NavMenu(props: any) {
   const [open, setOpen] = React.useState(false);
-  const router = useRouter(); // Inicializa el hook useRouter
+  const router = useRouter();
 
   const handleTooltipClose = () => {
     setOpen(false);
@@ -20,22 +21,6 @@ export default function NavMenu(props: any) {
 
   const handleTooltipOpen = () => {
     setOpen(true);
-  };
-
-  const handleMoviesClick = () => {
-    router.push("/Downloads/PornMovies"); // Redirige a la ruta de subida de videos
-  };
-
-  const handleAdClickCams = () => {
-    const adUrl = "http://www.juicyads.rocks";
-
-    // Abre la nueva ventana del anuncio en segundo plano
-    window.open(adUrl, "_blank", "width=800,height=600");
-  };
-  const handleAdClicImages = () => {
-    router.push("/Porn/Images");
-
-
   };
 
   const [isMobile, setIsMobile] = React.useState(false);
@@ -119,46 +104,46 @@ export default function NavMenu(props: any) {
         </Grid>
         <Grid item>
           <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
-            <Button style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center", // Asegura la alineación vertical
-              justifyContent: "center", // Centra el contenido horizontalmente
-              gap: "5px", // Espaciado entre el icono y el texto
-            }} onClick={handleMoviesClick}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
-          </Tooltip>
-        </Grid>
-        <Grid item>
-          <Tooltip disableFocusListener disableTouchListener title="Porn stars">
-            <Button style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center", // Asegura la alineación vertical
-              justifyContent: "center", // Centra el contenido horizontalmente
-              gap: "5px", // Espaciado entre el icono y el texto
-            }} onClick={handleAdClicImages}> <FavoriteIcon />PORN IMAGES</Button>
-          </Tooltip>
-        </Grid>
-        <Grid item>
-          <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
-            <Button style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center", // Asegura la alineación vertical
-              justifyContent: "center", // Centra el contenido horizontalmente
-              gap: "5px", // Espaciado entre el icono y el texto
-            }} onClick={handleAdClickCams}> <Diversity1Icon /> CAMS</Button>
-          </Tooltip>
-        </Grid>
-        <Grid item>
-          <Tooltip disableFocusListener title="Video Downloader">
-            <Button style={{
+            <Button component={Link} href="/Downloads/PornMovies" style={{
               color: "white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "5px",
-            }} onClick={() => router.push("/VideoDownloader")}>
+            }}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip disableFocusListener disableTouchListener title="Porn stars">
+            <Button component={Link} href="/Porn/Images" style={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
+            }}> <FavoriteIcon />PORN IMAGES</Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip disableFocusListener disableTouchListener title="Cams">
+            <Button component="a" href="http://www.juicyads.rocks" target="_blank" rel="noopener noreferrer" style={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
+            }}> <Diversity1Icon /> CAMS</Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip disableFocusListener title="Video Downloader">
+            <Button component={Link} href="/VideoDownloader" style={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
+            }}>
               <CloudDownloadIcon /> VIDEO DOWNLOADER
             </Button>
           </Tooltip>

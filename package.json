@@ -24,6 +24,7 @@
     "@reduxjs/toolkit": "^2.5.1",
     "@supabase/supabase-js": "^2.96.0",
     "@types/fluent-ffmpeg": "^2.1.28",
+    "@upstash/redis": "^1.36.3",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.13.5",
     "cheerio": "^1.2.0",

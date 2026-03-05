@@ -1,16 +1,39 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { Redis } from '@upstash/redis';
 
 // Initialize Supabase client server-side
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Initialize Upstash Redis client
+// Because we have UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in our .env,
+// Redis.fromEnv() automatically uses them.
+const redis = Redis.fromEnv();
+
 export const runtime = 'edge';
 
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
+
+        // --- Cache Logic ---
+        // Create a unique Redis key for each combination of query parameters.
+        const cacheKey = `api_videos_${searchParams.toString()}`;
+
+        try {
+            const cachedData = await redis.get(cacheKey);
+            if (cachedData) {
+                // If it exists in Redis, return it directly!
+                return NextResponse.json(cachedData);
+            }
+        } catch (redisError) {
+            console.error('Redis GET error:', redisError);
+            // If Redis fails, continue to fetch from Supabase
+        }
+        // -------------------
+
         const uuid = searchParams.get('uuid');
         const titulo = searchParams.get('titulo');
 
@@ -25,6 +48,14 @@ export async function GET(request: Request) {
                 console.error('Supabase error (single uuid):', error);
                 return NextResponse.json({ error: error.message }, { status: 500 });
             }
+
+            // Save the single video item in cache for 10 minutes (600 seconds)
+            try {
+                await redis.set(cacheKey, data, { ex: 600 });
+            } catch (redisError) {
+                console.error('Redis SET error:', redisError);
+            }
+
             return NextResponse.json(data);
         }
 
@@ -54,9 +85,20 @@ export async function GET(request: Request) {
                     .maybeSingle();
 
                 if (searchError) return NextResponse.json({ error: searchError.message }, { status: 500 });
+
+                try {
+                    await redis.set(cacheKey, searchData, { ex: 600 });
+                } catch (redisError) {
+                    console.error('Redis SET error:', redisError);
+                }
                 return NextResponse.json(searchData);
             }
 
+            try {
+                await redis.set(cacheKey, data, { ex: 600 });
+            } catch (redisError) {
+                console.error('Redis SET error:', redisError);
+            }
             return NextResponse.json(data);
         }
 
@@ -101,10 +143,20 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({
+        const responseData = {
             items: data,
             totalCount: count || 0,
-        });
+        };
+
+        // Cache the list response for 10 minutes (600 seconds)
+        // Home page, searches and categories will be much faster.
+        try {
+            await redis.set(cacheKey, responseData, { ex: 600 });
+        } catch (redisError) {
+            console.error('Redis SET error:', redisError);
+        }
+
+        return NextResponse.json(responseData);
 
     } catch (error: any) {
         console.error('Proxy error:', error);
