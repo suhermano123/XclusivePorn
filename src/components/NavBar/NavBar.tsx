@@ -14,6 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
 
 const Search = styled("div")(({ theme }) => ({
@@ -66,6 +67,7 @@ export default function PrimarySearchAppBar(props: any) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
+  const [searchQuery, setSearchQuery] = React.useState("");
   const router = useRouter();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -230,15 +232,78 @@ export default function PrimarySearchAppBar(props: any) {
             />
           </Box>
 
-          <Search>
+          <Search sx={{ flexGrow: { xs: 1, md: 0 }, minWidth: { md: '400px' }, display: 'flex' }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim() !== '') {
+                  router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                }
+              }}
+              sx={{ flexGrow: 1 }}
             />
+            <Button
+              onClick={() => {
+                if (searchQuery.trim() !== '') {
+                  router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                }
+              }}
+              sx={{
+                backgroundColor: '#f013e5',
+                color: '#fff',
+                borderRadius: '0 50px 50px 0',
+                padding: '6px 20px',
+                minWidth: 'auto',
+                fontWeight: 'bold',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: '#e91ec4'
+                }
+              }}
+            >
+              Search
+            </Button>
           </Search>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
+            <Button
+              variant="outlined"
+              sx={{
+                color: '#fff',
+                borderColor: 'rgba(255,255,255,0.3)',
+                borderRadius: '20px',
+                textTransform: 'none',
+                fontWeight: 'bold',
+                px: 3,
+                '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' }
+              }}
+            >
+              Log In
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#f013e5',
+                color: '#fff',
+                borderRadius: '20px',
+                textTransform: 'none',
+                fontWeight: 'bold',
+                px: 3,
+                boxShadow: '0 0 10px rgba(240, 19, 229, 0.4)',
+                '&:hover': { backgroundColor: '#e91ec4' }
+              }}
+            >
+              Sign Up
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}

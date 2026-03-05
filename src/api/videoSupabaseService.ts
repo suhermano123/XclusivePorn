@@ -47,6 +47,25 @@ export const getVideosPaginated = async (pageSize: number, page: number) => {
     }
 };
 
+export const searchVideosPaginated = async (query: string, pageSize: number, page: number) => {
+    try {
+        const response = await fetch(`/api/videos?page=${page}&pageSize=${pageSize}&searchQuery=${encodeURIComponent(query)}`);
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return {
+            items: data.items as SupabaseVideo[],
+            totalCount: data.totalCount || 0,
+        };
+    } catch (error) {
+        console.error('Error fetching searched videos from API proxy:', error);
+        throw error;
+    }
+};
+
 export const getTopVideosByLikes = async (limit: number = 15) => {
     try {
         const response = await fetch(`/api/videos?page=1&pageSize=${limit}&orderBy=likes&minLikes=1`);

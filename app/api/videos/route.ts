@@ -64,6 +64,7 @@ export async function GET(request: Request) {
         const pageSize = parseInt(searchParams.get('pageSize') || '24');
         const orderBy = searchParams.get('orderBy') || 'created_at';
         const minLikes = parseInt(searchParams.get('minLikes') || '0');
+        const searchQuery = searchParams.get('searchQuery');
 
         const from = (page - 1) * pageSize;
         const to = from + pageSize - 1;
@@ -75,6 +76,15 @@ export async function GET(request: Request) {
 
         if (minLikes > 0) {
             query = query.gte('likes', minLikes);
+        }
+
+        if (searchQuery) {
+            // Simulated semantic search across the title
+            const words = searchQuery.split(/\s+/).filter(Boolean);
+            if (words.length > 0) {
+                const orQuery = words.map(word => `titulo.ilike.%${word}%`).join(',');
+                query = query.or(orQuery);
+            }
         }
 
         const { data, error, count } = await query

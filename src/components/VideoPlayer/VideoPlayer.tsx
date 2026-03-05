@@ -205,7 +205,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
 
   if (loading) return (
     <div style={{ width: '100%', aspectRatio: '16/9', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#111', borderRadius: '16px', color: '#fff' }}>
-      <p>Cargando video...</p>
+      <p>Loading video...</p>
     </div>
   );
 
@@ -215,7 +215,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
     </div>
   );
 
-  if (!videoUrl) return <div style={{ color: '#fff', padding: '20px' }}>La URL del video no está disponible.</div>;
+  if (!videoUrl) return <div style={{ color: '#fff', padding: '20px' }}>Video URL is not available.</div>;
 
   return (
     <div style={{

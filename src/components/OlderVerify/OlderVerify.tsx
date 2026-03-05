@@ -79,7 +79,7 @@ const AgeVerification: React.FC = () => {
           </DialogContent>
           <DialogActions sx={{ justifyContent: "center" }}>
             <Button onClick={handleYes} variant="contained" color="success">
-              Sí
+              Yes
             </Button>
             <Button onClick={handleNo} variant="contained" color="error">
               No

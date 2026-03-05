@@ -81,6 +81,8 @@ const VideoPage = () => {
     const [newCommentText, setNewCommentText] = useState("");
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [relatedPage, setRelatedPage] = useState(1);
+    const videosPerRelatedPage = 10;
     const videoPlayerRef = useRef<VideoPlayerRef>(null);
     const viewedRef = useRef(false);
 
@@ -114,18 +116,54 @@ const VideoPage = () => {
         }
     };
 
+    // Comment Moderation Helper
+    const isCommentSafe = (text: string): boolean => {
+        // 1. Detectar URLs: http://, https://, www., o dominios comunes (.com, .net, etc.)
+        const urlPattern = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
+        const domainPattern = /[a-zA-Z0-9\-\.]+\.(com|net|org|info|site|club|xxx|pro|co|me|ly)\b/gi;
+        if (urlPattern.test(text) || domainPattern.test(text)) return false;
+
+        // 2. Lista de groserías y palabras recurrentes en spam (español e inglés)
+        const badWords = [
+            "puta", "putitas", "puto", "mierda", "pendejo", "cabron", "cabrón", "verga", "panocha", "zorra",
+            "perra", "joto", "maricon", "maricón", "chinga", "chingar", "chingas", "fuck", "bitch", "shit",
+            "asshole", "dick", "cock", "pussy", "cunt", "whore", "slut", "spam", "viagra", "casino",
+            "cripto", "crypto", "onlyfans", "telegram", "whatsapp", "inversión", "inversion"
+        ];
+
+        const lowerText = text.toLowerCase();
+
+        for (const word of badWords) {
+            // \b asegura que evaluamos palabras completas (ej: para no bloquear "computadora" por contener "puta")
+            const wordRegex = new RegExp(`\\b${word}\\b`, 'i');
+            if (wordRegex.test(lowerText)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     const handleAddComment = async () => {
-        if (!newCommentText.trim() || !video) return;
+        const comment = newCommentText.trim();
+        if (!comment || !video) return;
+
+        // Validar el comentario antes de enviarlo
+        if (!isCommentSafe(comment)) {
+            alert("Your comment contains inappropriate language, URLs, or spam, and cannot be posted.");
+            return;
+        }
+
         setIsSubmittingComment(true);
         try {
-            const updatedVideo = await addCommentToVideo(video.uuid, { text: newCommentText.trim() }, video.comment);
+            const updatedVideo = await addCommentToVideo(video.uuid, { text: comment }, video.comment);
             if (updatedVideo) {
                 setVideo(updatedVideo);
                 setNewCommentText("");
             }
         } catch (error) {
             console.error("Error adding comment:", error);
-            alert("Error al añadir comentario");
+            alert("Error adding comment");
         } finally {
             setIsSubmittingComment(false);
         }
@@ -188,7 +226,7 @@ const VideoPage = () => {
                 setHasVoted(type);
                 localStorage.setItem(`voted_${video.uuid}`, type);
             } else {
-                alert("Ya has reaccionado a este video.");
+                alert("You have already reacted to this video.");
                 // Sincronizamos el estado de voto local si el servidor dijo que ya votamos
                 setHasVoted(type);
                 localStorage.setItem(`voted_${video.uuid}`, type);
@@ -196,7 +234,7 @@ const VideoPage = () => {
 
         } catch (error: any) {
             console.error('Error voting:', error);
-            alert("Hubo un error al procesar tu voto.");
+            alert("There was an error processing your vote.");
         }
     };
 
@@ -537,13 +575,13 @@ const VideoPage = () => {
 
                             <Box sx={{ p: 2.5, backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '12px', borderLeft: '4px solid #f013e5', mb: 4 }}>
                                 <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc', mb: 2 }}>
-                                    {video.descripcion || "Sin descripción disponible."}
+                                    {video.descripcion || "No description available."}
                                 </Typography>
 
                                 {video.actresses && video.actresses.trim() !== "" && (
                                     <Box sx={{ mb: 2, mt: 1 }}>
                                         <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.5)', mb: 1, textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.75rem' }}>
-                                            Actrices:
+                                            Actresses:
                                         </Typography>
                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                                             {video.actresses.split(',').map((actress, index) => (
@@ -599,7 +637,7 @@ const VideoPage = () => {
                             {video.preview_images_urls && (
                                 <Box sx={{ mt: 6, mb: 4 }}>
                                     <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                                        Capturas del Video
+                                        Video Screenshots
                                     </Typography>
                                     <Box
                                         sx={{
@@ -725,7 +763,7 @@ const VideoPage = () => {
                             {/* Comments Section */}
                             <Box id="comments-section" sx={{ mt: 6, mb: 6 }}>
                                 <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                                    Comentarios ({parseComments(video.comment).length})
+                                    Comments ({parseComments(video.comment).length})
                                 </Typography>
 
                                 <Box sx={{ mb: 4, backgroundColor: 'rgba(255,255,255,0.03)', p: 3, borderRadius: '12px' }}>
@@ -733,7 +771,7 @@ const VideoPage = () => {
                                         fullWidth
                                         multiline
                                         rows={3}
-                                        placeholder="Escribe tu comentario..."
+                                        placeholder="Write your comment..."
                                         value={newCommentText}
                                         onChange={(e) => setNewCommentText(e.target.value)}
                                         sx={{
@@ -760,7 +798,7 @@ const VideoPage = () => {
                                                 px: 4
                                             }}
                                         >
-                                            {isSubmittingComment ? 'Publicando...' : 'Publicar Comentario'}
+                                            {isSubmittingComment ? 'Posting...' : 'Post Comment'}
                                         </Button>
                                     </Box>
                                 </Box>
@@ -774,10 +812,10 @@ const VideoPage = () => {
                                                     <Box sx={{ flexGrow: 1 }}>
                                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                                                             <Typography variant="subtitle2" sx={{ color: '#f013e5', fontWeight: 'bold' }}>
-                                                                Anónimo
+                                                                Anonymous
                                                             </Typography>
                                                             <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)' }}>
-                                                                {c.date ? new Date(c.date).toLocaleDateString() : 'Recientemente'}
+                                                                {c.date ? new Date(c.date).toLocaleDateString() : 'Recently'}
                                                             </Typography>
                                                         </Box>
                                                         <Typography variant="body2" sx={{ color: '#eee', lineHeight: 1.5 }}>
@@ -789,7 +827,7 @@ const VideoPage = () => {
                                         ))
                                     ) : (
                                         <Typography sx={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', py: 4 }}>
-                                            No hay comentarios todavía. ¡Sé el primero en comentar!
+                                            No comments yet. Be the first to comment!
                                         </Typography>
                                     )}
                                 </Box>
@@ -810,11 +848,11 @@ const VideoPage = () => {
                             '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(240, 19, 229, 0.3)', borderRadius: '10px' }
                         }}>
                             <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2, fontSize: '1.1rem' }}>
-                                Videos Relacionados
+                                Related Porn Videos
                             </Typography>
 
                             <Grid container spacing={1.5}>
-                                {relatedVideos.map((vid: SupabaseVideo) => {
+                                {relatedVideos.slice((relatedPage - 1) * videosPerRelatedPage, relatedPage * videosPerRelatedPage).map((vid: SupabaseVideo) => {
                                     const previewUrl = vid.preview_url || vid.preview;
                                     const thumbnails = (previewUrl && !previewUrl.endsWith('.mp4') && !previewUrl.endsWith('.webm'))
                                         ? previewUrl.split(",").map(u => toProxiedUrl(u.trim())).filter(Boolean)
@@ -875,6 +913,41 @@ const VideoPage = () => {
                                     );
                                 })}
                             </Grid>
+
+                            {/* Related Videos Pagination Controls */}
+                            {relatedVideos.length > videosPerRelatedPage && (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, mb: 2, gap: 1 }}>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        disabled={relatedPage === 1}
+                                        onClick={() => setRelatedPage(prev => Math.max(1, prev - 1))}
+                                        sx={{
+                                            borderColor: 'rgba(240, 19, 229, 0.5)',
+                                            color: '#f013e5',
+                                            '&:disabled': { borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.3)' }
+                                        }}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Typography sx={{ color: '#fff', alignSelf: 'center', fontSize: '0.9rem' }}>
+                                        {relatedPage} / {Math.ceil(relatedVideos.length / videosPerRelatedPage)}
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        disabled={relatedPage >= Math.ceil(relatedVideos.length / videosPerRelatedPage)}
+                                        onClick={() => setRelatedPage(prev => Math.min(Math.ceil(relatedVideos.length / videosPerRelatedPage), prev + 1))}
+                                        sx={{
+                                            borderColor: 'rgba(240, 19, 229, 0.5)',
+                                            color: '#f013e5',
+                                            '&:disabled': { borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.3)' }
+                                        }}
+                                    >
+                                        Next
+                                    </Button>
+                                </Box>
+                            )}
                         </Box>
                     </Grid>
                 </Grid>

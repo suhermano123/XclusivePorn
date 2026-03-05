@@ -25,6 +25,31 @@ const VideoGrid: React.FC = () => {
   const [votedVideos, setVotedVideos] = useState<Set<string>>(new Set());
   const videosPerPage = 26;
 
+  // Sync current page with URL query parameter
+  useEffect(() => {
+    if (router.isReady) {
+      const pageQuery = router.query.page;
+      if (pageQuery && typeof pageQuery === 'string') {
+        const pageNum = parseInt(pageQuery, 10);
+        if (!isNaN(pageNum) && pageNum > 0) {
+          setCurrentPage(pageNum);
+        }
+      }
+    }
+  }, [router.isReady, router.query.page]);
+
+  const handlePageChange = (pageNum: number) => {
+    setCurrentPage(pageNum);
+    // Update the URL without a full page reload so back navigation works properly
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: pageNum }
+    }, undefined, { shallow: true });
+
+    // Scroll to the top when page changes 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const loadVideos = async (page: number) => {
     try {
       const { items, totalCount: count } = await getVideosPaginated(videosPerPage, page);
@@ -77,7 +102,7 @@ const VideoGrid: React.FC = () => {
     e.stopPropagation();
 
     if (votedVideos.has(uuid)) {
-      alert("Ya has votado en este video.");
+      alert("You have already voted on this video.");
       return;
     }
 
@@ -101,7 +126,7 @@ const VideoGrid: React.FC = () => {
       console.error(`Error updating ${type}:`, error);
       // Revertir si hay error (opcional)
       if (error.message === 'Already voted') {
-        alert("Ya has reaccionado a este video.");
+        alert("You have already reacted to this video.");
       }
     }
   };
@@ -207,7 +232,7 @@ const VideoGrid: React.FC = () => {
                           height={200}
                           width={300}
                           src={currentImg || video.imagen_url || video.img_src || '/assets/placeholder.png'} // Fallback
-                          alt={`Ver ${videoTitle} en novaporn gratis (novapornx)`}
+                          alt={`Watch ${videoTitle} free porn video hd on novaporn`}
                           style={styles.thumbnail}
                           unoptimized={true}
                           onLoad={() => {
@@ -327,7 +352,7 @@ const VideoGrid: React.FC = () => {
         <Box sx={{ display: "flex", justifyContent: "center", marginBottom: '40px', gap: '10px', padding: '20px' }}>
           <Button
             variant="contained"
-            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
             sx={styles.paginationBtnSx}
           >
@@ -341,7 +366,7 @@ const VideoGrid: React.FC = () => {
               <Button
                 key={pageNum}
                 variant={pageNum === currentPage ? "contained" : "outlined"}
-                onClick={() => setCurrentPage(pageNum)}
+                onClick={() => handlePageChange(pageNum)}
                 sx={{
                   ...styles.pageNumberBtnSx,
                   backgroundColor: pageNum === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
@@ -356,7 +381,7 @@ const VideoGrid: React.FC = () => {
 
           <Button
             variant="contained"
-            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
             sx={styles.paginationBtnSx}
           >
