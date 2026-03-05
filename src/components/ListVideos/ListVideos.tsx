@@ -23,7 +23,7 @@ const VideoGrid: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [votedVideos, setVotedVideos] = useState<Set<string>>(new Set());
-  const videosPerPage = 26;
+  const videosPerPage = 24;
 
   // Sync current page with URL query parameter
   useEffect(() => {

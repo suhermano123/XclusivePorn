@@ -42,6 +42,21 @@ const DmcaPage: React.FC = () => {
             5. A statement that the complaining party has a good faith belief that use of the material in the manner complained of is not authorized by the copyright owner.<br />
             6. A statement that the information in the notification is accurate, and under penalty of perjury, that the complaining party is authorized to act on behalf of the owner.
           </Typography>
+
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '40px', fontSize: '18px' }}>
+            How to Report a Video using our Built-in Tool
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            In our ongoing effort to protect intellectual property and maintain a safe platform, we have integrated a direct reporting tool on every video page. You may submit your DMCA takedown requests or report other violations (such as non-consensual content) directly through this form:
+          </Typography>
+          <ul style={{ ...styles.text, paddingLeft: '20px' }}>
+            <li style={{ marginBottom: '10px' }}><strong>Step 1:</strong> Navigate to the video page containing the allegedly infringing or violating content.</li>
+            <li style={{ marginBottom: '10px' }}><strong>Step 2:</strong> Locate and click the <strong>Report Video</strong> (Flag icon) button below the video player.</li>
+            <li style={{ marginBottom: '10px' }}><strong>Step 3:</strong> Enter your valid <strong>Email Address</strong> in the designated field so we can contact you regarding your claim.</li>
+            <li style={{ marginBottom: '10px' }}><strong>Step 4:</strong> Select the appropriate reason for reporting (e.g., "Violent or Abusive", "Contains Non-consensual acts", or select <strong>"Other Reasons"</strong> for DMCA/Copyright claims).</li>
+            <li style={{ marginBottom: '10px' }}><strong>Step 5:</strong> In the <strong>"Additional details"</strong> text box, <u>you must include all 6 points</u> of the DMCA Notice of Alleged Infringement mentioned above. If your text is too long, provide a link to a hosted document or paste the core requirements.</li>
+            <li style={{ marginBottom: '10px' }}><strong>Step 6:</strong> Click <strong>Submit Report</strong>. Our moderation team reviews these reports promptly and will take the necessary actions to remove infringing content.</li>
+          </ul>
         </div>
       </div>
       <FooterComponent />

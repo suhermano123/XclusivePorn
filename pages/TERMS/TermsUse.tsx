@@ -46,6 +46,12 @@ const TermsUsePage: React.FC = () => {
           <Typography variant="body1" style={styles.text}>
             novapornx reserves the right to change or remove (temporarily or permanently) the website or any part of it without notice and you confirm that novapornx shall not be liable to you for any such change or removal.
           </Typography>
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px', textAlign: 'left' }}>
+            5. Intellectual Property & File Reporting
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            We respect the intellectual property rights of others. If you believe your rights have been violated, please refer to our <a href="/DMCA/Dmca" style={{ color: '#f013e5', textDecoration: 'none' }}>DMCA & Reporting Procedure</a>. We provide an easy-to-use "Report Video" button below every video for submitting Intellectual Property and DMCA complaints safely and securely.
+          </Typography>
         </div>
       </div>
       <FooterComponent />

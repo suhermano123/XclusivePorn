@@ -46,6 +46,12 @@ const PrivacyPolicyPage: React.FC = () => {
           <Typography variant="body1" style={styles.text}>
             Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those websites.
           </Typography>
+          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px', textAlign: 'left' }}>
+            Reporting Content & DMCA
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            When you use the "Report Video" tools available on our site for DMCA or content violation claims, we ask for your email address and a reason for the report. This email is securely safely and strictly used to contact you regarding the status of your claim or intellectual property protection matters. We do not sell or share this administrative data with third parties unless required by law. Check our <a href="/DMCA/Dmca" style={{ color: '#f013e5', textDecoration: 'none' }}>DMCA Page</a> for instructions on filing notices.
+          </Typography>
         </div>
       </div>
       <FooterComponent />

@@ -37,6 +37,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'gegdnoqjglidnijpmhay.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pornobae.com',
       }
     ],
   },

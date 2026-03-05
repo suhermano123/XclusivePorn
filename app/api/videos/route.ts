@@ -65,6 +65,7 @@ export async function GET(request: Request) {
         const orderBy = searchParams.get('orderBy') || 'created_at';
         const minLikes = parseInt(searchParams.get('minLikes') || '0');
         const searchQuery = searchParams.get('searchQuery');
+        const category = searchParams.get('category');
 
         const from = (page - 1) * pageSize;
         const to = from + pageSize - 1;
@@ -85,6 +86,10 @@ export async function GET(request: Request) {
                 const orQuery = words.map(word => `titulo.ilike.%${word}%`).join(',');
                 query = query.or(orQuery);
             }
+        }
+
+        if (category) {
+            query = query.ilike('tags', `%${category}%`);
         }
 
         const { data, error, count } = await query

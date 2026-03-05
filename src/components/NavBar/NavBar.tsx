@@ -271,6 +271,26 @@ export default function PrimarySearchAppBar(props: any) {
             </Button>
           </Search>
 
+          <Button
+            variant="contained"
+            onClick={() => router.push('/categories')}
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              ml: 2,
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              color: '#fff',
+              borderRadius: '20px',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              px: 3,
+              boxShadow: 'none',
+              border: '1px solid rgba(255,255,255,0.2)',
+              '&:hover': { backgroundColor: '#f013e5', borderColor: '#f013e5' }
+            }}
+          >
+            Categories
+          </Button>
+
           <Box sx={{ flexGrow: 1 }} />
 
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>

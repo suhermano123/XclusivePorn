@@ -17,6 +17,14 @@ const generateSlug = (text: string) => {
     .replace(/\-\-+/g, '-');
 };
 
+const categories = [
+  "amateur", "anal", "asian", "bbw", "bdsm", "bedroom", "big ass", "big tits",
+  "blonde", "blowjob", "boss", "brunette", "camgirl", "casting", "cheating",
+  "couple", "cowgirl", "creampie", "cumshot", "curvy", "deepthroat", "doggy style",
+  "dominant", "double penetration", "ebony", "facial", "femdom", "fetish",
+  "gangbang", "glamour", "handjob", "hardcore", "interracial"
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 1. Static Routes
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -50,7 +58,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    {
+      url: `${BASE_URL}/categories`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
   ];
+
+  const categoryRoutes: MetadataRoute.Sitemap = categories.map((cat) => ({
+    url: `${BASE_URL}/category/${encodeURIComponent(cat.toLowerCase())}`,
+    lastModified: new Date(),
+    changeFrequency: "daily",
+    priority: 0.8,
+  }));
 
   // 2. Dynamic Video Routes
   try {
@@ -75,9 +96,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     });
 
-    return [...staticRoutes, ...videoRoutes];
+    return [...staticRoutes, ...categoryRoutes, ...videoRoutes];
   } catch (err) {
     console.error('Sitemap generation failed:', err);
-    return staticRoutes;
+    return [...staticRoutes, ...categoryRoutes];
   }
 }
