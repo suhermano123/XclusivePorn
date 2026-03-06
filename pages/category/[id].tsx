@@ -117,7 +117,6 @@ const CategoryPage: React.FC = () => {
             </Head>
             <NavBar sx={{ backgroundColor: "#e91ec4" }} />
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
-            <AgeVerification />
 
             <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
                 {categoryQuery ? (

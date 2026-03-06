@@ -135,7 +135,6 @@ const VideoGrid: React.FC = () => {
 
   return (
     <div>
-      <AgeVerification />
       <div style={styles.container}>
         <Box
           sx={{

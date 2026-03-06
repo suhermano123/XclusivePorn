@@ -173,8 +173,6 @@ const SearchPage: React.FC = () => {
             <NavBar sx={{ backgroundColor: "#e91ec4" }} />
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
 
-            <AgeVerification />
-
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
                 <Typography variant="h4" sx={{ color: '#fff', mb: 1, fontWeight: 'bold' }}>
                     Search Results for "{searchQuery}"
