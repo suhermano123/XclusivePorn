@@ -224,7 +224,7 @@ export default function PrimarySearchAppBar(props: any) {
           <Link href="/" style={{ textDecoration: 'none', display: 'flex' }} passHref>
             <Box sx={{ cursor: "pointer" }}>
               <img
-                src="https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev/oficial_logo.webp"
+                src="/assets/oficial_logo.png"
                 width={120}
                 height={20}
                 alt="Logo"
