@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import AWS from "aws-sdk";
 
-// Configurar cliente S3 para Wasabi
+// Configure S3 client for Wasabi
 const s3 = new AWS.S3({
   endpoint: process.env.NEXT_PUBLIC_WASABI_ENDPOINT || "https://s3.wasabisys.com",
   region: process.env.NEXT_PUBLIC_WASABI_REGION || "us-east-1",
@@ -11,11 +11,11 @@ const s3 = new AWS.S3({
 });
 
 /**
- * Hook para obtener una URL firmada de un objeto en Wasabi S3 y
- * proporcionar una función para descargar el archivo directamente.
+ * Hook to get a signed URL for an object in Wasabi S3 and
+ * provide a function to download the file directly.
  *
- * @param {string} objectKey - Nombre (y ruta) del archivo en el bucket.
- * @param {number} expiresIn - Tiempo de validez de la URL en segundos (por defecto 900s = 15 min).
+ * @param {string} objectKey - Name (and path) of the file in the bucket.
+ * @param {number} expiresIn - URL validity time in seconds (default 900s = 15 min).
  * @returns {Object} { url, loading, error, downloadFile }
  */
 const useWasabiObjectUrl = (objectKey: string, expiresIn = 900) => {
@@ -33,7 +33,7 @@ const useWasabiObjectUrl = (objectKey: string, expiresIn = 900) => {
       setLoading(true);
       setError(null);
       try {
-        // Generar URL firmada para acceder al objeto y forzar la descarga directa
+        // Generate signed URL to access the object and force direct download
         const signedUrl = s3.getSignedUrl("getObject", {
           Bucket: "videos-play",
           Key: objectKey,
@@ -42,7 +42,7 @@ const useWasabiObjectUrl = (objectKey: string, expiresIn = 900) => {
         });
         setUrl(signedUrl);
       } catch (err) {
-        setError("Error al obtener la URL firmada de Wasabi S3");
+        setError("Error getting signed URL from Wasabi S3");
       } finally {
         setLoading(false);
       }
@@ -52,14 +52,14 @@ const useWasabiObjectUrl = (objectKey: string, expiresIn = 900) => {
   }, [objectKey, expiresIn]);
 
   /**
-   * Función para descargar el archivo directamente usando la URL firmada.
+   * Function to download the file directly using the signed URL.
    */
   const downloadFile = () => {
     if (!url) {
-      console.error("No se generó la URL firmada");
+      console.error("Signed URL was not generated");
       return;
     }
-    // Abre la URL firmada en una nueva pestaña, lo que dispara la descarga
+    // Open the signed URL in a new tab, which triggers the download
     window.open(url, "_blank");
   };
 

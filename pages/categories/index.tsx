@@ -37,9 +37,9 @@ const CategoriesPage: React.FC = () => {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
-                <title>Porn Categories & Niche Tags - Watch Free HD Sex Videos on novapornx</title>
-                <meta name="description" content="Browse our extensive collection of free premium HD adult content by categories on novapornx. Find amateur, anal, asian, bbw, and many more exclusive niches." />
-                <meta name="keywords" content={categoriesData.map(c => c.name).join(", ") + ", porn categories, free porn, hd sex videos"} />
+                <title>Porn Categories - Free Premium HD Latina Videos & Amateur HD Porn</title>
+                <meta name="description" content="Browse our extensive collection of free premium HD adult content by categories on novapornx. Find free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn." />
+                <meta name="keywords" content={categoriesData.map(c => c.name).join(", ") + ", free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free"} />
                 <link rel="canonical" href="https://novapornx.com/categories" />
             </Head>
 

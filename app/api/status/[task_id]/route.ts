@@ -20,7 +20,7 @@ export async function GET(
     } catch (error) {
         console.error("Error in status proxy:", error);
         return NextResponse.json(
-            { status: "error", error: "Ocurrió un error al conectar con el servidor proxy." },
+            { status: "error", error: "An error occurred while connecting to the proxy server." },
             { status: 500 }
         );
     }

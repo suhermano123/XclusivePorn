@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error("Error in downloader proxy:", error);
         return NextResponse.json(
-            { status: "error", error: "Ocurrió un error al conectar con el servidor proxy." },
+            { status: "error", error: "An error occurred while connecting to the proxy server." },
             { status: 500 }
         );
     }

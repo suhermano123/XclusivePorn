@@ -109,9 +109,9 @@ const CategoryPage: React.FC = () => {
     return (
         <div style={styles.container}>
             <Head>
-                <title>{categoryQuery ? `Watch Free ${categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1)} Porn Videos in HD` : 'Category'} - novapornx</title>
-                <meta name="description" content={categoryQuery ? `Explore the best ${categoryQuery} porn videos for free. Watch high quality ${categoryQuery} sex videos and exclusive adult content on novapornx.` : `Explore free adult categories on novapornx.`} />
-                <meta name="keywords" content={categoryQuery ? `${categoryQuery} porn, ${categoryQuery} sex, free ${categoryQuery} videos, hd porn` : 'porn, sex, free videos'} />
+                <title>{categoryQuery ? `${categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1)} Porn - Free HD Adult Videos` : 'Category'} - novapornx</title>
+                <meta name="description" content={categoryQuery ? `Explore the best ${categoryQuery} porn videos for free. Watch high quality ${categoryQuery} sex videos and amateur HD content.` : `Explore free adult categories on novapornx. Watch free premium HD latina videos and amateur HD porn.`} />
+                <meta name="keywords" content={categoryQuery ? `${categoryQuery} porn, ${categoryQuery} sex, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free` : 'free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free'} />
                 {categoryQuery ? <link rel="canonical" href={`https://novapornx.com/category/${encodeURIComponent(categoryQuery.toLowerCase())}`} /> : null}
                 <meta name="robots" content="index, follow" />
             </Head>

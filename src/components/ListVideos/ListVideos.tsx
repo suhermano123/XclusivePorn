@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { getVideosPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
+import { getVideosPaginated, searchVideosPaginated, getVideosByCategoryPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
 import { Skeleton, Box, Button, Chip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
@@ -12,7 +12,12 @@ import AgeVerification from "../OlderVerify/OlderVerify";
 import Image from "next/image";
 import { getVisitorId } from "@/api/visitorIdHelper";
 
-const VideoGrid: React.FC = () => {
+interface VideoGridProps {
+  category?: string;
+  searchQuery?: string;
+}
+
+const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
   const [videoL, setVideoL] = useState<SupabaseVideo[]>([]);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const [loadingPreviews, setLoadingPreviews] = useState<{ [key: string]: boolean }>({});
@@ -52,9 +57,16 @@ const VideoGrid: React.FC = () => {
 
   const loadVideos = async (page: number) => {
     try {
-      const { items, totalCount: count } = await getVideosPaginated(videosPerPage, page);
-      setVideoL(items);
-      setTotalCount(count);
+      let result;
+      if (category) {
+        result = await getVideosByCategoryPaginated(category, videosPerPage, page);
+      } else if (searchQuery) {
+        result = await searchVideosPaginated(searchQuery, videosPerPage, page);
+      } else {
+        result = await getVideosPaginated(videosPerPage, page);
+      }
+      setVideoL(result.items || []);
+      setTotalCount(result.totalCount || 0);
     } catch (error) {
       console.error("Error loading videos:", error);
     }

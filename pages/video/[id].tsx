@@ -118,12 +118,12 @@ const VideoPage = () => {
 
     // Comment Moderation Helper
     const isCommentSafe = (text: string): boolean => {
-        // 1. Detectar URLs: http://, https://, www., o dominios comunes (.com, .net, etc.)
+        // 1. Detect URLs: http://, https://, www., or common domains (.com, .net, etc.)
         const urlPattern = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
         const domainPattern = /[a-zA-Z0-9\-\.]+\.(com|net|org|info|site|club|xxx|pro|co|me|ly)\b/gi;
         if (urlPattern.test(text) || domainPattern.test(text)) return false;
 
-        // 2. Lista de groserías y palabras recurrentes en spam (español e inglés)
+        // 2. List of bad words and recurring spam words (Spanish and English)
         const badWords = [
             "puta", "putitas", "puto", "mierda", "pendejo", "cabron", "cabrón", "verga", "panocha", "zorra",
             "perra", "joto", "maricon", "maricón", "chinga", "chingar", "chingas", "fuck", "bitch", "shit",
@@ -134,7 +134,7 @@ const VideoPage = () => {
         const lowerText = text.toLowerCase();
 
         for (const word of badWords) {
-            // \b asegura que evaluamos palabras completas (ej: para no bloquear "computadora" por contener "puta")
+            // \b ensures we evaluate complete words (e.g: to not block "computadora" because it contains "puta")
             const wordRegex = new RegExp(`\\b${word}\\b`, 'i');
             if (wordRegex.test(lowerText)) {
                 return false;
@@ -148,7 +148,7 @@ const VideoPage = () => {
         const comment = newCommentText.trim();
         if (!comment || !video) return;
 
-        // Validar el comentario antes de enviarlo
+        // Validate the comment before sending
         if (!isCommentSafe(comment)) {
             alert("Your comment contains inappropriate language, URLs, or spam, and cannot be posted.");
             return;
@@ -221,13 +221,13 @@ const VideoPage = () => {
             const updatedVideoData = await registerVote(video.uuid, visitorId, type, count);
 
             if (updatedVideoData) {
-                // Sincronizar estado local de forma segura preservando campos opcionales si fuera necesario
+                // Synchronize local state safely preserving optional fields if necessary
                 setVideo(prev => prev ? ({ ...prev, ...updatedVideoData }) : updatedVideoData);
                 setHasVoted(type);
                 localStorage.setItem(`voted_${video.uuid}`, type);
             } else {
                 alert("You have already reacted to this video.");
-                // Sincronizamos el estado de voto local si el servidor dijo que ya votamos
+                // Synchronize local vote state if the server said we already voted
                 setHasVoted(type);
                 localStorage.setItem(`voted_${video.uuid}`, type);
             }
@@ -335,13 +335,13 @@ const VideoPage = () => {
         if (video && video.uuid) {
             setIsDownloading(true);
             try {
-                // Registrar información del visitante que descarga incluyendo el video
+                // Register visitor information who downloads including the video
                 trackVisitorAction(video.video_stream_url);
 
-                // Ahora llamamos al unificador de segmentos
+                // Now call the segment unifier
                 const downloadUrl = `/api/download-video?uuid=${video.uuid}`;
 
-                // Creamos un link invisible para forzar la descarga del flujo unido
+                // Create an invisible link to force the download of the joined stream
                 const link = document.createElement('a');
                 link.href = downloadUrl;
                 link.setAttribute('download', `${video.titulo || 'video'}.mp4`);
@@ -351,9 +351,9 @@ const VideoPage = () => {
 
             } catch (err) {
                 console.error("Download error:", err);
-                alert("Error al procesar la descarga");
+                alert("Error processing the download");
             } finally {
-                // Damos un margen pequeño para que el navegador inicie la descarga
+                // Give a small margin so the browser starts the download
                 setTimeout(() => setIsDownloading(false), 2000);
             }
         }
@@ -371,7 +371,7 @@ const VideoPage = () => {
         router.push(`/video/${vid.uuid}-${slug}`);
     };
 
-    // Helper: convierte cualquier URL de CDN externo a una ruta local proxied para evitar CORS
+    // Helper: converts any external CDN URL to a local proxied route to prevent CORS
     const toProxiedUrl = (url?: string | null): string => {
         if (!url) return '/assets/placeholder.png';
         if (url.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
@@ -383,7 +383,7 @@ const VideoPage = () => {
         if (url.includes('xmoviescdn.online')) {
             return url.replace('https://xmoviescdn.online', '/image-proxy');
         }
-        // Si solo es el nombre de archivo (ej: UUID.webp sin protocolo ni slash)
+        // If it's just the filename (e.g: UUID.webp without protocol or slash)
         if (!url.startsWith('http') && !url.startsWith('/')) {
             return `/capturas-proxy/${url}`;
         }
@@ -396,9 +396,9 @@ const VideoPage = () => {
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
 
             <Head>
-                <title>{video.titulo} - novapornx (novaporn)</title>
-                <meta name="description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Premium HD quality adult videos on novaporn, available for free streaming and download.`} />
-                {video.tags && <meta name="keywords" content={`${video.tags}, novaporn, novapornx, free porn, adult videos`} />}
+                <title>{video.titulo} - novapornx</title>
+                <meta name="description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Free premium HD latina videos and amateur HD porn colombian available for streaming and download.`} />
+                {video.tags && <meta name="keywords" content={`${video.tags}, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free, novapornx`} />}
 
                 {/* Canonical */}
                 <link rel="canonical" href={`https://novapornx.com/video/${id}`} />
@@ -406,15 +406,15 @@ const VideoPage = () => {
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="video.other" />
                 <meta property="og:url" content={`https://novapornx.com/video/${id}`} />
-                <meta property="og:title" content={`${video.titulo} - novapornx (novaporn)`} />
-                <meta property="og:description" content={video.descripcion || `Watch ${video.titulo} on novapornx in premium HD quality. Free porn videos on novaporn.`} />
+                <meta property="og:title" content={`${video.titulo} - novapornx`} />
+                <meta property="og:description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Free premium HD latina videos and amateur HD porn.`} />
                 <meta property="og:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
 
                 {/* Twitter */}
                 <meta property="twitter:card" content="summary_large_image" />
                 <meta property="twitter:url" content={`https://novapornx.com/video/${id}`} />
-                <meta property="twitter:title" content={`${video.titulo} - novapornx (novaporn)`} />
-                <meta property="twitter:description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Free HD porn videos on novaporn.`} />
+                <meta property="twitter:title" content={`${video.titulo} - novapornx`} />
+                <meta property="twitter:description" content={video.descripcion || `Watch ${video.titulo} on novapornx. Free HD porn videos and amateur content.`} />
                 <meta property="twitter:image" content={video.imagen_url || "https://novapornx.com/assets/backGround.png"} />
 
                 {/* JSON-LD Structured Data */}
@@ -441,7 +441,7 @@ const VideoPage = () => {
             </Head>
 
             <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
-                {video.titulo} - Watch Free Adult Videos on novapornx (novaporn)
+                {video.titulo} - novapornx, Free Premium HD Latina Videos, Amateur HD Porn Colombian
             </h1>
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: { xs: 2, md: 4 } }}>
@@ -559,7 +559,7 @@ const VideoPage = () => {
                                     ) : (
                                         <Box component="img" src="/assets/loader.png" sx={{ width: 20, height: 20 }} />
                                     )}
-                                    {isDownloading ? 'Generando...' : 'Download'}
+                                    {isDownloading ? 'Generating...' : 'Download'}
                                     {!isDownloading && <Favorite sx={{ fontSize: 16, ml: 0.5 }} />}
                                 </Button>
 
@@ -575,7 +575,7 @@ const VideoPage = () => {
                                         textTransform: 'none'
                                     }}
                                 >
-                                    Reportar
+                                    Report
                                 </Button>
                             </Stack>
 

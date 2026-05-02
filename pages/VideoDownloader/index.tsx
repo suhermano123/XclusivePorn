@@ -42,7 +42,7 @@ const VideoDownloader: React.FC = () => {
                     clearInterval(checkProgress);
                     setLoading(false);
                     if (data.status === 'error' || data.status === 'failed') {
-                        setError("Ocurrió un error al procesar el video en los servidores.");
+                        setError("An error occurred while processing the video on the servers.");
                     }
                 }
             } catch (e) {
@@ -80,43 +80,43 @@ const VideoDownloader: React.FC = () => {
                     setTaskStatus(data);
                     setLoading(false);
                 } else {
-                    setError("No se pudo iniciar el proceso del video. Comprueba el enlace.");
+                    setError("Could not start the video process. Check the link.");
                     setLoading(false);
                 }
             } else {
-                setError("Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.");
+                setError("Error processing the request. Please try again later.");
                 setLoading(false);
             }
         } catch (err) {
             console.error("Error downloading video:", err);
-            setError("Ocurrió un error al conectar con el servidor.");
+            setError("An error occurred while connecting to the server.");
             setLoading(false);
         }
     };
 
     return (
         <main style={{ backgroundColor: "#000", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-            {/* Agregado elemento semántico <main> en lugar de un <div> genérico. Mejora la accesibilidad y el SEO. */}
+            {/* Added semantic <main> element instead of a generic <div>. Improves accessibility and SEO. */}
             <Head>
-                {/* Meta Etiquetas Básicas Optimizadas para Motores de Búsqueda */}
-                <title>Descargador de Videos XclusivePorn - Rápido, Gratis y Alta Calidad</title>
-                <meta name="description" content="Descarga tus videos favoritos fácilmente con nuestro descargador de video premium. Compatible con formato MP4, 1080p y 4K. Solo pega el enlace y comienza a descargar GRATIS." />
-                <meta name="keywords" content="descargador de videos, descargar gratis, bajar video mp4, xnxx downloader, xhamster downloader, pornhub downloader, guardar video, downloader online" />
+                {/* Basic Meta Tags Optimized for Search Engines */}
+                <title>Video Downloader - Free Premium HD Latina Videos & Amateur HD Porn</title>
+                <meta name="description" content="Download your favorite videos easily with our premium video downloader. Download free premium hd latina videos, amateur hd porn, and free 4k homemade latina porn." />
+                <meta name="keywords" content="video downloader, free download, download mp4 video, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free" />
                 <meta name="robots" content="index, follow" /> {/* Permite a Google indexar y seguir la página */}
                 <meta name="author" content="XclusivePorn" />
 
-                {/* Etiquetas Open Graph (OG) para que se vea genial al compartir en Redes Sociales, Discord o WhatsApp */}
-                <meta property="og:title" content="Descargador de Videos XclusivePorn - Alta Velocidad" />
-                <meta property="og:description" content="La herramienta definitiva para bajar tus videos favoritos en calidad máxima, sin límites." />
+                {/* Open Graph (OG) Tags for social media sharing */}
+                <meta property="og:title" content="XclusivePorn Video Downloader - High Speed" />
+                <meta property="og:description" content="The ultimate tool to download your favorite videos in maximum quality, without limits." />
                 <meta property="og:type" content="website" />
                 <meta property="og:site_name" content="XclusivePorn" />
 
-                {/* Etiquetas Twitter Card para Twitter/X */}
+                {/* Twitter Card Tags for Twitter/X */}
                 <meta name="twitter:card" content="summary" />
-                <meta name="twitter:title" content="Descargador de Videos Gratis - XclusivePorn" />
-                <meta name="twitter:description" content="Descarga rápido y seguro en formato MP4 y máxima calidad." />
+                <meta name="twitter:title" content="Free Video Downloader - XclusivePorn" />
+                <meta name="twitter:description" content="Fast and safe download in MP4 format and maximum quality." />
 
-                {/* Structured Data (JSON-LD) - Genera un 'Rich Snippet' en Google definiendo esto como una herramienta de software */}
+                {/* Structured Data (JSON-LD) - Generates a 'Rich Snippet' in Google defining this as a software tool */}
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
@@ -126,7 +126,7 @@ const VideoDownloader: React.FC = () => {
                             "name": "XclusivePorn Video Downloader",
                             "applicationCategory": "MultimediaApplication",
                             "operatingSystem": "All",
-                            "description": "Herramienta gratuita para descargar videos de múltiples plataformas online en formato MP4 sin límites ni esperas.",
+                            "description": "Free tool to download videos from multiple online platforms in MP4 format without limits or waiting.",
                             "offers": {
                                 "@type": "Offer",
                                 "price": "0",
@@ -167,7 +167,7 @@ const VideoDownloader: React.FC = () => {
                     <Box sx={{ position: "relative", zIndex: 1 }}>
                         <CloudDownloadIcon sx={{ fontSize: 70, color: "#f013e5", mb: 2 }} />
 
-                        {/* Cambio importante de SEO: Toda página debe tener UN único elemento H1. component="h1" le dice a Google que es el tema principal, pero visualmente mantenemos variant="h3" */}
+                        {/* Important SEO change: Every page must have ONE unique H1 element. component="h1" tells Google it is the main topic, but visually we keep variant="h3" */}
                         <Typography variant="h3" component="h1" sx={{
                             color: "#fff",
                             fontWeight: 900,
@@ -178,9 +178,9 @@ const VideoDownloader: React.FC = () => {
                             VIDEO DOWNLOADER
                         </Typography>
 
-                        {/* Convertimos el subtítulo principal en un <H2> para estructurar jerárquicamente */}
+                        {/* Convert the main subtitle into an <H2> to structure hierarchically */}
                         <Typography component="h2" variant="h6" sx={{ color: "rgba(255,255,255,0.5)", mb: 5, fontWeight: 400 }}>
-                            Introduce el enlace del video para comenzar la descarga en alta calidad
+                            Enter the video link to start the high-quality download
                         </Typography>
 
                         <Box sx={{ mb: 4 }}>
@@ -230,7 +230,7 @@ const VideoDownloader: React.FC = () => {
                                 letterSpacing: "1px"
                             }}
                         >
-                            {loading ? <CircularProgress size={28} color="inherit" /> : "DESCARGAR VIDEO"}
+                            {loading ? <CircularProgress size={28} color="inherit" /> : "DOWNLOAD VIDEO"}
                         </Button>
 
                         {error && (
@@ -252,7 +252,7 @@ const VideoDownloader: React.FC = () => {
                         {taskStatus && taskStatus.details && (
                             <Box sx={{ mt: 5, textAlign: "left", animation: "fadeIn 0.5s ease" }}>
                                 <Typography variant="h5" sx={{ color: "#fff", fontWeight: "bold", mb: 2 }}>
-                                    Resultado del Proceso
+                                    Process Result
                                 </Typography>
                                 <Card sx={{
                                     display: 'flex',
@@ -281,8 +281,8 @@ const VideoDownloader: React.FC = () => {
                                                     : 50 + (taskStatus.upload_progress || 0) * 0.5;
 
                                                 const label = taskStatus.status === 'processing'
-                                                    ? `Procesando / Descargando... ${globalProgress.toFixed(1)}%`
-                                                    : `Subiendo a R2 / Preparando enlace... ${globalProgress.toFixed(1)}%`;
+                                                    ? `Processing / Downloading... ${globalProgress.toFixed(1)}%`
+                                                    : `Uploading to R2 / Preparing link... ${globalProgress.toFixed(1)}%`;
 
                                                 return (
                                                     <Box sx={{ mb: 3 }}>
@@ -324,7 +324,7 @@ const VideoDownloader: React.FC = () => {
                                                         },
                                                     }}
                                                 >
-                                                    DESCARGAR VIDEO AHORA (MP4)
+                                                    DOWNLOAD VIDEO NOW (MP4)
                                                 </Button>
                                             )}
                                         </CardContent>
@@ -337,7 +337,7 @@ const VideoDownloader: React.FC = () => {
 
                 <Box sx={{ mt: 10, textAlign: "center", maxWidth: 900, width: "100%" }}>
                     <Typography variant="h5" sx={{ color: "#fff", mb: 4, fontWeight: "bold", opacity: 0.8 }}>
-                        Plataformas Compatibles
+                        Supported Platforms
                     </Typography>
                     <Grid container spacing={3} justifyContent="center">
                         {['XNXX', 'XHamster', 'Pornhub', 'SpankBang', 'Eporner', 'HQPorner'].map((platform) => (

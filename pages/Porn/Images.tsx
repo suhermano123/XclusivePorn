@@ -96,9 +96,9 @@ const ImagesPage: React.FC = () => {
     return (
         <div style={{ backgroundColor: "#000", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
             <Head>
-                <title>Premium Adult Image Gallery - novapornx</title>
-                <meta name="description" content="Explore our exclusive collection of high-quality premium adult images. Browse, view, and enjoy the latest galleries, updated daily on novapornx." />
-                <meta name="keywords" content="porn images, adult gallery, sexy photos, erotic images, premium galleries, novapornx" />
+                <title>Premium Adult Image Gallery - Free Premium HD Latina Videos & More</title>
+                <meta name="description" content="Explore our exclusive collection of high-quality premium adult images and free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn." />
+                <meta name="keywords" content="porn images, adult gallery, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free" />
                 <link rel="canonical" href="https://novapornx.com/Porn/Images" />
 
                 {/* Open Graph */}
