@@ -97,7 +97,7 @@ export default function HomeIndex() {
       <VideoGrid />
 
       {/* SEO On-Page Text Block */}
-      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
+      <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }} style={{display: "none"}}>
         <Box sx={{ mt: 2, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
             <Typography variant="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
                 Watch Free HD Porn Videos Online
