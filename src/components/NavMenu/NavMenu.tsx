@@ -81,18 +81,18 @@ export default function NavMenu(props: any) {
     loadAdScript();
   }, [isMobile]);
 
-  const handleOpenCams = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  e.nativeEvent.stopImmediatePropagation();
+  const handleOpenCams = (e:any) => {
+  // e.preventDefault();
+  // e.stopPropagation();
+  // e.nativeEvent.stopImmediatePropagation();
 
-  window.open(
-    "https://s.pemsrv.com/v1/link.php?cat=&idzone=5940902&type=8",
-    "_blank",
-    "noopener,noreferrer"
-  );
+  // window.open(
+  //   "https://s.pemsrv.com/v1/link.php?cat=&idzone=5940902&type=8",
+  //   "_blank",
+  //   "noopener,noreferrer"
+  // );
 
-  return false;
+  // return false;
 };
   return (
     <div>
