@@ -89,14 +89,17 @@ const VideoPage = () => {
     const handlePlay = async () => {
         if (!viewedRef.current && video) {
             viewedRef.current = true;
+
             try {
                 await incrementVideoViews(video.uuid, video.views || 0);
                 setVideo(prev => prev ? { ...prev, views: (prev.views || 0) + 1 } : prev);
+
             } catch (error) {
                 console.error("Error incrementing views:", error);
             }
         }
     };
+    
 
     // Parse comments from string: "{obj}. {obj}"
     const parseComments = (commentStr?: string) => {

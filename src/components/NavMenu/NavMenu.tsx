@@ -81,6 +81,19 @@ export default function NavMenu(props: any) {
     loadAdScript();
   }, [isMobile]);
 
+  const handleOpenCams = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  e.nativeEvent.stopImmediatePropagation();
+
+  window.open(
+    "https://s.pemsrv.com/v1/link.php?cat=&idzone=5940902&type=8",
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+  return false;
+};
   return (
     <div>
       <Grid container sx={{ justifyContent: "center" }}>
@@ -124,15 +137,11 @@ export default function NavMenu(props: any) {
             }}> <FavoriteIcon />PORN IMAGES</Button>
           </Tooltip>
         </Grid>
-        <Grid item>
-          <Tooltip disableFocusListener disableTouchListener title="Cams">
-            <Button  style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "5px",
-            }}> <Diversity1Icon /> CAMS</Button>
+        <Grid item onClick={(e) => e.stopPropagation()}>
+          <Tooltip disableFocusListener title="Cams">
+            <Button onClick={handleOpenCams}>
+              CAMS
+            </Button>
           </Tooltip>
         </Grid>
         <Grid item>

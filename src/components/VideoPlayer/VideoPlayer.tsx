@@ -197,10 +197,15 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   }, []);
 
   // Función para abrir el Pop-Under en una nueva ventana y ocultar la capa
-  const handleAdClick = () => {
-    setShowAdLayer(false);
-    const adUrl = "http://www.juicyads.rocks";
-    window.open(adUrl, "_blank", "width=800,height=600");
+  const handleAdClick = (e) => {
+    // setShowAdLayer(false);
+
+    // const a = document.createElement("a");
+    // a.href = "https://s.pemsrv.com/v1/link.php?cat=&idzone=5940902&type=8";
+    // a.target = "_blank";
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
   };
 
   if (loading) return (
@@ -230,21 +235,21 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
       <div data-vjs-player ref={videoRef} />
 
       {/* Capa invisible para anuncios (opcional si interfiere con controles) */}
-      {showAdLayer && (
+      {/* {showAdLayer && (
         <div
-          onClick={handleAdClick}
+          onClickCapture={handleAdClick}
           style={{
             position: "absolute",
             top: 0,
             left: 0,
             width: "100%",
-            height: "80%", // Dejar espacio para la barra de controles inferior
+            height: "100%",
             background: "transparent",
             cursor: "pointer",
-            zIndex: 5,
+            zIndex: 9999,
           }}
         />
-      )}
+      )} */}
     </div>
   );
 });

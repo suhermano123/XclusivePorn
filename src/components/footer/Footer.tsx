@@ -5,62 +5,7 @@ import Link from "next/link";
 const FooterComponent: React.FC = () => {
   const [renderCount, setRenderCount] = useState(0);
   const isMobile = useMediaQuery("(max-width:600px)");
-  useEffect(() => {
-    const loadAdScript = (
-      adZoneId: string,
-      containerId: string,
-      width: string,
-      height: string
-    ) => {
-      const adContainer = document.getElementById(containerId);
-      if (adContainer) {
-        // Limpiar el contenido previo
-        adContainer.innerHTML = "";
-
-        // Eliminar cualquier script anterior de JuicyAds para evitar duplicados
-        document.querySelectorAll(`script[src*="jads.js"]`).forEach((s) =>
-          s.remove()
-        );
-
-        // Crear y agregar el script principal de JuicyAds
-        const script1 = document.createElement("script");
-        script1.type = "text/javascript";
-        script1.setAttribute("data-cfasync", "false");
-        script1.async = true;
-        script1.src = `https://poweredby.jads.co/js/jads.js?v=${new Date().getTime()}`;
-        document.body.appendChild(script1);
-
-        // Crear y agregar el elemento <ins> para el anuncio
-        const ins = document.createElement("ins");
-        ins.id = adZoneId;
-        ins.setAttribute("data-width", width);
-        ins.setAttribute("data-height", height);
-        adContainer.appendChild(ins);
-
-        // Crear y agregar el script para inicializar el anuncio
-        const script2 = document.createElement("script");
-        script2.type = "text/javascript";
-        script2.setAttribute("data-cfasync", "false");
-        script2.async = true;
-        script2.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone': ${adZoneId}});`;
-        adContainer.appendChild(script2);
-      }
-    };
-
-    // Eliminar anuncios viejos para recargar nuevamente
-    document.querySelectorAll("ins[id^='juicy-ads']").forEach((el) => el.remove());
-    console.log("es movil", isMobile);
-
-    if (isMobile) {
-      // En dispositivos móviles solo se carga este anuncio
-      loadAdScript("1111579", "juicy-ads-1111579", "300", "100");
-    } else {
-      // En escritorio se cargan los anuncios habituales
-      loadAdScript("1111576", "juicy-ads-1111576", "300", "250");
-      loadAdScript("1111577", "juicy-ads-1111577", "908", "258");
-      loadAdScript("1111578", "juicy-ads-1111578", "300", "250");
-    }
-  }, [isMobile]);
+  
 
 
 
@@ -69,56 +14,26 @@ const FooterComponent: React.FC = () => {
       <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
         {/* Contenedor del nuevo anuncio izquierdo */}
         <div
-          id="juicy-ads-1111576"
-          style={{
-            width: "300px",
-            height: "250px",
-            backgroundColor: "#f1f1f1",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden",
-          }}
-        >
-          <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
-            Advertisement
-          </Typography>
+
+        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940932&size=300x250" width="210" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+          
         </div>
 
         {/* Contenedor del anuncio principal */}
         <div
-          id="juicy-ads-1111577"
-          style={{
-            width: "908px",
-            height: "258px",
-            backgroundColor: "#f1f1f1",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden",
-          }}
-        >
-          <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
-            Advertisement
-          </Typography>
+          
+        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940940&size=300x250" width="210" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+        
+          
         </div>
 
         {/* Contenedor del nuevo anuncio derecho */}
         <div
-          id="juicy-ads-1111578"
-          style={{
-            width: "300px",
-            height: "250px",
-            backgroundColor: "#f1f1f1",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden",
-          }}
+          
         >
-          <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
+          {/* <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
             Advertisement
-          </Typography>
+          </Typography> */}
         </div>
       </div>
 
