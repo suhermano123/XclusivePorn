@@ -126,7 +126,7 @@ export default function NavMenu(props: any) {
         </Grid>
         <Grid item>
           <Tooltip disableFocusListener disableTouchListener title="Cams">
-            <Button component="a" href="http://www.juicyads.rocks" target="_blank" rel="noopener noreferrer" style={{
+            <Button  style={{
               color: "white",
               display: "flex",
               alignItems: "center",
