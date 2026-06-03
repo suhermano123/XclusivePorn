@@ -197,7 +197,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   }, []);
 
   // Función para abrir el Pop-Under en una nueva ventana y ocultar la capa
-  const handleAdClick = (e) => {
+  const handleAdClick = (e:any) => {
     // setShowAdLayer(false);
 
     // const a = document.createElement("a");

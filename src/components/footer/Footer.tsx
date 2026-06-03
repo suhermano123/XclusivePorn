@@ -15,14 +15,14 @@ const FooterComponent: React.FC = () => {
         {/* Contenedor del nuevo anuncio izquierdo */}
         <div
 
-        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940932&size=300x250" width="210" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940932&size=300x250" width="210" height="250" scrolling="no"  ></iframe>
           
         </div>
 
         {/* Contenedor del anuncio principal */}
         <div
           
-        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940940&size=300x250" width="210" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940940&size=300x250" width="210" height="250" scrolling="no"   ></iframe>
         
           
         </div>
