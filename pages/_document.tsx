@@ -24,7 +24,7 @@ export default function Document() {
                 <Main />
                 <NextScript />
 
-                {/* 🔥 POPUNDER GLOBAL REAL (SIN LOAD EVENT) */}
+                {/* 🔥 POPUNDER GLOBAL REAL (SIN LOAD EVENT) d*/}
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
