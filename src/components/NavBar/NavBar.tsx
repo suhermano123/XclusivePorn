@@ -310,7 +310,7 @@ export default function PrimarySearchAppBar(props: any) {
             href="/categories"
             variant="contained"
             sx={{
-              display: { xs: 'none', lg: 'flex' },
+              display: { xs: '30%', lg: 'flex' },
               ml: 2,
               backgroundColor: 'rgba(255,255,255,0.1)',
               color: '#fff',
@@ -328,7 +328,7 @@ export default function PrimarySearchAppBar(props: any) {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: { xs: '30%', md: 'flex' }, alignItems: 'center', gap: 2 }}>
             <Button
               variant="outlined"
               sx={{

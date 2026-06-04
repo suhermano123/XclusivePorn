@@ -7,6 +7,7 @@ import NavMenu from '@/components/NavMenu/NavMenu';
 import FooterComponent from '@/components/footer/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 
 const categoriesData = [
     { name: "amateur", image: "https://pornobae.com/wp-content/uploads/2025/10/pba_indy_lix_russian_public_sex.jpg", description: "Real, unscripted homemade amateur porn videos." },
@@ -30,13 +31,13 @@ const categoriesData = [
 
 const CategoriesPage: React.FC = () => {
     // Ya no necesitas useRouter para la navegación básica
-    
+
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
                 <title>Porn Categories - Free Premium HD Latina Videos & Amateur HD</title>
                 <meta name="description" content="Browse our extensive collection of free premium HD adult content by categories. Find homemade amateur HD porn, Latina videos, and free 4K adult movies." />
-                
+
                 {/* Etiquetas Open Graph para compartir y SEO social */}
                 <meta property="og:title" content="Porn Categories - Free Premium HD Latina Videos" />
                 <meta property="og:description" content="Browse our extensive collection of free premium HD adult content by categories on novapornx." />
@@ -49,20 +50,20 @@ const CategoriesPage: React.FC = () => {
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
-                
+
                 {/* OPTIMIZACIÓN: Título principal como H1 semántico */}
-                <Typography 
-                    component="h1" 
-                    variant="h4" 
-                    sx={{ color: '#fff', mb: 1, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}
+                <Typography
+                    component="h1"
+                    variant="h4"
+                    sx={{ color: '#fff', mb: 1, fontWeight: 'bold', borderLeft: '1px solid #f013e5', pl: 2 }}
                 >
                     Porn Categories
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)', mb: 4, pl: 2 }}>
+                <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)', mb: 2, pl: 2 }}>
                     Explore top-tier HD amateur, premium Latina, and exclusive 4K videos by category.
                 </Typography>
-                
-                <Grid container spacing={3}>
+
+                <Grid container spacing={1}>
                     {categoriesData.map((category) => (
                         <Grid item xs={6} sm={4} md={3} sx={{ flexBasis: { lg: '20%', xl: '20%' }, maxWidth: { lg: '20%', xl: '20%' } }} key={category.name}>
                             {/* OPTIMIZACIÓN: Uso de Link de Next.js para rastreo SEO */}
@@ -74,7 +75,7 @@ const CategoriesPage: React.FC = () => {
                                         textDecoration: 'none', // Evita el subrayado del link
                                         backgroundColor: 'rgba(255,255,255,0.05)',
                                         border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '12px',
+                                        borderRadius: '3px',
                                         overflow: 'hidden',
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease',
@@ -102,12 +103,12 @@ const CategoriesPage: React.FC = () => {
                                             }}
                                         />
                                     </Box>
-                                    <Box sx={{ p: 2, textAlign: 'center' }}>
+                                    <Box sx={{ p: 1, textAlign: 'center' }}>
                                         {/* Ya es H2, excelente práctica */}
                                         <Typography variant="subtitle1" component="h2" sx={{ color: '#fff', fontWeight: 'bold', textTransform: 'capitalize' }}>
                                             {category.name} Porn
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mt: 0.5, fontSize: '0.8rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mt: 0.1, fontSize: '0.8rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                             {category.description}
                                         </Typography>
                                     </Box>
@@ -116,6 +117,45 @@ const CategoriesPage: React.FC = () => {
                         </Grid>
                     ))}
                 </Grid>
+                <Script
+                    src="https://a.magsrv.com/ad-provider.js"
+                    strategy="afterInteractive"
+                />
+
+                <ins
+                    className="eas6a97888e37"
+                    data-zoneid="5941734"
+                />
+
+                <Script id="magsrv-zone-5941734">
+                    {`
+        (window.AdProvider = window.AdProvider || []).push({
+            serve: {}
+        });
+    `}
+                </Script>
+                <>
+                    <Script
+                        src="https://a.pemsrv.com/ad-provider.js"
+                        strategy="afterInteractive"
+                        onLoad={() => {
+                            (window as any).AdProvider =
+                                (window as any).AdProvider || [];
+
+                            (window as any).AdProvider.push({
+                                serve: {},
+                            });
+                        }}
+                    />
+
+                    <ins
+                        className="eas6a97888e33"
+                        data-zoneid="5942504"
+                    />
+                </>
+
+
+
 
                 {/* OPTIMIZACIÓN: Texto SEO de cola larga en el footer de la página (no intrusivo) */}
                 <Box sx={{ mt: 8, p: 3, backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
