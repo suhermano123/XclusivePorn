@@ -9,6 +9,7 @@ import { getVisitorId } from "@/api/visitorIdHelper";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
+import Script from "next/script";
 
 const CategoryPage: React.FC = () => {
     const router = useRouter();
@@ -253,6 +254,18 @@ const CategoryPage: React.FC = () => {
                         </Button>
                     </Box>
                 )}
+                <>
+                    <Script
+                        src="https://a.magsrv.com/ad-provider.js"
+                        strategy="afterInteractive"
+                    />
+
+                    <ins
+                        className="eas6a97888e31"
+                        data-zoneid="5941732"
+                    />
+
+                </>
             </Container>
             <FooterComponent />
         </div>
