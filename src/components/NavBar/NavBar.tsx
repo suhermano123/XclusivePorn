@@ -210,7 +210,15 @@ export default function PrimarySearchAppBar(props: any) {
         }}
         {...props}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            display: "flex",
+            flexWrap: { xs: "wrap", md: "nowrap" },
+            gap: 1,
+            py: { xs: 1, md: 0 },
+            minHeight: { xs: "auto", md: 64 },
+          }}
+        >
           <IconButton
             size="large"
             edge="start"
@@ -222,17 +230,43 @@ export default function PrimarySearchAppBar(props: any) {
           </IconButton>
 
           <Link href="/" style={{ textDecoration: 'none', display: 'flex' }} passHref>
-            <Box sx={{ cursor: "pointer" }}>
+            <Box
+              sx={{
+                cursor: "pointer",
+                flexShrink: 0,
+                mr: { xs: 0, md: 2 }
+              }}
+            >
               <img
                 src="/assets/oficial_logo.png"
-                width={120}
-                height={20}
                 alt="Logo"
+                style={{
+                  width: "100%",
+                  maxWidth: "140px",
+                  height: "auto",
+                }}
               />
             </Box>
           </Link>
 
-          <Search sx={{ flexGrow: { xs: 1, md: 0 }, minWidth: { md: '400px' }, display: 'flex' }}>
+          <Search
+            sx={{
+              flexGrow: 1,
+              width: {
+                xs: "100%",
+                sm: "100%",
+                md: "auto"
+              },
+              minWidth: {
+                xs: "100%",
+                md: "400px"
+              },
+              order: {
+                xs: 3,
+                md: 0
+              }
+            }}
+          >
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -276,7 +310,7 @@ export default function PrimarySearchAppBar(props: any) {
             href="/categories"
             variant="contained"
             sx={{
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', lg: 'flex' },
               ml: 2,
               backgroundColor: 'rgba(255,255,255,0.1)',
               color: '#fff',

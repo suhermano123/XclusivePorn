@@ -5,7 +5,7 @@ import Tooltip from "@mui/material/Tooltip";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -34,66 +34,7 @@ export default function NavMenu(props: any) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  React.useEffect(() => {
-    if (isMobile) return; // Don't load ads on mobile
 
-    const loadAdScript = () => {
-      if (
-        !document.querySelector(
-          `script[src="https://poweredby.jads.co/js/jads.js"]`
-        )
-      ) {
-        const script = document.createElement("script");
-        script.type = "text/javascript";
-        script.setAttribute("data-cfasync", "false");
-        script.async = true;
-        script.src = "https://poweredby.jads.co/js/jads.js";
-        document.body.appendChild(script);
-      }
-
-      // Insertar el primer banner de anuncios
-      const adContainer1 = document.getElementById("juicy-ads-banner-1");
-      if (adContainer1) {
-        adContainer1.innerHTML =
-          '<ins id="1081333" data-width="468" data-height="60"></ins>';
-        const script1 = document.createElement("script");
-        script1.type = "text/javascript";
-        script1.setAttribute("data-cfasync", "false");
-        script1.async = true;
-        script1.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1081333});`;
-        adContainer1.appendChild(script1);
-      }
-
-      // Insertar el segundo banner de anuncios
-      const adContainer2 = document.getElementById("juicy-ads-banner-2");
-      if (adContainer2) {
-        adContainer2.innerHTML =
-          '<ins id="1081335" data-width="468" data-height="60"></ins>';
-        const script2 = document.createElement("script");
-        script2.type = "text/javascript";
-        script2.setAttribute("data-cfasync", "false");
-        script2.async = true;
-        script2.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1081335});`;
-        adContainer2.appendChild(script2);
-      }
-    };
-
-    loadAdScript();
-  }, [isMobile]);
-
-  const handleOpenCams = (e:any) => {
-  // e.preventDefault();
-  // e.stopPropagation();
-  // e.nativeEvent.stopImmediatePropagation();
-
-  // window.open(
-  //   "https://s.pemsrv.com/v1/link.php?cat=&idzone=5940902&type=8",
-  //   "_blank",
-  //   "noopener,noreferrer"
-  // );
-
-  // return false;
-};
   return (
     <div>
       <Grid container sx={{ justifyContent: "center" }}>
@@ -116,7 +57,7 @@ export default function NavMenu(props: any) {
           </Tooltip>
         </Grid>
         <Grid item>
-          <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
+          {/* <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
             <Button component={Link} href="/Downloads/PornMovies" style={{
               color: "white",
               display: "flex",
@@ -124,10 +65,10 @@ export default function NavMenu(props: any) {
               justifyContent: "center",
               gap: "5px",
             }}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
-          </Tooltip>
+          </Tooltip> */}
         </Grid>
         <Grid item>
-          <Tooltip disableFocusListener disableTouchListener title="Porn stars">
+          {/* <Tooltip disableFocusListener disableTouchListener title="Porn stars">
             <Button component={Link} href="/Porn/Images" style={{
               color: "white",
               display: "flex",
@@ -135,14 +76,14 @@ export default function NavMenu(props: any) {
               justifyContent: "center",
               gap: "5px",
             }}> <FavoriteIcon />PORN IMAGES</Button>
-          </Tooltip>
+          </Tooltip> */}
         </Grid>
         <Grid item onClick={(e) => e.stopPropagation()}>
-          <Tooltip disableFocusListener title="Cams">
+          {/* <Tooltip disableFocusListener title="Cams">
             <Button onClick={handleOpenCams}>
               CAMS
             </Button>
-          </Tooltip>
+          </Tooltip> */}
         </Grid>
         <Grid item>
           <Tooltip disableFocusListener title="Video Downloader">
@@ -164,33 +105,7 @@ export default function NavMenu(props: any) {
         </Grid>
       </Grid>
 
-      {/* Espacio para anuncios, ahora en línea (uno al lado del otro) - Hidden on mobile */}
-      {!isMobile && (
-        <div
-          style={{
-            width: "100%",
-            height: "60px", // Ajusta la altura según el espacio necesario para el anuncio
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "6px",
-            marginBottom: "6px",// Espacio entre el NavMenu y los anuncios
-            gap: "20px", // Espaciado entre anuncios
-          }}
-        >
-          <div id="juicy-ads-banner-1" style={{ width: "468px", height: "60px" }}>
-            <Typography variant="h6" align="center" color="textSecondary">
-
-            </Typography>
-          </div>
-
-          <div id="juicy-ads-banner-2" style={{ width: "468px", height: "60px" }}>
-            <Typography variant="h6" align="center" color="textSecondary">
-
-            </Typography>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 }

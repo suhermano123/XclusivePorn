@@ -1,6 +1,15 @@
-OK
-
 /* Main container styling for the custom player */
+.video-player-shell {
+  max-width: 100%;
+}
+
+.video-player-shell .video-js,
+.video-player-shell .vjs-fluid,
+.video-player-shell video {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
 .custom-video-js {
   border-radius: 16px !important;
   overflow: hidden;
@@ -109,4 +118,52 @@ OK
 
 .dislike-animation {
   animation: heartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@media (max-width: 600px) {
+  .video-player-shell {
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .custom-video-js {
+    border-radius: 0 !important;
+    min-height: 190px;
+  }
+
+  .custom-video-js .vjs-control-bar {
+    height: 42px !important;
+    padding: 0 4px;
+  }
+
+  .custom-video-js .vjs-control {
+    width: 2.4em;
+  }
+
+  .custom-video-js .vjs-time-control,
+  .custom-video-js .vjs-remaining-time,
+  .custom-video-js .vjs-playback-rate,
+  .custom-video-js .vjs-chapters-button,
+  .custom-video-js .vjs-descriptions-button,
+  .custom-video-js .vjs-subs-caps-button,
+  .custom-video-js .vjs-audio-button {
+    display: none !important;
+  }
+
+  .custom-video-js .vjs-volume-panel {
+    width: 2.4em !important;
+  }
+
+  .custom-video-js .vjs-progress-control {
+    min-width: 0;
+  }
+
+  .custom-video-js .vjs-big-play-button {
+    width: 58px !important;
+    height: 58px !important;
+    line-height: 54px !important;
+    margin-top: -29px !important;
+    margin-left: -29px !important;
+  }
 }

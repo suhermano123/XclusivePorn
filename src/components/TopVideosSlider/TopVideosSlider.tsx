@@ -7,7 +7,11 @@ import { ChevronLeft, ChevronRight, Visibility } from '@mui/icons-material';
 const TopVideosSlider: React.FC = () => {
     const [videos, setVideos] = useState<SupabaseVideo[]>([]);
     const [isHovered, setIsHovered] = useState(false);
+    const [isTouching, setIsTouching] = useState(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const touchEndTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const touchStartRef = useRef({ x: 0, y: 0 });
+    const hasTouchMovedRef = useRef(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -20,7 +24,7 @@ const TopVideosSlider: React.FC = () => {
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
-        if (!isHovered && scrollContainerRef.current) {
+        if (!isHovered && !isTouching && scrollContainerRef.current) {
             interval = setInterval(() => {
                 if (scrollContainerRef.current) {
                     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
@@ -34,11 +38,24 @@ const TopVideosSlider: React.FC = () => {
             }, 30); // Movimiento suave cada 30ms
         }
         return () => clearInterval(interval);
-    }, [isHovered, videos]);
+    }, [isHovered, isTouching, videos]);
+
+    useEffect(() => {
+        return () => {
+            if (touchEndTimeoutRef.current) {
+                clearTimeout(touchEndTimeoutRef.current);
+            }
+        };
+    }, []);
 
     if (videos.length === 0) return null;
 
     const handleVideoClick = (video: SupabaseVideo) => {
+        if (hasTouchMovedRef.current) {
+            hasTouchMovedRef.current = false;
+            return;
+        }
+
         const title = video.titulo || "video";
         const slug = title
             .toLowerCase()
@@ -136,13 +153,46 @@ const TopVideosSlider: React.FC = () => {
             {/* Carrusel de Scroll Real */}
             <Box
                 ref={scrollContainerRef}
+                onTouchStart={(event) => {
+                    if (touchEndTimeoutRef.current) {
+                        clearTimeout(touchEndTimeoutRef.current);
+                    }
+                    const touch = event.touches[0];
+                    hasTouchMovedRef.current = false;
+                    touchStartRef.current = touch
+                        ? { x: touch.clientX, y: touch.clientY }
+                        : { x: 0, y: 0 };
+                    setIsTouching(true);
+                }}
+                onTouchMove={(event) => {
+                    const touch = event.touches[0];
+                    if (!touch) return;
+
+                    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+                    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+
+                    if (deltaX > 8 && deltaX > deltaY) {
+                        hasTouchMovedRef.current = true;
+                    }
+                }}
+                onTouchEnd={() => {
+                    touchEndTimeoutRef.current = setTimeout(() => {
+                        setIsTouching(false);
+                    }, 1200);
+                }}
+                onTouchCancel={() => {
+                    setIsTouching(false);
+                }}
                 sx={{
                     display: 'flex',
                     overflowX: 'auto',
-                    gap: 3,
-                    px: 10,
+                    gap: { xs: 1.5, md: 3 },
+                    px: { xs: 1.5, sm: 3, md: 10 },
                     py: 1,
                     scrollBehavior: 'smooth',
+                    scrollSnapType: { xs: 'x proximity', md: 'none' },
+                    touchAction: 'pan-x',
+                    WebkitOverflowScrolling: 'touch',
                     '&::-webkit-scrollbar': { display: 'none' },
                     msOverflowStyle: 'none',
                     scrollbarWidth: 'none',
@@ -154,12 +204,15 @@ const TopVideosSlider: React.FC = () => {
                         onClick={() => handleVideoClick(video)}
                         sx={{
                             flex: '0 0 auto',
-                            width: '300px',
-                            height: '170px',
+                            width: { xs: '78vw', sm: '300px' },
+                            maxWidth: '300px',
+                            height: { xs: '44vw', sm: '170px' },
+                            maxHeight: '170px',
                             borderRadius: '12px',
                             overflow: 'hidden',
                             cursor: 'pointer',
                             position: 'relative',
+                            scrollSnapAlign: { xs: 'start', md: 'none' },
                             transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                             border: '1px solid rgba(255,255,255,0.1)',
                             '&:hover': {

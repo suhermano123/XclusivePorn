@@ -11,6 +11,7 @@ import TopVideosSlider from "../TopVideosSlider/TopVideosSlider";
 import AgeVerification from "../OlderVerify/OlderVerify";
 import Image from "next/image";
 import { getVisitorId } from "@/api/visitorIdHelper";
+import Script from "next/script";
 
 interface VideoGridProps {
   category?: string;
@@ -147,6 +148,23 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
 
   return (
     <div>
+      <Script
+        src="https://a.magsrv.com/ad-provider.js"
+        strategy="afterInteractive"
+      />
+
+      <ins
+        className="eas6a97888e31"
+        data-zoneid="5941690"
+      />
+
+      <Script id="magsrv-ad">
+        {`
+      (window.AdProvider = window.AdProvider || []).push({
+        serve: {}
+      });
+    `}
+      </Script>
       <div style={styles.container}>
         <Box
           sx={{
@@ -234,7 +252,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
                             width: "100%",
                             height: "100%",
                             objectFit: "cover",
-                            borderRadius: "8px",
+                            borderRadius: "2px",
                           }}
                         />
                       ) : (
@@ -399,7 +417,40 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
             Next
           </Button>
         </Box>
+        <Script
+          src="https://a.magsrv.com/ad-provider.js"
+          strategy="afterInteractive"
+        />
 
+        <ins
+          className="eas6a97888e37"
+          data-zoneid="5941734"
+        />
+
+        <Script id="magsrv-zone-5941734">
+          {`
+        (window.AdProvider = window.AdProvider || []).push({
+            serve: {}
+        });
+    `}
+        </Script>
+        <Script
+          src="https://a.magsrv.com/ad-provider.js"
+          strategy="afterInteractive"
+        />
+
+        <ins
+          className="eas6a97888e31"
+          data-zoneid="5941732"
+        />
+
+        <Script id="magsrv-zone-5941732">
+          {`
+        (window.AdProvider = window.AdProvider || []).push({
+            serve: {}
+        });
+    `}
+        </Script>
         <FooterComponent />
       </div>
     </div>
@@ -418,13 +469,13 @@ const styles: { [key: string]: any } = {
     // but kept here for reference or fallback.
     display: "grid",
     gap: "15px",
-    padding: "15px",
+    padding: "9px",
   },
   videoCardSx: {
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
-    borderRadius: "12px",
+    borderRadius: "1px",
     transition: "all 0.25s ease-in-out",
     cursor: "pointer",
     backgroundColor: "#111",
@@ -453,7 +504,7 @@ const styles: { [key: string]: any } = {
     transition: "transform 0.3s ease",
   },
   metadataArea: {
-    padding: "10px",
+    padding: "3px",
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#111",
@@ -509,7 +560,7 @@ const styles: { [key: string]: any } = {
   pageNumberBtnSx: {
     minWidth: "36px",
     height: "36px",
-    borderRadius: "50%",
+    borderRadius: "10%",
     fontWeight: "bold",
     transition: "all 0.2s",
     "&:hover": {

@@ -58,6 +58,10 @@ const nextConfig = {
         source: '/image-proxy/:path*',
         destination: 'https://xmoviescdn.online/:path*',
       },
+      {
+        source: '/vast-proxy',
+        destination: 'https://s.magsrv.com/v1/vast.php:path*',
+      }
     ]
   },
 }

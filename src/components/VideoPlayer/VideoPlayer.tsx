@@ -21,6 +21,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   muted?: boolean;
   autoplay?: boolean;
   onPlay?: () => void;
+  autoLandscapeOnMobile?: boolean;
 }>(({
   videoEmbedUrl,
   poster,
@@ -29,6 +30,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   muted = false,
   autoplay = false,
   onPlay,
+  autoLandscapeOnMobile = true,
 }, ref) => {
   const isFullUrl = videoEmbedUrl?.startsWith('http') || videoEmbedUrl?.startsWith('//') || videoEmbedUrl?.startsWith('/');
   const { url, loading, error } = useWasabiObjectUrl(isFullUrl ? '' : videoEmbedUrl);
@@ -41,10 +43,19 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   }
 
   const [isMobile, setIsMobile] = useState(false);
+  const isMobileRef = useRef(false);
+  const landscapeRequestedRef = useRef(false);
+  const onPlayRef = useRef(onPlay);
+
+  useEffect(() => {
+    onPlayRef.current = onPlay;
+  }, [onPlay]);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const isMobileDevice = window.innerWidth < 768 || window.matchMedia("(pointer: coarse)").matches;
+      isMobileRef.current = isMobileDevice;
+      setIsMobile(isMobileDevice);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -78,6 +89,43 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
 
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
+
+  const lockMobileLandscape = async () => {
+    if (!autoLandscapeOnMobile || !isMobileRef.current || landscapeRequestedRef.current) return;
+
+    landscapeRequestedRef.current = true;
+
+    try {
+      const orientation = (window.screen as any).orientation;
+      if (orientation?.lock) {
+        await orientation.lock("landscape");
+      }
+    } catch (error) {
+      console.warn("Mobile landscape mode is not available in this browser:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const playerElement = playerRef.current?.el?.() as HTMLElement | undefined;
+      const isPlayerFullscreen = !!document.fullscreenElement && !!playerElement?.contains(document.fullscreenElement);
+
+      if (isPlayerFullscreen) {
+        lockMobileLandscape();
+      } else {
+        landscapeRequestedRef.current = false;
+        (window.screen as any).orientation?.unlock?.();
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+    };
+  }, []);
 
   // Expose seekTo method to parent
   useImperativeHandle(ref, () => ({
@@ -158,15 +206,32 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
       console.log("Player ready");
     }));
 
-    if (onPlay) {
-      player.on("play", () => {
-        onPlay();
-        // optionally only trigger once: player.off("play")
-      });
-    }
+    const handlePlayerFullscreenChange = () => {
+      if (player.isFullscreen()) {
+        lockMobileLandscape();
+      }
+    };
+
+    const techElement = player.tech()?.el?.() as HTMLVideoElement | undefined;
+    const handleNativeFullscreenStart = () => lockMobileLandscape();
+    const handleNativeFullscreenEnd = () => {
+      landscapeRequestedRef.current = false;
+      (window.screen as any).orientation?.unlock?.();
+    };
+
+    player.on("fullscreenchange", handlePlayerFullscreenChange);
+    techElement?.addEventListener("webkitbeginfullscreen", handleNativeFullscreenStart);
+    techElement?.addEventListener("webkitendfullscreen", handleNativeFullscreenEnd);
+
+    player.on("play", () => {
+      onPlayRef.current?.();
+      // optionally only trigger once: player.off("play")
+    });
 
     return () => {
-      // Disposable logic handled in separate effect
+      player.off("fullscreenchange", handlePlayerFullscreenChange);
+      techElement?.removeEventListener("webkitbeginfullscreen", handleNativeFullscreenStart);
+      techElement?.removeEventListener("webkitendfullscreen", handleNativeFullscreenEnd);
     };
   }, [videoUrl, loading, error, firstThumbnail, autoplay, muted]);
 
@@ -223,10 +288,10 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   if (!videoUrl) return <div style={{ color: '#fff', padding: '20px' }}>Video URL is not available.</div>;
 
   return (
-    <div style={{
+    <div className="video-player-shell" style={{
       position: "relative",
       width: "100%",
-      borderRadius: "16px",
+      borderRadius: "9px",
       overflow: "hidden",
       backgroundColor: "#000",
       boxShadow: "0 15px 35px rgba(0,0,0,0.9)",

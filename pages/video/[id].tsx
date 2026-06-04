@@ -10,6 +10,9 @@ import { Box, Typography, Container, CircularProgress, Grid, TextField, Button, 
 import { ThumbUp, ThumbDown, ChatBubble, Flag, AccessTime, CalendarToday, Favorite, CloudDownload, Visibility } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
 import { trackVisitorAction } from '@/api/visitorService';
+import Script from "next/script";
+import TopVideosSlider from '@/components/TopVideosSlider/TopVideosSlider';
+
 
 // Styles adapted from ListVideos
 const styles: { [key: string]: any } = {
@@ -82,7 +85,7 @@ const VideoPage = () => {
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [relatedPage, setRelatedPage] = useState(1);
-    const videosPerRelatedPage = 10;
+    const videosPerRelatedPage = 13;
     const videoPlayerRef = useRef<VideoPlayerRef>(null);
     const viewedRef = useRef(false);
 
@@ -99,7 +102,7 @@ const VideoPage = () => {
             }
         }
     };
-    
+
 
     // Parse comments from string: "{obj}. {obj}"
     const parseComments = (commentStr?: string) => {
@@ -290,6 +293,9 @@ const VideoPage = () => {
 
     const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
     const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
+    const touchPreviewVideoRef = useRef<string | null>(null);
+    const suppressNextRecommendationClickRef = useRef(false);
+    const touchPreviewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (hoveredVideo) {
@@ -310,6 +316,14 @@ const VideoPage = () => {
             }
         }
     }, [hoveredVideo, relatedVideos]);
+
+    useEffect(() => {
+        return () => {
+            if (touchPreviewTimeoutRef.current) {
+                clearTimeout(touchPreviewTimeoutRef.current);
+            }
+        };
+    }, []);
 
     if (loading) {
         return (
@@ -363,6 +377,11 @@ const VideoPage = () => {
     };
 
     const handleClickRecommendation = (vid: SupabaseVideo) => {
+        if (suppressNextRecommendationClickRef.current) {
+            suppressNextRecommendationClickRef.current = false;
+            return;
+        }
+
         const title = vid.titulo || vid.title || "video";
         const slug = title
             .toLowerCase()
@@ -372,6 +391,30 @@ const VideoPage = () => {
             .replace(/\-\-+/g, '-');         // Replace multiple - with single -
 
         router.push(`/video/${vid.uuid}-${slug}`);
+    };
+
+    const handleTouchRecommendationPreview = (vid: SupabaseVideo) => {
+        if (touchPreviewTimeoutRef.current) {
+            clearTimeout(touchPreviewTimeoutRef.current);
+        }
+
+        if (touchPreviewVideoRef.current !== vid.uuid) {
+            suppressNextRecommendationClickRef.current = true;
+            touchPreviewVideoRef.current = vid.uuid;
+        }
+
+        setHoveredVideo(vid.uuid);
+        setCurrentPreview((prev) => ({
+            ...prev,
+            [vid.uuid]: 0
+        }));
+
+        touchPreviewTimeoutRef.current = setTimeout(() => {
+            if (touchPreviewVideoRef.current === vid.uuid) {
+                touchPreviewVideoRef.current = null;
+                setHoveredVideo(null);
+            }
+        }, 3500);
     };
 
     // Helper: converts any external CDN URL to a local proxied route to prevent CORS
@@ -447,11 +490,26 @@ const VideoPage = () => {
                 {video.titulo} - novapornx, Free Premium HD Latina Videos, Amateur HD Porn Colombian
             </h1>
 
-            <Container maxWidth="xl" sx={{ flexGrow: 1, py: { xs: 2, md: 4 } }}>
-                <Grid container spacing={4}>
+            <Container
+                maxWidth={false}
+                sx={{
+                    flexGrow: 1,
+                    px: { xs: 0, sm: 2, md: 3 },
+                    py: { xs: 1, sm: 2, md: 4 },
+                }}
+            >
+                <Grid container rowSpacing={{ xs: 2, md: 4 }} columnSpacing={{ xs: 0, sm: 2, md: 4 }} sx={{ mx: 0, width: '100%' }}>
                     {/* Left Column: Player and Main Content */}
-                    <Grid item xs={12} lg={8.5}>
-                        <Box sx={{ mb: 2 }}>
+                    <Grid item xs={12} lg={8.5} sx={{ minWidth: 0 }}>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                mb: { xs: 2, md: 3 },
+                                borderRadius: { xs: 0, sm: '14px' },
+                                overflow: 'hidden',
+                                bgcolor: '#000',
+                            }}
+                        >
                             <VideoPlayer
                                 ref={videoPlayerRef}
                                 videoEmbedUrl={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=stream`}
@@ -463,12 +521,12 @@ const VideoPage = () => {
                         </Box>
 
                         {/* Info and Comments Section */}
-                        <Box sx={{ p: 3 }}>
-                            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', pb: 3, mb: 3 }}>
-                                <Typography variant="h4" sx={{ color: '#fff', fontWeight: 'bold', mb: 1.5, fontSize: { xs: '1.5rem', md: '2rem' } }}>
+                        <Box sx={{ px: { xs: 1.5, sm: 0 } }}>
+                            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)', pb: { xs: 2, md: 3 }, mb: { xs: 2, md: 3 } }}>
+                                <Typography variant="h4" sx={{ color: '#fff', fontWeight: 'bold', mb: 1.5, fontSize: { xs: '1.15rem', sm: '1.4rem', md: '2rem' }, lineHeight: 1.2, overflowWrap: 'anywhere' }}>
                                     {video.titulo}
                                 </Typography>
-                                <Stack direction="row" spacing={2} sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', alignItems: 'center' }}>
+                                <Stack direction="row" sx={{ color: 'rgba(255,255,255,0.6)', fontSize: { xs: '0.78rem', sm: '0.9rem' }, alignItems: 'center', flexWrap: 'wrap', gap: { xs: 1, sm: 2 } }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                         <AccessTime sx={{ fontSize: '1rem' }} />
                                         {video.duracion || "Unknown"}
@@ -485,7 +543,23 @@ const VideoPage = () => {
                             </Box>
 
                             {/* Voting and Report Buttons */}
-                            <Stack direction="row" spacing={2} sx={{ mb: 4, flexWrap: 'wrap', gap: 2 }}>
+                            <Box
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, max-content)' },
+                                    gap: { xs: 1, sm: 1.5 },
+                                    alignItems: 'stretch',
+                                    mb: { xs: 3, md: 4 },
+                                    '& .MuiButton-root': {
+                                        width: { xs: '100%', md: 'auto' },
+                                        minHeight: { xs: 46, sm: 44 },
+                                        whiteSpace: 'nowrap',
+                                    },
+                                    '& .MuiButton-startIcon': {
+                                        mr: { xs: 0.75, sm: 1 },
+                                    },
+                                }}
+                            >
                                 <Button
                                     variant="outlined"
                                     startIcon={<ThumbUp />}
@@ -503,7 +577,7 @@ const VideoPage = () => {
                                         borderRadius: '10px',
                                         textTransform: 'none',
                                         fontWeight: 'bold',
-                                        px: 3,
+                                        px: { xs: 1.5, sm: 3 },
                                         '&.Mui-disabled': {
                                             color: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.3)',
                                             borderColor: hasVoted === 'likes' ? '#4caf50' : 'rgba(255,255,255,0.1)',
@@ -530,7 +604,7 @@ const VideoPage = () => {
                                         borderRadius: '10px',
                                         textTransform: 'none',
                                         fontWeight: 'bold',
-                                        px: 3,
+                                        px: { xs: 1.5, sm: 3 },
                                         '&.Mui-disabled': {
                                             color: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.3)',
                                             borderColor: hasVoted === 'dislikes' ? '#f44336' : 'rgba(255,255,255,0.1)',
@@ -546,14 +620,16 @@ const VideoPage = () => {
                                     onClick={handleDownload}
                                     disabled={isDownloading}
                                     sx={{
+                                        gridColumn: { xs: '1 / -1', sm: 'auto' },
                                         backgroundColor: '#f013e5',
                                         '&:hover': { backgroundColor: '#d011c5' },
                                         borderRadius: '10px',
                                         textTransform: 'none',
                                         fontWeight: 'bold',
-                                        px: 3,
+                                        px: { xs: 2, sm: 3 },
                                         display: 'flex',
                                         alignItems: 'center',
+                                        justifyContent: 'center',
                                         gap: 1
                                     }}
                                 >
@@ -575,12 +651,13 @@ const VideoPage = () => {
                                         borderColor: 'rgba(255,255,255,0.2)',
                                         '&:hover': { borderColor: '#fff', color: '#fff', bgcolor: 'rgba(255,255,255,0.05)' },
                                         borderRadius: '10px',
-                                        textTransform: 'none'
+                                        textTransform: 'none',
+                                        px: { xs: 1.5, sm: 3 },
                                     }}
                                 >
                                     Report
                                 </Button>
-                            </Stack>
+                            </Box>
 
                             <Box sx={{ p: 2.5, backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '12px', borderLeft: '4px solid #f013e5', mb: 4 }}>
                                 <Typography variant="body1" sx={{ lineHeight: 1.6, color: '#ccc', mb: 2 }}>
@@ -642,132 +719,7 @@ const VideoPage = () => {
                                 )}
                             </Box>
 
-                            {/* Preview Images Slider */}
-                            {video.preview_images_urls && (
-                                <Box sx={{ mt: 6, mb: 4 }}>
-                                    <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                                        Video Screenshots
-                                    </Typography>
-                                    <Box
-                                        sx={{
-                                            width: '100%',
-                                            overflow: 'hidden',
-                                            position: 'relative',
-                                            borderRadius: '12px',
-                                            backgroundColor: 'rgba(255,255,255,0.02)',
-                                            py: 3,
-                                            cursor: 'pointer',
-                                            '&:hover .marquee-content': {
-                                                animationPlayState: 'paused'
-                                            }
-                                        }}
-                                    >
-                                        <Box
-                                            className="marquee-content"
-                                            sx={{
-                                                display: 'flex',
-                                                gap: 3,
-                                                width: 'max-content',
-                                                animation: 'marquee-scroll 50s linear infinite',
-                                                '@keyframes marquee-scroll': {
-                                                    '0%': { transform: 'translateX(0)' },
-                                                    '100%': { transform: 'translateX(-50%)' }
-                                                }
-                                            }}
-                                        >
-                                            {(() => {
-                                                try {
-                                                    const parsed = JSON.parse(video.preview_images_urls);
-                                                    if (!Array.isArray(parsed)) return null;
 
-                                                    const getLabel = (url: string) => {
-                                                        const filename = url.split('/').pop() || "";
-                                                        const match = filename.match(/(\d+_\d+)/);
-                                                        return match ? match[1].replace('_', ':') : "";
-                                                    };
-
-                                                    const timeToSeconds = (label: string) => {
-                                                        if (!label) return 0;
-                                                        const parts = label.split(':').map(Number);
-                                                        if (parts.length === 2) {
-                                                            return parts[0] * 60 + parts[1];
-                                                        }
-                                                        return 0;
-                                                    };
-
-                                                    const displayList = [...parsed, ...parsed];
-
-                                                    return displayList.map((url: string, idx: number) => {
-                                                        let finalUrl = url;
-                                                        if (url.includes('pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev')) {
-                                                            finalUrl = url.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
-                                                        } else if (!url.startsWith('http')) {
-                                                            finalUrl = `/capturas-proxy/${url}`;
-                                                        }
-
-                                                        const timestampLabel = getLabel(url);
-                                                        const seconds = timeToSeconds(timestampLabel);
-
-                                                        return (
-                                                            <Box
-                                                                key={idx}
-                                                                sx={{
-                                                                    width: '220px',
-                                                                    flexShrink: 0,
-                                                                    display: 'flex',
-                                                                    flexDirection: 'column',
-                                                                    alignItems: 'center',
-                                                                    gap: 1.5
-                                                                }}
-                                                                onClick={() => {
-                                                                    if (videoPlayerRef.current) {
-                                                                        videoPlayerRef.current.seekTo(seconds);
-                                                                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                                                                    }
-                                                                }}
-                                                            >
-                                                                <Box
-                                                                    sx={{
-                                                                        width: '100%',
-                                                                        aspectRatio: '16/9',
-                                                                        borderRadius: '8px',
-                                                                        overflow: 'hidden',
-                                                                        border: '1px solid rgba(255,255,255,0.1)',
-                                                                        transition: 'all 0.3s ease',
-                                                                        '&:hover': {
-                                                                            borderColor: '#f013e5',
-                                                                            boxShadow: '0 0 20px rgba(240, 19, 229, 0.4)',
-                                                                            transform: 'scale(1.02)'
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    <img
-                                                                        src={finalUrl}
-                                                                        alt={`Capture ${idx}`}
-                                                                        loading="lazy"
-                                                                        style={{
-                                                                            width: '100%',
-                                                                            height: '100%',
-                                                                            objectFit: 'cover'
-                                                                        }}
-                                                                    />
-                                                                </Box>
-                                                                {timestampLabel && (
-                                                                    <Typography sx={{ color: '#fff', fontSize: '13px', fontWeight: 'bold', opacity: 0.8 }}>
-                                                                        {timestampLabel}
-                                                                    </Typography>
-                                                                )}
-                                                            </Box>
-                                                        );
-                                                    });
-                                                } catch (e) {
-                                                    return null;
-                                                }
-                                            })()}
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            )}
 
                             {/* Comments Section */}
                             <Box id="comments-section" sx={{ mt: 6, mb: 6 }}>
@@ -845,6 +797,7 @@ const VideoPage = () => {
 
                     </Grid>
 
+
                     {/* Right Column: Recommendations Sidebar */}
                     <Grid item xs={12} lg={3.5}>
                         <Box sx={{
@@ -853,74 +806,186 @@ const VideoPage = () => {
                             maxHeight: { lg: 'calc(100vh - 48px)' },
                             overflowY: { lg: 'auto' },
                             pr: { lg: 1 },
-                            '&::-webkit-scrollbar': { width: '4px' },
-                            '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(240, 19, 229, 0.3)', borderRadius: '10px' }
+                            '&::-webkit-scrollbar': { width: '9px' },
+                            '&::-webkit-scrollbar-thumb': {
+                                bgcolor: 'rgba(240, 19, 229, 0.3)',
+                                borderRadius: '10px'
+                            }
                         }}>
-                            <Typography variant="h6" sx={{ color: '#fff', mb: 3, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2, fontSize: '1.1rem' }}>
+                            {/* Ad banner — centrado en mobile */}
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                width: "100%",
+                                overflow: 'hidden'
+
+                            }}>
+                                <iframe
+                                    src="//a.magsrv.com/iframe.php?idzone=5941696&size=300x250"
+                                    width="300"
+                                    height="250"
+                                    scrolling="no"
+                                    marginWidth={0}
+                                    marginHeight={0}
+                                    frameBorder={0}
+                                    style={{ maxWidth: '100%' }}
+                                />
+                            </Box>
+
+                            <Typography variant="h6" sx={{
+                                color: '#fff',
+                                mb: 2,
+                                fontWeight: 'bold',
+                                borderLeft: '4px solid #f013e5',
+                                pl: 2,
+                                fontSize: { xs: '1rem', sm: '1.1rem' }
+                            }}>
                                 Related Porn Videos
                             </Typography>
 
-                            <Grid container spacing={1.5}>
-                                {relatedVideos.slice((relatedPage - 1) * videosPerRelatedPage, relatedPage * videosPerRelatedPage).map((vid: SupabaseVideo) => {
-                                    const previewUrl = vid.preview_url || vid.preview;
-                                    const thumbnails = (previewUrl && !previewUrl.endsWith('.mp4') && !previewUrl.endsWith('.webm'))
-                                        ? previewUrl.split(",").map(u => toProxiedUrl(u.trim())).filter(Boolean)
-                                        : [];
+                            <Grid container spacing={1}>
+                                {relatedVideos
+                                    .slice(
+                                        (relatedPage - 1) * videosPerRelatedPage,
+                                        relatedPage * videosPerRelatedPage
+                                    )
+                                    .map((vid: SupabaseVideo) => {
+                                        const previewUrl = vid.preview_url || vid.preview;
+                                        const thumbnails =
+                                            previewUrl &&
+                                                !previewUrl.endsWith('.mp4') &&
+                                                !previewUrl.endsWith('.webm')
+                                                ? previewUrl
+                                                    .split(',')
+                                                    .map((u) => toProxiedUrl(u.trim()))
+                                                    .filter(Boolean)
+                                                : [];
 
-                                    const isHovered = hoveredVideo === vid.uuid;
-                                    const isVideoPreview = previewUrl && (previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm'));
-                                    const currentImg = (isHovered && thumbnails.length > 0)
-                                        ? thumbnails[currentPreview[vid.uuid] || 0]
-                                        : toProxiedUrl(vid.imagen_url || vid.img_src);
+                                        const isHovered = hoveredVideo === vid.uuid;
+                                        const isVideoPreview =
+                                            previewUrl &&
+                                            (previewUrl.endsWith('.mp4') ||
+                                                previewUrl.endsWith('.webm'));
+                                        const currentImg =
+                                            isHovered && thumbnails.length > 0
+                                                ? thumbnails[currentPreview[vid.uuid] || 0]
+                                                : toProxiedUrl(vid.imagen_url || vid.img_src);
 
-                                    return (
-                                        <Grid item xs={6} sm={4} lg={6} key={vid.uuid}>
-                                            <Box
-                                                sx={styles.videoCardSx}
-                                                onMouseEnter={() => {
-                                                    setHoveredVideo(vid.uuid);
-                                                    setCurrentPreview((prev) => ({ ...prev, [vid.uuid]: 0 }));
-                                                }}
-                                                onMouseLeave={() => setHoveredVideo(null)}
-                                                onClick={() => handleClickRecommendation(vid)}
-                                            >
-                                                <div style={styles.thumbnailContainer}>
-                                                    {isHovered && isVideoPreview ? (
-                                                        <video
-                                                            src={`/api/media?uuid=${vid.uuid}&type=preview`}
-                                                            autoPlay
-                                                            muted
-                                                            loop
-                                                            playsInline
-                                                            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }}
-                                                        />
-                                                    ) : (
-                                                        <img
-                                                            src={currentImg}
-                                                            alt={vid.titulo}
-                                                            style={styles.thumbnail}
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div style={styles.metadataArea}>
-                                                    <p style={styles.videoTitle}>{vid.titulo}</p>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-                                                        <Box sx={{ display: 'flex', gap: 1.5 }}>
-                                                            <span style={{ fontSize: "11px", color: "#ccc", display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                                <Visibility sx={{ fontSize: '12px', color: '#00bcd4' }} /> {vid.views || 0}
-                                                            </span>
-                                                            <span style={styles.durationLabel}>
-                                                                ⏳ {(vid.duracion_segundos && vid.duracion_segundos > 0)
-                                                                    ? `${Math.floor(vid.duracion_segundos / 60)}:${(vid.duracion_segundos % 60).toString().padStart(2, '0')}`
-                                                                    : (vid.duracion || "0:00")}
-                                                            </span>
+                                        return (
+                                            // xs=6 → 2 columnas en mobile
+                                            // sm=4 → 3 columnas en tablet
+                                            // md=3 → 4 columnas en pantallas medianas (cuando el sidebar ocupa todo el ancho)
+                                            // lg=6 → 2 columnas cuando está en la sidebar lateral
+                                            <Grid item xs={6} sm={4} md={3} lg={6} key={vid.uuid}>
+                                                <Box
+                                                    sx={{
+                                                        ...styles.videoCardSx,
+                                                        cursor: 'pointer',
+                                                        borderRadius: '8px',
+                                                        overflow: 'hidden',
+                                                        transition: 'transform 0.2s',
+                                                        '&:hover': { transform: 'scale(1.02)' }
+                                                    }}
+                                                    onMouseEnter={() => {
+                                                        setHoveredVideo(vid.uuid);
+                                                        setCurrentPreview((prev) => ({
+                                                            ...prev,
+                                                            [vid.uuid]: 0
+                                                        }));
+                                                    }}
+                                                    onMouseLeave={() => setHoveredVideo(null)}
+                                                    onClick={() => handleClickRecommendation(vid)}
+                                                >
+                                                    {/* Thumbnail */}
+                                                    <Box sx={{
+                                                        position: 'relative',
+                                                        width: '100%',
+                                                        paddingTop: '56.25%', // 16:9 ratio
+                                                        bgcolor: '#111'
+                                                    }}>
+                                                        <Box sx={{
+                                                            position: 'absolute',
+                                                            inset: 0
+                                                        }}>
+                                                            {isHovered && isVideoPreview ? (
+                                                                <video
+                                                                    src={`/api/media?uuid=${vid.uuid}&type=preview`}
+                                                                    autoPlay
+                                                                    muted
+                                                                    loop
+                                                                    playsInline
+                                                                    style={{
+                                                                        width: '100%',
+                                                                        height: '100%',
+                                                                        objectFit: 'cover'
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <img
+                                                                    src={currentImg}
+                                                                    alt={vid.titulo}
+                                                                    style={{
+                                                                        width: '100%',
+                                                                        height: '100%',
+                                                                        objectFit: 'cover',
+                                                                        display: 'block'
+                                                                    }}
+                                                                />
+                                                            )}
                                                         </Box>
-                                                    </div>
-                                                </div>
-                                            </Box>
-                                        </Grid>
-                                    );
-                                })}
+                                                    </Box>
+
+                                                    {/* Metadata */}
+                                                    <Box sx={{
+                                                        p: { xs: '4px 6px', sm: '6px 8px' },
+                                                        bgcolor: 'rgba(0,0,0,0.6)'
+                                                    }}>
+                                                        <Typography sx={{
+                                                            color: '#fff',
+                                                            fontSize: { xs: '11px', sm: '12px' },
+                                                            fontWeight: 500,
+                                                            lineHeight: 1.3,
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden'
+                                                        }}>
+                                                            {vid.titulo}
+                                                        </Typography>
+
+                                                        <Box sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center',
+                                                            mt: '4px',
+                                                            gap: 1
+                                                        }}>
+                                                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                                                <span style={{
+                                                                    fontSize: '11px',
+                                                                    color: '#ccc',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    gap: '3px'
+                                                                }}>
+                                                                    <Visibility sx={{ fontSize: '12px', color: '#00bcd4' }} />
+                                                                    {vid.views || 0}
+                                                                </span>
+                                                                <span style={{ ...styles.durationLabel, fontSize: '11px' }}>
+                                                                    ⏳{' '}
+                                                                    {vid.duracion_segundos && vid.duracion_segundos > 0
+                                                                        ? `${Math.floor(vid.duracion_segundos / 60)}:${(vid.duracion_segundos % 60)
+                                                                            .toString()
+                                                                            .padStart(2, '0')}`
+                                                                        : vid.duracion || '0:00'}
+                                                                </span>
+                                                            </Box>
+                                                        </Box>
+                                                    </Box>
+                                                </Box>
+                                            </Grid>
+                                        );
+                                    })}
                             </Grid>
 
                             {/* Related Videos Pagination Controls */}
@@ -957,6 +1022,24 @@ const VideoPage = () => {
                                     </Button>
                                 </Box>
                             )}
+                            {/* Ad banner — centrado en mobile */}
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                width: '100%',
+                                overflow: 'hidden'
+                            }}>
+                                <iframe
+                                    src="//a.magsrv.com/iframe.php?idzone=5941704&size=300x250"
+                                    width="300"
+                                    height="250"
+                                    scrolling="no"
+                                    marginWidth={0}
+                                    marginHeight={0}
+                                    frameBorder={0}
+                                    style={{ maxWidth: '100%' }}
+                                />
+                            </Box>
                         </Box>
                     </Grid>
                 </Grid>
@@ -1128,7 +1211,71 @@ const VideoPage = () => {
                     </Box>
                 </Box>
             </Modal>
+             {/* Slider de los más populares antes del paginador */}
+        <TopVideosSlider />
+         {/* Espacio para anuncios, ahora en línea (uno al lado del otro) - Hidden on mobile */}
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+          mt: 1,
+          mb: 1,
+          px: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: {
+              xs: "100%",
+              sm: "100%",
+              md: "auto",
+            },
+          }}
+        >
+          <iframe
+            src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100"
+            width="300"
+            height="100"
+            scrolling="no"
+            marginWidth={0}
+            marginHeight={0}
+            frameBorder={0}
+            style={{
+              border: 0,
+              maxWidth: "100%",
+            }}
+          />
+        </Box>
 
+        <Box
+          sx={{
+            width: {
+              xs: "100%",
+              md: "300px",
+            },
+            minHeight: "100px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <iframe
+            src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100"
+            width="300"
+            height="100"
+            scrolling="no"
+            marginWidth={0}
+            marginHeight={0}
+            frameBorder={0}
+          />
+        </Box>
+      </Box>                       
             <FooterComponent />
         </div>
     );

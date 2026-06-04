@@ -1,40 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Link as MuiLink, useMediaQuery } from "@mui/material";
+import { Typography, Link as MuiLink, useMediaQuery, Box } from "@mui/material";
 import Link from "next/link";
 
 const FooterComponent: React.FC = () => {
   const [renderCount, setRenderCount] = useState(0);
   const isMobile = useMediaQuery("(max-width:600px)");
-  
+
 
 
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
-        {/* Contenedor del nuevo anuncio izquierdo */}
-        <div
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
 
-        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940932&size=300x250" width="210" height="250" scrolling="no"  ></iframe>
-          
-        </div>
+          overflow: 'hidden'
 
-        {/* Contenedor del anuncio principal */}
-        <div
-          
-        ><iframe src="//a.magsrv.com/iframe.php?idzone=5940940&size=300x250" width="210" height="250" scrolling="no"   ></iframe>
-        
-          
-        </div>
+        }}>
+          {/* Contenedor del nuevo anuncio izquierdo */}
+          <div
 
-        {/* Contenedor del nuevo anuncio derecho */}
-        <div
-          
-        >
-          {/* <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
+          ><iframe src="//a.magsrv.com/iframe.php?idzone=5940932&size=300x250" width="210" height="250" scrolling="no"  ></iframe>
+
+          </div>
+
+          {/* Contenedor del anuncio principal */}
+          <div
+
+          ><iframe src="//a.magsrv.com/iframe.php?idzone=5940940&size=300x250" width="210" height="250" scrolling="no"   ></iframe>
+
+
+          </div>
+
+          {/* Contenedor del nuevo anuncio derecho */}
+          <div
+
+          >
+            {/* <Typography variant="h6" style={{ textAlign: "center", color: "#333" }}>
             Advertisement
           </Typography> */}
-        </div>
+          </div></Box>
       </div>
 
       {/* Footer */}

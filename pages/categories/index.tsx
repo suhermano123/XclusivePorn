@@ -47,10 +47,11 @@ const CategoriesPage: React.FC = () => {
             <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
+                
                 <Typography variant="h4" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
                     Porn Categories
                 </Typography>
-
+                
                 <Grid container spacing={3}>
                     {categoriesData.map((category) => (
                         <Grid item xs={6} sm={4} md={3} sx={{ flexBasis: { lg: '20%', xl: '20%' }, maxWidth: { lg: '20%', xl: '20%' } }} key={category.name}>
