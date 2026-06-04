@@ -229,7 +229,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
       if ((window as any).google?.ima) {
 
         (player as any).ima({
-          adTagUrl: "https://s.magsrv.com/v1/vast.php?idz=5942502",
+          adTagUrl: "https://s.magsrv.com/v1/vast.php?idz=5942506",
         });
 
         player.one("play", () => {

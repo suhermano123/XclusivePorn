@@ -40,6 +40,8 @@
     "styled-components": "^6.1.15",
     "uuid": "^13.0.0",
     "video.js": "^8.22.0",
+    "videojs-contrib-ads": "^7.5.2",
+    "videojs-ima": "^2.6.0",
     "yt-dlp-exec": "^1.0.2"
   },
   "devDependencies": {
