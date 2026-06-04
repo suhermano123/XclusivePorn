@@ -435,7 +435,7 @@ const VideoPage = () => {
         }
         return url;
     };
-
+    //console.log("jejejejjeje", video)
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <NavBar sx={{ backgroundColor: "#e91ec4" }} />
@@ -529,7 +529,21 @@ const VideoPage = () => {
                                 <Stack direction="row" sx={{ color: 'rgba(255,255,255,0.6)', fontSize: { xs: '0.78rem', sm: '0.9rem' }, alignItems: 'center', flexWrap: 'wrap', gap: { xs: 1, sm: 2 } }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                         <AccessTime sx={{ fontSize: '1rem' }} />
-                                        {video.duracion || "Unknown"}
+                                        {
+                                            video?.duracion ||
+                                            (video?.duracion_segundos
+                                                ? (() => {
+                                                    const totalSeconds = Number(video.duracion_segundos);
+                                                    const hours = Math.floor(totalSeconds / 3600);
+                                                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                                                    const seconds = totalSeconds % 60;
+
+                                                    return hours > 0
+                                                        ? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                                                        : `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                                                })()
+                                                : "Unknown")
+                                        }
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#00bcd4' }}>
                                         <Visibility sx={{ fontSize: '1rem' }} />
@@ -1211,71 +1225,71 @@ const VideoPage = () => {
                     </Box>
                 </Box>
             </Modal>
-             {/* Slider de los más populares antes del paginador */}
-        <TopVideosSlider />
-         {/* Espacio para anuncios, ahora en línea (uno al lado del otro) - Hidden on mobile */}
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-          mt: 1,
-          mb: 1,
-          px: 1,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: {
-              xs: "100%",
-              sm: "100%",
-              md: "auto",
-            },
-          }}
-        >
-          <iframe
-            src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100"
-            width="300"
-            height="100"
-            scrolling="no"
-            marginWidth={0}
-            marginHeight={0}
-            frameBorder={0}
-            style={{
-              border: 0,
-              maxWidth: "100%",
-            }}
-          />
-        </Box>
+            {/* Slider de los más populares antes del paginador */}
+            <TopVideosSlider />
+            {/* Espacio para anuncios, ahora en línea (uno al lado del otro) - Hidden on mobile */}
+            <Box
+                sx={{
+                    width: "100%",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 2,
+                    mt: 1,
+                    mb: 1,
+                    px: 1,
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: {
+                            xs: "100%",
+                            sm: "100%",
+                            md: "auto",
+                        },
+                    }}
+                >
+                    <iframe
+                        src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100"
+                        width="300"
+                        height="100"
+                        scrolling="no"
+                        marginWidth={0}
+                        marginHeight={0}
+                        frameBorder={0}
+                        style={{
+                            border: 0,
+                            maxWidth: "100%",
+                        }}
+                    />
+                </Box>
 
-        <Box
-          sx={{
-            width: {
-              xs: "100%",
-              md: "300px",
-            },
-            minHeight: "100px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <iframe
-            src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100"
-            width="300"
-            height="100"
-            scrolling="no"
-            marginWidth={0}
-            marginHeight={0}
-            frameBorder={0}
-          />
-        </Box>
-      </Box>                       
+                <Box
+                    sx={{
+                        width: {
+                            xs: "100%",
+                            md: "300px",
+                        },
+                        minHeight: "100px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <iframe
+                        src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100"
+                        width="300"
+                        height="100"
+                        scrolling="no"
+                        marginWidth={0}
+                        marginHeight={0}
+                        frameBorder={0}
+                    />
+                </Box>
+            </Box>
             <FooterComponent />
         </div>
     );

@@ -6,6 +6,7 @@ import NavBar from '@/components/NavBar/NavBar';
 import NavMenu from '@/components/NavMenu/NavMenu';
 import FooterComponent from '@/components/footer/Footer';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const categoriesData = [
     { name: "amateur", image: "https://pornobae.com/wp-content/uploads/2025/10/pba_indy_lix_russian_public_sex.jpg", description: "Real, unscripted homemade amateur porn videos." },
@@ -28,18 +29,19 @@ const categoriesData = [
 ];
 
 const CategoriesPage: React.FC = () => {
-    const router = useRouter();
-
-    const handleCategoryClick = (category: string) => {
-        router.push(`/category/${encodeURIComponent(category.toLowerCase())}`);
-    };
-
+    // Ya no necesitas useRouter para la navegación básica
+    
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
-                <title>Porn Categories - Free Premium HD Latina Videos & Amateur HD Porn</title>
-                <meta name="description" content="Browse our extensive collection of free premium HD adult content by categories on novapornx. Find free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn." />
-                <meta name="keywords" content={categoriesData.map(c => c.name).join(", ") + ", free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free"} />
+                <title>Porn Categories - Free Premium HD Latina Videos & Amateur HD</title>
+                <meta name="description" content="Browse our extensive collection of free premium HD adult content by categories. Find homemade amateur HD porn, Latina videos, and free 4K adult movies." />
+                
+                {/* Etiquetas Open Graph para compartir y SEO social */}
+                <meta property="og:title" content="Porn Categories - Free Premium HD Latina Videos" />
+                <meta property="og:description" content="Browse our extensive collection of free premium HD adult content by categories on novapornx." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://novapornx.com/categories" />
                 <link rel="canonical" href="https://novapornx.com/categories" />
             </Head>
 
@@ -48,57 +50,82 @@ const CategoriesPage: React.FC = () => {
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
                 
-                <Typography variant="h4" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                {/* OPTIMIZACIÓN: Título principal como H1 semántico */}
+                <Typography 
+                    component="h1" 
+                    variant="h4" 
+                    sx={{ color: '#fff', mb: 1, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}
+                >
                     Porn Categories
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)', mb: 4, pl: 2 }}>
+                    Explore top-tier HD amateur, premium Latina, and exclusive 4K videos by category.
                 </Typography>
                 
                 <Grid container spacing={3}>
                     {categoriesData.map((category) => (
                         <Grid item xs={6} sm={4} md={3} sx={{ flexBasis: { lg: '20%', xl: '20%' }, maxWidth: { lg: '20%', xl: '20%' } }} key={category.name}>
-                            <Box
-                                onClick={() => handleCategoryClick(category.name)}
-                                sx={{
-                                    backgroundColor: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    borderRadius: '12px',
-                                    overflow: 'hidden',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                    '&:hover': {
-                                        borderColor: '#f013e5',
-                                        transform: 'translateY(-5px)',
-                                        boxShadow: '0 10px 20px rgba(240, 19, 229, 0.3)',
-                                        '& .categoryImage': {
-                                            transform: 'scale(1.1)'
+                            {/* OPTIMIZACIÓN: Uso de Link de Next.js para rastreo SEO */}
+                            <Link href={`/category/${encodeURIComponent(category.name.toLowerCase())}`} passHref legacyBehavior>
+                                <Box
+                                    component="a" // Lo convierte en una etiqueta <a> real
+                                    sx={{
+                                        display: 'block',
+                                        textDecoration: 'none', // Evita el subrayado del link
+                                        backgroundColor: 'rgba(255,255,255,0.05)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        borderRadius: '12px',
+                                        overflow: 'hidden',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            borderColor: '#f013e5',
+                                            transform: 'translateY(-5px)',
+                                            boxShadow: '0 10px 20px rgba(240, 19, 229, 0.3)',
+                                            '& .categoryImage': {
+                                                transform: 'scale(1.1)'
+                                            }
                                         }
-                                    }
-                                }}
-                            >
-                                <Box sx={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', backgroundColor: '#111', position: 'relative' }}>
-                                    <Image
-                                        src={category.image}
-                                        alt={`${category.name} porn videos`}
-                                        fill
-                                        sizes="(max-width: 600px) 50vw, (max-width: 900px) 33vw, 16vw"
-                                        className="categoryImage"
-                                        style={{
-                                            objectFit: 'cover',
-                                            transition: 'transform 0.4s ease'
-                                        }}
-                                    />
+                                    }}
+                                >
+                                    <Box sx={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', backgroundColor: '#111', position: 'relative' }}>
+                                        <Image
+                                            src={category.image}
+                                            // OPTIMIZACIÓN: Alt tag más descriptivo (Long-Tail)
+                                            alt={`Watch Free HD ${category.name} Porn Videos`}
+                                            fill
+                                            sizes="(max-width: 600px) 50vw, (max-width: 900px) 33vw, 16vw"
+                                            className="categoryImage"
+                                            style={{
+                                                objectFit: 'cover',
+                                                transition: 'transform 0.4s ease'
+                                            }}
+                                        />
+                                    </Box>
+                                    <Box sx={{ p: 2, textAlign: 'center' }}>
+                                        {/* Ya es H2, excelente práctica */}
+                                        <Typography variant="subtitle1" component="h2" sx={{ color: '#fff', fontWeight: 'bold', textTransform: 'capitalize' }}>
+                                            {category.name} Porn
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mt: 0.5, fontSize: '0.8rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                            {category.description}
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                                <Box sx={{ p: 2, textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" component="h2" sx={{ color: '#fff', fontWeight: 'bold', textTransform: 'capitalize' }}>
-                                        {category.name} Porn
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mt: 0.5, fontSize: '0.8rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                        {category.description}
-                                    </Typography>
-                                </Box>
-                            </Box>
+                            </Link>
                         </Grid>
                     ))}
                 </Grid>
+
+                {/* OPTIMIZACIÓN: Texto SEO de cola larga en el footer de la página (no intrusivo) */}
+                <Box sx={{ mt: 8, p: 3, backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                    <Typography component="h3" variant="h6" sx={{ color: '#fff', mb: 2, fontSize: '1.1rem' }}>
+                        Free Premium HD Latina Videos & Exclusive Content
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>
+                        Welcome to the ultimate directory for <strong>free premium HD Latina videos</strong> and <strong>amateur HD porn from Colombia</strong>. Whether you are looking for intense hardcore scenes, passionate bedroom intimacy, or high-quality 4K homemade Latina porn, our constantly updated categories have you covered. Browse through our HD MILF amateur videos, interracial scenes, and top-tier adult entertainment fully optimized for any device.
+                    </Typography>
+                </Box>
             </Container>
 
             <FooterComponent />

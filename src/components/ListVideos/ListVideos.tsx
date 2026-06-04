@@ -167,27 +167,27 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
       </Script>
       <div style={styles.container}>
         <Box
-  sx={{
-    display: "grid",
-    gridTemplateColumns: {
-      xs: "repeat(2, 1fr)",
-      sm: "repeat(3, 1fr)",
-      md: "repeat(4, 1fr)",
-      lg: "repeat(5, 1fr)",
-      xl: "repeat(6, 1fr)"
-    },
-    gap: {
-      xs: "6px",
-      sm: "10px",
-      md: "15px"
-    },
-    padding: {
-      xs: "6px",
-      sm: "10px",
-      md: "15px"
-    }
-  }}
->
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(2, 1fr)",
+              sm: "repeat(3, 1fr)",
+              md: "repeat(4, 1fr)",
+              lg: "repeat(5, 1fr)",
+              xl: "repeat(6, 1fr)"
+            },
+            gap: {
+              xs: "6px",
+              sm: "10px",
+              md: "15px"
+            },
+            padding: {
+              xs: "6px",
+              sm: "10px",
+              md: "15px"
+            }
+          }}
+        >
           {videoL.length === 0
             ? Array(15)
               .fill(0)

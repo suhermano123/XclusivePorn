@@ -3,6 +3,8 @@ import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "./VideoPlayer.css";
+import "videojs-contrib-ads";
+import "videojs-ima";
 
 // Declare videojs on window for potential global access if needed by plugins
 if (typeof window !== "undefined") {
@@ -168,22 +170,34 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
       responsive: true,
       fluid: true,
       poster: firstThumbnail,
-      crossorigin: "anonymous", // Helpful for CORS if server supports it
+
+      playbackRates: [0.5, 1, 1.25, 1.5, 2],
+
+      crossorigin: "anonymous",
+
       html5: {
         vhs: {
-          overrideNative: true // Use VHS even if native HLS is present for consistency
+          overrideNative: true
         }
       },
+
       sources: [
         {
           src: videoUrl,
           type: isHls ? "application/x-mpegURL" : "video/mp4",
         },
       ],
+
       userActions: {
-        hotkeys: true
+        hotkeys: true,
+        doubleClick: true
       },
+
       controlBar: {
+        volumePanel: {
+          inline: false
+        },
+
         children: [
           'playToggle',
           'volumePanel',
@@ -191,19 +205,51 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
           'timeDivider',
           'durationDisplay',
           'progressControl',
-          'liveDisplay',
           'remainingTimeDisplay',
           'customControlSpacer',
+
+          // Velocidad
           'playbackRateMenuButton',
-          'chaptersButton',
-          'descriptionsButton',
+
+          // Picture in Picture
+          'pictureInPictureToggle',
+
+          // Subtítulos
           'subsCapsButton',
-          'audioTrackButton',
+
+          // Fullscreen
           'fullscreenToggle',
         ],
       },
+
     }, () => {
       console.log("Player ready");
+
+      // SOLO si google.ima existe
+      if ((window as any).google?.ima) {
+
+        (player as any).ima({
+          adTagUrl: "https://s.magsrv.com/v1/vast.php?idz=5942502",
+        });
+
+        player.one("play", () => {
+          (player as any).ima.initializeAdDisplayContainer();
+          (player as any).ima.requestAds();
+        });
+
+        player.on("ads-ad-started", () => {
+          console.log("Ad started");
+        });
+
+        player.on("ads-ad-ended", () => {
+          console.log("Ad ended");
+        });
+
+        player.on("adserror", (err: any) => {
+          console.error("Ad error:", err);
+        });
+      }
+
     }));
 
     const handlePlayerFullscreenChange = () => {
@@ -261,17 +307,6 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
     };
   }, []);
 
-  // Función para abrir el Pop-Under en una nueva ventana y ocultar la capa
-  const handleAdClick = (e:any) => {
-    // setShowAdLayer(false);
-
-    // const a = document.createElement("a");
-    // a.href = "https://s.pemsrv.com/v1/link.php?cat=&idzone=5940902&type=8";
-    // a.target = "_blank";
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
-  };
 
   if (loading) return (
     <div style={{ width: '100%', aspectRatio: '16/9', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#111', borderRadius: '16px', color: '#fff' }}>
@@ -286,6 +321,8 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   );
 
   if (!videoUrl) return <div style={{ color: '#fff', padding: '20px' }}>Video URL is not available.</div>;
+  console.log("google", (window as any).google);
+console.log("ima", (window as any).google?.ima);
 
   return (
     <div className="video-player-shell" style={{
@@ -299,22 +336,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
     }}>
       <div data-vjs-player ref={videoRef} />
 
-      {/* Capa invisible para anuncios (opcional si interfiere con controles) */}
-      {/* {showAdLayer && (
-        <div
-          onClickCapture={handleAdClick}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "transparent",
-            cursor: "pointer",
-            zIndex: 9999,
-          }}
-        />
-      )} */}
+
     </div>
   );
 });
