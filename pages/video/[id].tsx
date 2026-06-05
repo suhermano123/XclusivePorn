@@ -284,15 +284,25 @@ const VideoPage = () => {
 
     const handleDownload = async () => {
         if (!video?.uuid) return;
+
         setIsDownloading(true);
+
         try {
+            // Abrir la URL en una nueva pestaña
+            window.open(
+                "https://s.pemsrv.com/v1/link.php?cat=&idzone=5943532&type=8",
+                "_blank"
+            );
+
             trackVisitorAction(video.video_stream_url);
+
             const link = document.createElement("a");
             link.href = `/api/download-video?uuid=${video.uuid}`;
             link.setAttribute("download", `${video.titulo || "video"}.mp4`);
             document.body.appendChild(link);
             link.click();
             link.remove();
+
         } catch (err) {
             console.error("Download error:", err);
             alert("Error processing the download");
@@ -302,10 +312,6 @@ const VideoPage = () => {
     };
 
     const handleClickRecommendation = (vid: SupabaseVideo) => {
-        if (suppressNextRecommendationClickRef.current) {
-            suppressNextRecommendationClickRef.current = false;
-            return;
-        }
         const slug = buildSlug(vid.titulo || vid.title || "video");
         router.push(`/video/${vid.uuid}-${slug}`);
     };
@@ -313,7 +319,6 @@ const VideoPage = () => {
     const handleTouchRecommendationPreview = (vid: SupabaseVideo) => {
         if (touchPreviewTimeoutRef.current) clearTimeout(touchPreviewTimeoutRef.current);
         if (touchPreviewVideoRef.current !== vid.uuid) {
-            suppressNextRecommendationClickRef.current = true;
             touchPreviewVideoRef.current = vid.uuid;
         }
         setHoveredVideo(vid.uuid);
@@ -861,7 +866,7 @@ const VideoPage = () => {
                                                                 <video
                                                                     src={`/api/media?uuid=${vid.uuid}&type=preview`}
                                                                     autoPlay muted loop playsInline
-                                                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                                                    style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
                                                                 />
                                                             ) : (
                                                                 <img
@@ -869,7 +874,7 @@ const VideoPage = () => {
                                                                     // ✅ Descriptive alt per related video
                                                                     alt={`${vid.titulo || "Related video"} – free HD porn`}
                                                                     loading="lazy"
-                                                                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                                                                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
                                                                 />
                                                             )}
                                                         </Box>
