@@ -5,107 +5,88 @@ import Tooltip from "@mui/material/Tooltip";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 
 export default function NavMenu(props: any) {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
 
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
-
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
+  const handleTooltipClose = () => setOpen(false);
+  const handleTooltipOpen = () => setOpen(true);
 
   const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const navLinkStyle = {
+    color: "white",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "5px",
+  };
 
   return (
-    <div>
-      <Grid container sx={{ justifyContent: "center" }}>
-        <Grid item>
-          <Tooltip disableFocusListener title="Channels">
+    <nav aria-label="Main navigation">
+      <Grid container sx={{ justifyContent: "center" }} component="ul" sx={{ listStyle: "none", margin: 0, padding: 0, justifyContent: "center" }}>
+
+        <Grid item component="li">
+          <Tooltip disableFocusListener disableTouchListener title="Browse porn channels">
             <Button
-              style={{
-                color: "white",
-                display: "flex",
-                alignItems: "center", // Asegura la alineación vertical
-                justifyContent: "center", // Centra el contenido horizontalmente
-                gap: "5px", // Espaciado entre el icono y el texto
-              }}
+              component={Link}
+              href="/channels"
+              aria-label="Browse porn channels"
+              style={navLinkStyle}
             >
-              <LiveTvIcon sx={{ fontSize: 20, verticalAlign: "middle" }} />
-              <span style={{ display: "flex", alignItems: "center" }}>
-                Channels
-              </span>
+              <LiveTvIcon sx={{ fontSize: 20 }} aria-hidden="true" />
+              Channels
             </Button>
           </Tooltip>
         </Grid>
-        <Grid item>
-          {/* <Tooltip disableFocusListener disableTouchListener title="Download porn movies">
-            <Button component={Link} href="/Downloads/PornMovies" style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "5px",
-            }}> <CloudDownloadIcon /> DOWNLOAD PORN MOVIES</Button>
-          </Tooltip> */}
-        </Grid>
-        <Grid item>
-          {/* <Tooltip disableFocusListener disableTouchListener title="Porn stars">
-            <Button component={Link} href="/Porn/Images" style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "5px",
-            }}> <FavoriteIcon />PORN IMAGES</Button>
-          </Tooltip> */}
-        </Grid>
-        <Grid item onClick={(e) => e.stopPropagation()}>
-          {/* <Tooltip disableFocusListener title="Cams">
-            <Button onClick={handleOpenCams}>
-              CAMS
-            </Button>
-          </Tooltip> */}
-        </Grid>
-        <Grid item>
-          <Tooltip disableFocusListener title="Video Downloader">
-            <Button component={Link} href="/VideoDownloader" style={{
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "5px",
-            }}>
-              <CloudDownloadIcon /> VIDEO DOWNLOADER
+
+        <Grid item component="li">
+          <Tooltip disableFocusListener disableTouchListener title="Download free porn videos">
+            <Button
+              component={Link}
+              href="/VideoDownloader"
+              aria-label="Free porn video downloader"
+              style={navLinkStyle}
+            >
+              <CloudDownloadIcon aria-hidden="true" />
+              Video Downloader
             </Button>
           </Tooltip>
         </Grid>
-        <Grid item>
+
+        <Grid item component="li">
+          <Tooltip disableFocusListener disableTouchListener title="Free porn pictures and sex images">
+            <Button
+              component={Link}
+              href="/images"
+              aria-label="Free porn pictures and sex images gallery"
+              style={navLinkStyle}
+            >
+              <PhotoLibraryIcon aria-hidden="true" />
+              Porn Images
+            </Button>
+          </Tooltip>
+        </Grid>
+
+        <Grid item component="li">
           <ClickAwayListener onClickAway={handleTooltipClose}>
-            <div></div>
+            <div />
           </ClickAwayListener>
         </Grid>
-      </Grid>
 
-     
-    </div>
+      </Grid>
+    </nav>
   );
 }

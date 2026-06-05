@@ -16,6 +16,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'pub-f64184b097084e768de083d0575add4e.r2.dev',
+      },
+      {
+        protocol: 'https',
         hostname: 'xmoviescdn.online',
       },
       {
