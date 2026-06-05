@@ -36,7 +36,7 @@ export default function NavMenu(props: any) {
 
   return (
     <nav aria-label="Main navigation">
-      <Grid container sx={{ justifyContent: "center" }} component="ul" sx={{ listStyle: "none", margin: 0, padding: 0, justifyContent: "center" }}>
+      <Grid container sx={{ justifyContent: "center" }} component="ul" >
 
         <Grid item component="li">
           <Tooltip disableFocusListener disableTouchListener title="Browse porn channels">
