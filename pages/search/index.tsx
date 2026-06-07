@@ -176,6 +176,11 @@ const SearchPage: React.FC = () => {
             <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
+                <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
+                <ins className="eas6a97888e31" data-zoneid="5941690" />
+                <Script id="magsrv-ad">
+                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+                </Script>
                 <Typography variant="h4" sx={{ color: '#fff', mb: 1, fontWeight: 'bold' }}>
                     Search Results for "{searchQuery}"
                 </Typography>
