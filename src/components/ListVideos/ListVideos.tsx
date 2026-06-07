@@ -368,6 +368,24 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
 
                 return (
                   <React.Fragment key={video.uuid || video.id_post}>
+                    {/* ── Ad nativo cada 12 videos ── */}
+                    {index > 0 && index % 12 === 0 && (
+                      <Box sx={{ gridColumn: "1 / -1", width: "100%", textAlign: "center", my: 1 }}>
+                        <Script
+                          src="https://a.magsrv.com/ad-provider.js"
+                          strategy="afterInteractive"
+                        />
+
+                        <ins
+                          className="eas6a97888e20"
+                          data-zoneid="5944486"
+                        />
+
+                        <Script id={`magsrv-zone-${index}`}>
+                          {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+                        </Script>
+                      </Box>
+                    )}
                     {/* Per-video JSON-LD */}
                     <script
                       type="application/ld+json"
@@ -564,6 +582,14 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
                 );
               })}
           </Box>
+          <Script
+            src="https://a.magsrv.com/ad-provider.js"
+            strategy="afterInteractive"
+          />
+          <ins className="eas6a97888e20" data-zoneid="5944490" />
+          <Script id={`magsrv-native-5944490`}>
+            {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+          </Script>
 
           <TopVideosSlider />
 
@@ -660,6 +686,17 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
               </Button>
             </Link>
           </Box>
+
+
+
+
+
+
+
+
+
+
+
           <Script
             src="https://a.magsrv.com/ad-provider.js"
             strategy="afterInteractive"
