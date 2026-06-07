@@ -141,6 +141,7 @@ const VideoPage = () => {
     const touchPreviewVideoRef = useRef<string | null>(null);
     const suppressNextRecommendationClickRef = useRef(false);
     const touchPreviewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const popupOpened = useRef(false);
 
     // ─── Fetch video ─────────────────────────────────────────────────────────
     useEffect(() => {
@@ -204,6 +205,17 @@ const VideoPage = () => {
 
     // ─── Handlers ────────────────────────────────────────────────────────────
     const handlePlay = async () => {
+        // Evita abrir más de una vez por sesión
+        if (!popupOpened.current) {
+            popupOpened.current = true;
+
+            window.open(
+                "https://s.pemsrv.com/v1/link.php?cat=&idzone=5944442&type=8",
+                "_blank",
+                "noopener,noreferrer"
+            );
+        }
+
         if (!viewedRef.current && video) {
             viewedRef.current = true;
             try {
@@ -782,6 +794,19 @@ const VideoPage = () => {
                                     )}
                                 </Box>
                             </Box>
+                            <Script
+                                src="https://a.magsrv.com/ad-provider.js"
+                                strategy="afterInteractive"
+                            />
+
+                            <ins
+                                className="eas6a97888e37"
+                                data-zoneid="5944470"
+                            />
+
+                            <Script id="magsrv-zone-5944470">
+                                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+                            </Script>
                         </Box>
                     </Grid>
 
