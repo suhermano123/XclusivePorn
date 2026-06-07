@@ -13,6 +13,8 @@ import { getVisitorId } from "@/api/visitorIdHelper";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
+import Script from "next/script";
+import TopVideosSlider from "@/components/TopVideosSlider/TopVideosSlider";
 
 const SearchPage: React.FC = () => {
     const router = useRouter();
@@ -416,6 +418,51 @@ const SearchPage: React.FC = () => {
                     </Box>
                 )}
             </Container>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    my: 2,
+                }}
+            >
+                <Script
+                    src="https://a.magsrv.com/ad-provider.js"
+                    strategy="afterInteractive"
+                />
+                <ins className="eas6a97888e20" data-zoneid="5944490" />
+                <Script id={`magsrv-native-5944490`}>
+                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+                </Script>
+            </Box>
+            <TopVideosSlider />
+            <Script
+                src="https://a.magsrv.com/ad-provider.js"
+                strategy="afterInteractive"
+            />
+
+            <ins
+                className="eas6a97888e42"
+                data-zoneid="5944450"
+            />
+
+            <Script id="magsrv-zone-5944450">
+                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+            </Script>
+
+            <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
+            <ins className="eas6a97888e37" data-zoneid="5941734" />
+            <Script id="magsrv-zone-5941734">
+                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+            </Script>
+
+            <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
+            <ins className="eas6a97888e31" data-zoneid="5941732" />
+            <Script id="magsrv-zone-5941732">
+                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+            </Script>
+
             <FooterComponent />
         </div>
     );
