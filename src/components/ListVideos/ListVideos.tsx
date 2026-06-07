@@ -582,15 +582,24 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
                 );
               })}
           </Box>
-          <Script
-            src="https://a.magsrv.com/ad-provider.js"
-            strategy="afterInteractive"
-          />
-          <ins className="eas6a97888e20" data-zoneid="5944490" />
-          <Script id={`magsrv-native-5944490`}>
-            {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-          </Script>
-
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              my: 2,
+            }}
+          >
+            <Script
+              src="https://a.magsrv.com/ad-provider.js"
+              strategy="afterInteractive"
+            />
+            <ins className="eas6a97888e20" data-zoneid="5944490" />
+            <Script id={`magsrv-native-5944490`}>
+              {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
+            </Script>
+          </Box>
           <TopVideosSlider />
 
           {/* ─── Pagination ─────────────────────────────────────────────────── */}
