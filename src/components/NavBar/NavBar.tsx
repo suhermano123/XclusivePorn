@@ -327,6 +327,26 @@ export default function PrimarySearchAppBar(props: any) {
           </Button>
 
           <Box sx={{ flexGrow: 1 }} />
+          <Button
+            component={Link}
+            href="/moviesDownload"
+            variant="contained"
+            sx={{
+              display: { xs: '30%', lg: 'flex' },
+              ml: 2,
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              color: '#fff',
+              borderRadius: '20px',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              px: 3,
+              boxShadow: 'none',
+              border: '1px solid rgba(255,255,255,0.2)',
+              '&:hover': { backgroundColor: '#f013e5', borderColor: '#f013e5' }
+            }}
+          >
+            Movies
+          </Button>
 
           <Box sx={{ display: { xs: '30%', md: 'flex' }, alignItems: 'center', gap: 2 }}>
             <Button

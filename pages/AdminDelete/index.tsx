@@ -81,7 +81,7 @@ const DeleteMedia = () => {
                     <title>Admin Login | novapornx</title>
                     <meta name="robots" content="noindex, nofollow" />
                 </Head>
-                <NavBar sx={{ backgroundColor: "#e91ec4" }} />
+                <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
                 <Container maxWidth="xs" sx={{ flexGrow: 1, py: { xs: 4, md: 8 }, display: 'flex', alignItems: 'center' }}>
                     <Box component="form" onSubmit={handleLogin} sx={{
                         backgroundColor: '#111', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -127,8 +127,8 @@ const DeleteMedia = () => {
                 <meta name="robots" content="noindex, nofollow" />
             </Head>
 
-            <NavBar sx={{ backgroundColor: "#e91ec4" }} />
-            <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
+            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth="md" sx={{ flexGrow: 1, py: { xs: 4, md: 8 }, display: 'flex', justifyContent: 'center' }}>
                 <Box sx={{

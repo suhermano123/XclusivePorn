@@ -13,7 +13,7 @@ const FaqPage: React.FC = () => {
                 <title>Frequently Asked Questions (FAQ) - novapornx</title>
                 <meta name="description" content="Frequently Asked Questions and Support for novapornx." />
             </Head>
-            <NavBar sx={{ backgroundColor: "#e91ec4" }} />
+            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
             <div style={styles.faqContainer}>
                 <div style={styles.faqContent}>
                     <Typography variant="h5" style={styles.title}>

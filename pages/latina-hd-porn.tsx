@@ -29,8 +29,8 @@ export default function LatinaHDPornVideos() {
                 <link rel="canonical" href="https://novapornx.com/latina-hd-porn" />
             </Head>
 
-            <NavBar sx={{ backgroundColor: "#e91ec4" }} />
-            <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
+            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
                 <Typography variant="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>

@@ -116,8 +116,8 @@ const CategoryPage: React.FC = () => {
                 {categoryQuery ? <link rel="canonical" href={`https://novapornx.com/category/${encodeURIComponent(categoryQuery.toLowerCase())}`} /> : null}
                 <meta name="robots" content="index, follow" />
             </Head>
-            <NavBar sx={{ backgroundColor: "#e91ec4" }} />
-            <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
+            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
                 {categoryQuery ? (

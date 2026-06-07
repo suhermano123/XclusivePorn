@@ -83,7 +83,7 @@ export default function ProfilePage() {
 
   return (
     <Box >
-      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
+      <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
       <Typography variant="h4" sx={{ mb: 3 }}>
         {profile}
       </Typography>

@@ -114,7 +114,7 @@ export default function ImagesPage() {
         />
       </Head>
 
-      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
+      <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
 
       {/*
         ✅ <main> landmark — original used <Box component="main"> which is correct,

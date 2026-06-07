@@ -119,8 +119,8 @@ const ImagesPage: React.FC = () => {
                 Premium Adult Image Gallery - novapornx
             </h1>
 
-            <NavBar sx={{ backgroundColor: "#e91ec4" }} />
-            <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
+            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Box sx={{ flexGrow: 1, px: { xs: 1, sm: 2, md: 3 }, py: 3 }}>
                 <Typography
