@@ -103,17 +103,17 @@ const VideoDownloader: React.FC = () => {
                 <meta name="description" content="Download your favorite videos easily with our premium video downloader. Download free premium hd latina videos, amateur hd porn, and free 4k homemade latina porn." />
                 <meta name="keywords" content="video downloader, free download, download mp4 video, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free" />
                 <meta name="robots" content="index, follow" /> {/* Permite a Google indexar y seguir la página */}
-                <meta name="author" content="XclusivePorn" />
+                <meta name="author" content="Novapornx" />
 
                 {/* Open Graph (OG) Tags for social media sharing */}
-                <meta property="og:title" content="XclusivePorn Video Downloader - High Speed" />
+                <meta property="og:title" content="Novapornx Video Downloader - High Speed" />
                 <meta property="og:description" content="The ultimate tool to download your favorite videos in maximum quality, without limits." />
                 <meta property="og:type" content="website" />
-                <meta property="og:site_name" content="XclusivePorn" />
+                <meta property="og:site_name" content="Novapornx" />
 
                 {/* Twitter Card Tags for Twitter/X */}
                 <meta name="twitter:card" content="summary" />
-                <meta name="twitter:title" content="Free Video Downloader - XclusivePorn" />
+                <meta name="twitter:title" content="Free Video Downloader - Novapornx" />
                 <meta name="twitter:description" content="Fast and safe download in MP4 format and maximum quality." />
 
                 {/* Structured Data (JSON-LD) - Generates a 'Rich Snippet' in Google defining this as a software tool */}
@@ -123,7 +123,7 @@ const VideoDownloader: React.FC = () => {
                         __html: JSON.stringify({
                             "@context": "https://schema.org",
                             "@type": "WebApplication",
-                            "name": "XclusivePorn Video Downloader",
+                            "name": "Novapornx Video Downloader",
                             "applicationCategory": "MultimediaApplication",
                             "operatingSystem": "All",
                             "description": "Free tool to download videos from multiple online platforms in MP4 format without limits or waiting.",

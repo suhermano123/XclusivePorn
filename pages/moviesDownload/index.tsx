@@ -10,7 +10,7 @@ import Link from "next/link";
 import Script from "next/script";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const BASE_URL = "https://xclusiveporn.com";
+const BASE_URL = "https://Novapornx.com";
 const PAGE_URL = `${BASE_URL}/moviesDownload`;
 const OG_IMAGE = `${BASE_URL}/assets/og-movies.jpg`;
 
@@ -40,7 +40,7 @@ const getThumbnailUrl = (imagenes: any): string => {
 const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "XclusivePorn",
+    "name": "Novapornx",
     "url": BASE_URL,
 };
 
@@ -122,14 +122,14 @@ export default function MoviesDownload() {
         }}>
             <Head>
                 {/* ── Core meta ──────────────────────────────────────────── */}
-                <title>Download Premium Porn Movies in Full HD | XclusivePorn</title>
+                <title>Download Premium Porn Movies in Full HD | Novapornx</title>
                 <meta
                     name="description"
-                    content="Download premium full-length porn movies in HD and 4K at XclusivePorn. Huge library of exclusive adult films available for direct download, no subscription required."
+                    content="Download premium full-length porn movies in HD and 4K at Novapornx. Huge library of exclusive adult films available for direct download, no subscription required."
                 />
                 <meta
                     name="keywords"
-                    content="download porn movies, premium porn download, free adult movies download, hd porn download, full length porn movies, 4k porn download, xclusiveporn"
+                    content="download porn movies, premium porn download, free adult movies download, hd porn download, full length porn movies, 4k porn download, Novapornx"
                 />
 
                 {/* ✅ Canonical */}
@@ -138,17 +138,17 @@ export default function MoviesDownload() {
                 {/* ── Open Graph ─────────────────────────────────────────── */}
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={PAGE_URL} />
-                <meta property="og:title" content="Download Premium Porn Movies in Full HD | XclusivePorn" />
+                <meta property="og:title" content="Download Premium Porn Movies in Full HD | Novapornx" />
                 <meta property="og:description" content="Download premium full-length porn movies in HD and 4K. Huge library of exclusive adult films, no subscription required." />
                 <meta property="og:image" content={OG_IMAGE} />
                 <meta property="og:image:width" content="1280" />
                 <meta property="og:image:height" content="720" />
-                <meta property="og:site_name" content="XclusivePorn" />
+                <meta property="og:site_name" content="Novapornx" />
 
                 {/* ── Twitter Card ───────────────────────────────────────── */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:url" content={PAGE_URL} />
-                <meta name="twitter:title" content="Download Premium Porn Movies in Full HD | XclusivePorn" />
+                <meta name="twitter:title" content="Download Premium Porn Movies in Full HD | Novapornx" />
                 <meta name="twitter:description" content="Download premium full-length porn movies in HD and 4K. No subscription required." />
                 <meta name="twitter:image" content={OG_IMAGE} />
 

@@ -7,7 +7,7 @@ import FooterComponent from "@/components/footer/Footer";
 import Link from "next/link";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const BASE_URL = "https://xclusiveporn.com";
+const BASE_URL = "https://novapornx.com";
 const NOINDEX_AFTER_PAGE = 10;
 
 export default function ImagesPage() {
@@ -31,11 +31,11 @@ export default function ImagesPage() {
   const nextUrl = buildUrl(page + 1); // Keep existing behavior; pass totalPages to cap if available.
 
   const pageLabel = page > 1 ? ` — Page ${page}` : "";
-  const title = `Free Porn Pictures & Sex Images${pageLabel} | XclusivePorn`;
+  const title = `Free Porn Pictures & Sex Images${pageLabel} | Novapornx`;
   const description =
     page > 1
-      ? `Page ${page} – Browse free high-quality porn pictures and sex image galleries at XclusivePorn. Amateur nudes, exclusive adult photos updated daily.`
-      : `Explore thousands of free high-quality porn pictures, sex images, and amateur galleries at XclusivePorn. Daily updated adult photos, nudes, and babes.`;
+      ? `Page ${page} – Browse free high-quality porn pictures and sex image galleries at Novapornx. Amateur nudes, exclusive adult photos updated daily.`
+      : `Explore thousands of free high-quality porn pictures, sex images, and amateur galleries at Novapornx. Daily updated adult photos, nudes, and babes.`;
 
   // ─── JSON-LD: CollectionPage ─────────────────────────────────────────────
   // ✅ NEW: CollectionPage is the correct schema type for a paginated image gallery.
@@ -48,7 +48,7 @@ export default function ImagesPage() {
       : "Free Porn Pictures & Sex Images Gallery",
     "description": description,
     "url": canonicalUrl,
-    "isPartOf": { "@type": "WebSite", "name": "XclusivePorn", "url": BASE_URL },
+    "isPartOf": { "@type": "WebSite", "name": "Novapornx", "url": BASE_URL },
     ...(page > 1 ? { "position": page } : {}),
   };
 
@@ -93,7 +93,7 @@ export default function ImagesPage() {
         <meta property="og:image" content={`${BASE_URL}/assets/og-images.jpg`} />
         <meta property="og:image:width" content="1280" />
         <meta property="og:image:height" content="720" />
-        <meta property="og:site_name" content="XclusivePorn" />
+        <meta property="og:site_name" content="Novapornx" />
 
         {/* ── Twitter Card ───────────────────────────────────────────────── */}
         <meta name="twitter:card" content="summary_large_image" />
