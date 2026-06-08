@@ -12,7 +12,8 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const uuid = searchParams.get('uuid');
     const type = searchParams.get('type'); // 'preview' or 'stream'
-
+    // console.log('uuid', uuid);
+    // console.log('type', type);
     if (!uuid) {
         return new NextResponse('Missing uuid', { status: 400 });
     }

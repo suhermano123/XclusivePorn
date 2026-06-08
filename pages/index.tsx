@@ -51,7 +51,7 @@ export default function HomeIndex() {
         const register = () => {
           navigator.serviceWorker
             .register("/sw.js")
-            .then((registration) => console.log("SW registered: ", registration))
+            .then((registration) => console.log("OK"))
             .catch((err) => console.log("SW registration failed: ", err));
         };
         if (document.readyState === "complete") {

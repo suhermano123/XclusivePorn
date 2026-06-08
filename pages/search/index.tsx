@@ -33,6 +33,7 @@ const SearchPage: React.FC = () => {
     const videosPerPage = 24;
 
     const loadVideos = async (page: number, query: string) => {
+        console.log("search page loaded", page, query);
         setIsLoading(true);
         try {
             const { items, totalCount: count } = await searchVideosPaginated(query, videosPerPage, page);
@@ -166,6 +167,18 @@ const SearchPage: React.FC = () => {
         }
         return url;
     };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (typeof window !== "undefined" && (window as any).AdProvider) {
+                (window as any).AdProvider.push({
+                    serve: {},
+                });
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

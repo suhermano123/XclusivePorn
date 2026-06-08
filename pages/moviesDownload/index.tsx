@@ -232,9 +232,9 @@ export default function MoviesDownload() {
                         gridTemplateColumns: {
                             xs: "repeat(2, 1fr)",
                             sm: "repeat(3, 1fr)",
-                            md: "repeat(4, 1fr)",
-                            lg: "repeat(4, 1fr)",
-                            xl: "repeat(5, 1fr)",
+                            md: "repeat(3, 1fr)",
+                            lg: "repeat(3, 1fr)",
+                            xl: "repeat(3, 1fr)",
                         },
                         gap: { xs: "6px", sm: "10px", md: "15px" },
                     }}>
@@ -280,7 +280,7 @@ export default function MoviesDownload() {
                                             },
                                         }}
                                     >
-                                        <Box sx={{ position: "relative", width: "100%", height: { xs: "100px", sm: "180px", md: "220px", xl: "150px" } }}>
+                                        <Box sx={{ position: "relative", width: "100%", height: { xs: "200px", sm: "380px", md: "220px", xl: "370px" } }}>
                                             <Image
                                                 src={getThumbnailUrl(video.imagenes)}
                                                 /*

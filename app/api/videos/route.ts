@@ -80,7 +80,9 @@ export async function GET(request: Request) {
                 const { data: searchData, error: searchError } = await supabase
                     .from('posted_videos')
                     .select('*')
-                    .ilike('titulo', titulo.replace(/-/g, ' '))
+                    .or(
+                        `titulo.ilike.%${searchParams.get('searchQuery')}%,descripcion.ilike.%${searchParams.get('searchQuery')}%`
+                    )
                     .limit(1)
                     .maybeSingle();
 
@@ -122,11 +124,22 @@ export async function GET(request: Request) {
         }
 
         if (searchQuery) {
-            // Simulated semantic search across the title
+            // Dynamic search across titulo, descripcion, and tags
             const words = searchQuery.split(/\s+/).filter(Boolean);
             if (words.length > 0) {
-                const orQuery = words.map(word => `titulo.ilike.%${word}%`).join(',');
-                query = query.or(orQuery);
+                // We chain .or() for each word so the results must match ALL words 
+                // in at least one of the target columns (AND logic).
+                words.forEach(word => {
+                    // Simple stemming: remove plural 's' to match singulars as well
+                    // (e.g. "asians" -> "asian", "teens" -> "teen")
+                    let searchWord = word;
+                    const lowerWord = word.toLowerCase();
+                    if (lowerWord.length > 3 && lowerWord.endsWith('s') && !lowerWord.endsWith('ss')) {
+                        searchWord = word.slice(0, -1);
+                    }
+                    
+                    query = query.or(`titulo.ilike.%${searchWord}%,descripcion.ilike.%${searchWord}%,tags.ilike.%${searchWord}%`);
+                });
             }
         }
 

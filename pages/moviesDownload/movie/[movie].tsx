@@ -340,56 +340,69 @@ export default function MovieDetail() {
 
                             {links.length > 0 ? (
                                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                                    {links.map((link, idx) => (
-                                        /*
-                                            ✅ FIX: Download buttons use rel="noopener noreferrer nofollow".
-                                            External download links should have rel="nofollow" so Google
-                                            doesn't pass PageRank to external CDN/file servers.
-                                            Original had noopener noreferrer but was missing nofollow.
-                                        */
-                                        <Button
-                                            key={idx}
-                                            variant="contained"
-                                            component="button"
-                                            onClick={() => {
-                                                if (!adOpened) {
+                                    {links.map((link, idx) => {
+                                        let buttonBg = "linear-gradient(90deg, #f013e5, #ff5e62)";
+                                        let buttonShadowHover = "rgba(240,19,229,0.6)";
+                                        let buttonShadow = "rgba(240,19,229,0.4)";
+                                        let buttonLabel = `Download Server ${idx + 1}`;
+                                        
+                                        if (idx === 0) {
+                                            buttonBg = "linear-gradient(90deg, #00853f, #00a64e)"; // uTorrent Green
+                                            buttonShadowHover = "rgba(0,166,78,0.6)";
+                                            buttonShadow = "rgba(0,166,78,0.4)";
+                                            buttonLabel = "Download via uTorrent";
+                                        } else if (idx === 1) {
+                                            buttonBg = "linear-gradient(90deg, #0b468c, #ff5a00)"; // Keep2Share Blue/Orange
+                                            buttonShadowHover = "rgba(255,90,0,0.6)";
+                                            buttonShadow = "rgba(255,90,0,0.4)";
+                                            buttonLabel = "Download via Keep2Share";
+                                        }
+
+                                        return (
+                                            <Button
+                                                key={idx}
+                                                variant="contained"
+                                                component="button"
+                                                onClick={() => {
+                                                    if (!adOpened) {
+                                                        window.open(
+                                                            "https://s.pemsrv.com/v1/link.php?cat=&idzone=5944644&type=8",
+                                                            "_blank",
+                                                            "noopener,noreferrer"
+                                                        );
+
+                                                        setAdOpened(true);
+                                                        return;
+                                                    }
+
                                                     window.open(
-                                                        "https://s.pemsrv.com/v1/link.php?cat=&idzone=5944644&type=8",
+                                                        link,
                                                         "_blank",
                                                         "noopener,noreferrer"
                                                     );
-
-                                                    setAdOpened(true);
-                                                    return;
-                                                }
-
-                                                window.open(
-                                                    link,
-                                                    "_blank",
-                                                    "noopener,noreferrer"
-                                                );
-                                            }}
-                                            aria-label={`Download ${movie.titulo} from server ${idx + 1}`}
-                                            startIcon={<DownloadIcon />}
-                                            sx={{
-                                                background: "linear-gradient(90deg, #f013e5, #ff5e62)",
-                                                color: "#fff",
-                                                fontWeight: "bold",
-                                                textTransform: "none",
-                                                fontSize: "1.1rem",
-                                                py: 1.5,
-                                                borderRadius: "12px",
-                                                boxShadow: "0 4px 15px rgba(240,19,229,0.4)",
-                                                transition: "all 0.3s ease",
-                                                "&:hover": {
-                                                    transform: "translateY(-2px)",
-                                                    boxShadow: "0 8px 25px rgba(240,19,229,0.6)",
-                                                },
-                                            }}
-                                        >
-                                            Download Server {idx + 1}
-                                        </Button>
-                                    ))}
+                                                }}
+                                                aria-label={`Download ${movie.titulo} from server ${idx + 1}`}
+                                                startIcon={<DownloadIcon />}
+                                                sx={{
+                                                    background: buttonBg,
+                                                    color: "#fff",
+                                                    fontWeight: "bold",
+                                                    textTransform: "none",
+                                                    fontSize: "1.1rem",
+                                                    py: 1.5,
+                                                    borderRadius: "12px",
+                                                    boxShadow: `0 4px 15px ${buttonShadow}`,
+                                                    transition: "all 0.3s ease",
+                                                    "&:hover": {
+                                                        transform: "translateY(-2px)",
+                                                        boxShadow: `0 8px 25px ${buttonShadowHover}`,
+                                                    },
+                                                }}
+                                            >
+                                                {buttonLabel}
+                                            </Button>
+                                        );
+                                    })}
                                 </Box>
                             ) : (
                                 <Typography sx={{ color: "#aaa" }}>No download links available.</Typography>
