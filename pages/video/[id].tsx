@@ -372,10 +372,10 @@ const VideoPage = () => {
 
     // ✅ FIX: use UUID-slug canonical, not the raw `id` param from URL
     // The raw `id` could be a legacy format; canonical must always be the clean URL
-    const pageTitle = `${videoTitle} – Free HD Porn Video | NovaPornX`;
+    const pageTitle = `${videoTitle} – Watch Free HD Porn Video Online | NovaPornX`;
     const pageDescription =
         video.descripcion ||
-        `Watch "${videoTitle}" in full HD on NovaPornX. Free premium adult videos, no registration required.`;
+        `Watch "${videoTitle}" free HD porn video online at NovaPornX. Hot xxx sex scene, premium quality, no registration required.`;
 
     const isoUploadDate = video.created_at || new Date().toISOString();
     const isoDuration = video.duracion_segundos && video.duracion_segundos > 0
@@ -392,7 +392,8 @@ const VideoPage = () => {
         "@context": "https://schema.org",
         "@type": "VideoObject",
         "name": videoTitle,
-        "description": pageDescription,
+        "description": video.descripcion ||
+            `Watch "${videoTitle}" – free HD porn video online. Hot xxx sex scene, premium quality adult content at NovaPornX.`,
         "thumbnailUrl": [thumbnailUrl],
         "uploadDate": isoUploadDate,
         "duration": isoDuration,
@@ -442,6 +443,7 @@ const VideoPage = () => {
             "author": { "@type": "Person", "name": "Anonymous" },
         })),
     } : null;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // ─── Render ──────────────────────────────────────────────────────────────
     return (
@@ -457,7 +459,16 @@ const VideoPage = () => {
                 {tags.length > 0 && (
                     <meta
                         name="keywords"
-                        content={[...tags, "free hd porn", "premium porn videos", "novapornx"].join(", ")}
+                        content={[
+                            ...(tags.length > 0 ? tags : []),
+                            "free porn video",
+                            "watch porn online",
+                            "xxx sex scene",
+                            "hd porn",
+                            "premium adult video",
+                            "hot sex video",
+                            "novapornx",
+                        ].join(", ")}
                     />
                 )}
 
@@ -995,13 +1006,41 @@ const VideoPage = () => {
 
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
                         <TextField
-                            fullWidth label="Your Email" variant="outlined"
-                            value={reportEmail} onChange={(e) => setReportEmail(e.target.value)}
-                            inputProps={{ "aria-label": "Your email address" }}
+                            fullWidth
+                            label="Your Email"
+                            variant="outlined"
+                            type="email"
+                            value={reportEmail}
+                            onChange={(e) => setReportEmail(e.target.value)}
+                            error={reportEmail !== "" && !emailRegex.test(reportEmail)}
+                            helperText={
+                                reportEmail !== "" && !emailRegex.test(reportEmail)
+                                    ? "Please enter a valid email address"
+                                    : ""
+                            }
+                            inputProps={{
+                                "aria-label": "Your email address",
+                                pattern: "[^\\s@]+@[^\\s@]+\\.[^\\s@]+"
+                            }}
                             sx={{
-                                "& .MuiOutlinedInput-root": { color: "#fff", "& fieldset": { borderColor: "rgba(255,255,255,0.1)" }, "&:hover fieldset": { borderColor: "#f013e5" }, "&.Mui-focused fieldset": { borderColor: "#f013e5" } },
-                                "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.5)" },
-                                "& .MuiInputLabel-root.Mui-focused": { color: "#f013e5" },
+                                "& .MuiOutlinedInput-root": {
+                                    color: "#fff",
+                                    "& fieldset": {
+                                        borderColor: "rgba(255,255,255,0.1)"
+                                    },
+                                    "&:hover fieldset": {
+                                        borderColor: "#f013e5"
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#f013e5"
+                                    }
+                                },
+                                "& .MuiInputLabel-root": {
+                                    color: "rgba(255,255,255,0.5)"
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#f013e5"
+                                }
                             }}
                         />
 
@@ -1052,6 +1091,38 @@ const VideoPage = () => {
                     </Box>
                 </Box>
             </Modal>
+            {/* SEO on-page block — keywords: porn(90%) video(80%) watch(60%) sex(80%) scenes(40%) online(50%) hot(60%) premium(40%) */}
+            <Box
+                component="section"
+                aria-label="About this video"
+                sx={{
+                    mx: { xs: 2, md: 4 },
+                    mb: 4,
+                    p: { xs: 2.5, md: 4 },
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.05)",
+                }}
+            >
+                <Typography
+                    component="h2"
+                    sx={{ color: "#fff", fontSize: "1.1rem", fontWeight: "bold", mb: 1.5 }}
+                >
+                    Watch {videoTitle} – Free HD Porn Video Online
+                </Typography>
+                <Typography
+                    component="p"
+                    sx={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.8, fontSize: "0.9rem" }}
+                >
+                    You are watching <strong>{videoTitle}</strong>, a free HD porn video available online at NovaPornX.
+                    This hot xxx sex scene is available in premium quality for instant streaming — no subscription or
+                    registration required. Browse thousands of free porn videos, hot sex scenes, and exclusive adult
+                    content updated daily.{" "}
+                    {tags.length > 0 && (
+                        <>Tagged: {tags.join(", ")}.</>
+                    )}
+                </Typography>
+            </Box>
 
             <TopVideosSlider />
 
