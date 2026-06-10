@@ -18,11 +18,13 @@ const OG_IMAGE = `${BASE_URL}/assets/og-movies.jpg`;
 interface VideoDownload {
     id: string;
     titulo: string;
-    file_size: string;
+    fecha: string;
+    size: string;
     duration: string;
     enlaces: any;
     imagenes: any;
     created_at: string;
+    descripcion: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -82,6 +84,7 @@ export default function MoviesDownload() {
                     throw new Error(`API error: ${response.statusText}`);
                 }
                 const data = await response.json();
+                console.log("data", data)
                 setVideos(data.items as VideoDownload[]);
                 setTotalCount(data.totalCount || 0);
             } catch (error) {
@@ -244,10 +247,10 @@ export default function MoviesDownload() {
                         display: "grid",
                         gridTemplateColumns: {
                             xs: "repeat(2, 1fr)",
-                            sm: "repeat(3, 1fr)",
-                            md: "repeat(3, 1fr)",
-                            lg: "repeat(3, 1fr)",
-                            xl: "repeat(3, 1fr)",
+                            sm: "repeat(2, 1fr)",
+                            md: "repeat(2, 1fr)",
+                            lg: "repeat(2, 1fr)",
+                            xl: "repeat(2, 1fr)",
                         },
                         gap: { xs: "6px", sm: "10px", md: "15px" },
                     }}>
@@ -293,7 +296,7 @@ export default function MoviesDownload() {
                                             },
                                         }}
                                     >
-                                        <Box sx={{ position: "relative", width: "100%", height: { xs: "200px", sm: "380px", md: "220px", xl: "370px" } }}>
+                                        <Box sx={{ position: "relative", width: "100%", height: { xs: "130px", sm: "300px", md: "490px", xl: "500px" } }}>
                                             <Image
                                                 src={getThumbnailUrl(video.imagenes)}
                                                 /*
@@ -341,7 +344,7 @@ export default function MoviesDownload() {
                                                     mb: 1.5,
                                                 }}
                                             >
-                                                {video.titulo}
+                                                {video.titulo == "Preview:" ? video.fecha : video.titulo}
                                             </Typography>
 
                                             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#888", fontSize: "0.85rem" }}>
@@ -356,12 +359,28 @@ export default function MoviesDownload() {
                                                 <Typography
                                                     variant="caption"
                                                     component="span"
-                                                    aria-label={`File size: ${video.file_size || "unknown"}`}
+                                                    aria-label={`File size: ${video.size || "unknown"}`}
                                                     sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#f013e5", fontWeight: "bold" }}
                                                 >
-                                                    💾 {video.file_size || "N/A"}
+                                                    💾 {video.size || "N/A"}
                                                 </Typography>
+
                                             </Box>
+                                            <Typography
+                                                variant="caption"
+                                                component="span"
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: 0.5,
+                                                    color: "#f013e5",
+                                                    fontWeight: "bold"
+                                                }}
+                                            >
+                                                {video.descripcion?.length > 90
+                                                    ? `${video.descripcion.substring(0, 90)}...`
+                                                    : video.descripcion}
+                                            </Typography>
                                         </Box>
                                     </Box>
                                 </Link>

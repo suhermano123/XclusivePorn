@@ -5,8 +5,13 @@ import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import FooterComponent from "@/components/footer/Footer";
 import { Box, Typography, Skeleton, Container, Button, Grid, Divider } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import StorageIcon from "@mui/icons-material/Storage";
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
@@ -19,11 +24,18 @@ const MOVIES_URL = `${BASE_URL}/moviesDownload`;
 interface VideoDownload {
     id: string;
     titulo: string;
-    file_size: string;
+    size: string;
     duration: string;
     enlaces: any;
     imagenes: any;
     created_at: string;
+    downloads: [
+        url: string,
+        title: string
+    ],
+    descripcion: string;
+    tags: string[];
+
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -62,6 +74,14 @@ export default function MovieDetail() {
                 }
                 const data = await response.json();
                 setMovie(data as VideoDownload);
+                if (router.asPath && typeof window !== "undefined") {
+                    console.log("entro ad", window)
+                    const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+                    // Push serve commands for the 3 ad zones present in this component
+                    adProvider.push({ serve: {} });
+                    adProvider.push({ serve: {} });
+                    adProvider.push({ serve: {} });
+                }
             } catch (error) {
                 console.error("Error fetching movie:", error);
             }
@@ -74,7 +94,8 @@ export default function MovieDetail() {
     const images = movie ? getImagesArray(movie.imagenes) : [];
     const mainImage = images.length > 0 ? images[0] : "/assets/placeholder.png";
     const galleryImages = images.slice(1);
-    const links = movie ? getLinksArray(movie.enlaces) : [];
+    const links = movie ? getLinksArray(movie.downloads) : [];
+    const [selectedImage, setSelectedImage] = useState<any>(null);
 
     const canonicalUrl = movie
         ? `${MOVIES_URL}/movie/${movie.id}`
@@ -85,7 +106,7 @@ export default function MovieDetail() {
         : "Download Premium Porn Movie | novapornx";
 
     const pageDescription = movie
-        ? `Download "${movie.titulo}" in full HD. Duration: ${movie.duration || "N/A"}, File size: ${movie.file_size || "N/A"}. Free premium adult movie download at novapornx.`
+        ? `Download "${movie.titulo}" in full HD. Duration: ${movie.duration || "N/A"}, File size: ${movie.size || "N/A"}. Free premium adult movie download at novapornx.`
         : "Download premium full-length HD porn movies at novapornx.";
 
     // ─── JSON-LD: VideoObject ─────────────────────────────────────────────────
@@ -179,17 +200,6 @@ export default function MovieDetail() {
         );
     }
 
-    // ─── Ads Refresh ──────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            console.log("entro ad", window)
-            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-            // Push serve commands for the 3 ad zones present in this component
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-        }
-    }, [router.asPath]);
 
     // ─── Main render ──────────────────────────────────────────────────────────
     return (
@@ -290,7 +300,13 @@ export default function MovieDetail() {
                         </Box>
 
                         {/* Details */}
-                        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                        <Box sx={{
+                            flex: 1,
+                            minWidth: 0,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                        }}>
                             {/*
                                 ✅ FIX: was <Typography variant="h3"> without component prop
                                 → rendered as <h3> in the DOM, with no H1 on the page at all.
@@ -302,11 +318,20 @@ export default function MovieDetail() {
                                 sx={{
                                     fontWeight: 800,
                                     mb: 3,
-                                    fontSize: { xs: "1.6rem", md: "2.4rem" },
+                                    fontSize: {
+                                        xs: "1.3rem",
+                                        sm: "1.6rem",
+                                        md: "2rem",
+                                        lg: "2.4rem",
+                                    },
                                     background: "linear-gradient(90deg, #fff, #aaa)",
                                     WebkitBackgroundClip: "text",
                                     WebkitTextFillColor: "transparent",
                                     lineHeight: 1.2,
+
+                                    maxWidth: "100%",
+                                    whiteSpace: "normal",
+                                    overflowWrap: "anywhere",
                                 }}
                             >
                                 {movie.titulo}
@@ -326,12 +351,12 @@ export default function MovieDetail() {
                                 </Box>
                                 <Box
                                     component="span"
-                                    aria-label={`File size: ${movie.file_size || "unknown"}`}
+                                    aria-label={`File size: ${movie.size || "unknown"}`}
                                     sx={{ display: "flex", alignItems: "center", gap: 1, bgcolor: "rgba(240,19,229,0.1)", px: 2, py: 1, borderRadius: 2, border: "1px solid rgba(240,19,229,0.3)" }}
                                 >
                                     <DownloadIcon sx={{ color: "#f013e5" }} />
                                     <Typography component="span" sx={{ color: "#fff", fontWeight: 600 }}>
-                                        {movie.file_size || "N/A"}
+                                        {movie.size || "N/A"}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -344,81 +369,108 @@ export default function MovieDetail() {
                                 not a heading — changed to <p> with bold styling.
                             */}
                             <Typography
+                                variant="caption"
+                                component="div"
+                                sx={{
+                                    fontSize: "1rem",
+                                    color: "#f013e5",
+                                    fontWeight: "bold",
+                                    mb: 2,
+                                    overflowWrap: "break-word",
+                                    wordBreak: "break-word",
+                                    whiteSpace: "normal",
+                                    maxWidth: "100%",
+                                }}
+                            >
+                                {movie.descripcion}
+                            </Typography>
+                            <Typography
                                 component="p"
                                 sx={{ color: "#aaa", mb: 2, textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.9rem", fontWeight: 700 }}
                             >
                                 Select Download Server
                             </Typography>
 
-                            {links.length > 0 ? (
-                                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                                    {links.map((link, idx) => {
-                                        let buttonBg = "linear-gradient(90deg, #f013e5, #ff5e62)";
-                                        let buttonShadowHover = "rgba(240,19,229,0.6)";
-                                        let buttonShadow = "rgba(240,19,229,0.4)";
-                                        let buttonLabel = `Download Server ${idx + 1}`;
+                            {links.map((item: any, idx: number) => {
+                                const url = item.url;
+                                const title = (item.title || "").toLowerCase();
 
-                                        if (idx === 0) {
-                                            buttonBg = "linear-gradient(90deg, #00853f, #00a64e)"; // uTorrent Green
-                                            buttonShadowHover = "rgba(0,166,78,0.6)";
-                                            buttonShadow = "rgba(0,166,78,0.4)";
-                                            buttonLabel = "Download via uTorrent";
-                                        } else if (idx === 1) {
-                                            buttonBg = "linear-gradient(90deg, #0b468c, #ff5a00)"; // Keep2Share Blue/Orange
-                                            buttonShadowHover = "rgba(255,90,0,0.6)";
-                                            buttonShadow = "rgba(255,90,0,0.4)";
-                                            buttonLabel = "Download via Keep2Share";
-                                        }
+                                let buttonBg = "linear-gradient(90deg, #f013e5, #ff5e62)";
+                                let buttonShadowHover = "rgba(240,19,229,0.6)";
+                                let buttonShadow = "rgba(240,19,229,0.4)";
+                                let buttonLabel = `Download Link ${idx + 1}`;
 
-                                        return (
-                                            <Button
-                                                key={idx}
-                                                variant="contained"
-                                                component="button"
-                                                onClick={() => {
-                                                    if (!adOpened) {
-                                                        window.open(
-                                                            "https://s.pemsrv.com/v1/link.php?cat=&idzone=5944644&type=8",
-                                                            "_blank",
-                                                            "noopener,noreferrer"
-                                                        );
+                                let ServerIcon = DownloadIcon;
 
-                                                        setAdOpened(true);
-                                                        return;
-                                                    }
+                                if (
+                                    title.includes("k2s") ||
+                                    title.includes("keep2share") ||
+                                    url.includes("k2s.cc")
+                                ) {
+                                    buttonBg = "linear-gradient(90deg, #0b468c, #ff5a00)";
+                                    buttonShadowHover = "rgba(255,90,0,0.6)";
+                                    buttonShadow = "rgba(255,90,0,0.4)";
+                                    buttonLabel = `Keep2Share #${idx + 1}`;
+                                    ServerIcon = CloudDownloadIcon;
+                                }
 
-                                                    window.open(
-                                                        link,
-                                                        "_blank",
-                                                        "noopener,noreferrer"
-                                                    );
-                                                }}
-                                                aria-label={`Download ${movie.titulo} from server ${idx + 1}`}
-                                                startIcon={<DownloadIcon />}
-                                                sx={{
-                                                    background: buttonBg,
-                                                    color: "#fff",
-                                                    fontWeight: "bold",
-                                                    textTransform: "none",
-                                                    fontSize: "1.1rem",
-                                                    py: 1.5,
-                                                    borderRadius: "12px",
-                                                    boxShadow: `0 4px 15px ${buttonShadow}`,
-                                                    transition: "all 0.3s ease",
-                                                    "&:hover": {
-                                                        transform: "translateY(-2px)",
-                                                        boxShadow: `0 8px 25px ${buttonShadowHover}`,
-                                                    },
-                                                }}
-                                            >
-                                                {buttonLabel}
-                                            </Button>
-                                        );
-                                    })}
-                                </Box>
-                            ) : (
-                                <Typography sx={{ color: "#aaa" }}>No download links available.</Typography>
-                            )}
+                                else if (
+                                    title.includes("rapidgator") ||
+                                    url.includes("rg.to")
+                                ) {
+                                    buttonBg = "linear-gradient(90deg, #00853f, #00a64e)";
+                                    buttonShadowHover = "rgba(0,166,78,0.6)";
+                                    buttonShadow = "rgba(0,166,78,0.4)";
+                                    buttonLabel = `Rapidgator #${idx + 1}`;
+                                    ServerIcon = StorageIcon;
+                                }
+
+                                return (
+                                    <Button
+                                        key={idx}
+                                        variant="contained"
+                                        component="button"
+                                        startIcon={<ServerIcon />}
+                                        onClick={() => {
+                                            if (!adOpened) {
+                                                window.open(
+                                                    "https://s.pemsrv.com/v1/link.php?cat=&idzone=5944644&type=8",
+                                                    "_blank",
+                                                    "noopener,noreferrer"
+                                                );
+
+                                                setAdOpened(true);
+                                                return;
+                                            }
+
+                                            window.open(
+                                                url,
+                                                "_blank",
+                                                "noopener,noreferrer"
+                                            );
+                                        }}
+                                        sx={{
+                                            width: "100%",
+                                            maxWidth: "100%",
+                                            background: buttonBg,
+                                            color: "#fff",
+                                            fontWeight: "bold",
+                                            textTransform: "none",
+                                            fontSize: { xs: "0.9rem", md: "1.1rem" },
+                                            py: 1.5,
+                                            borderRadius: "12px",
+
+                                            whiteSpace: "normal",
+                                            wordBreak: "break-word",
+                                            textAlign: "center",
+
+                                            boxShadow: `0 4px 15px ${buttonShadow}`,
+                                        }}
+                                    >
+                                        {buttonLabel}
+                                    </Button>
+                                );
+                            })}
                         </Box>
                     </Box>
                     <Script
@@ -454,30 +506,32 @@ export default function MovieDetail() {
                             </Typography>
 
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Box sx={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: { xs: "540px", sm: "720px", md: "1080px" },
-                                        borderRadius: "16px",
-                                        overflow: "hidden",
-                                        bgcolor: "#0a0a0a",
-                                        border: "1px solid rgba(255,255,255,0.05)",
-                                        boxShadow: "0 10px 40px rgba(0,0,0,0.8)",
-                                    }}>
-                                        <Image
-                                            src={galleryImages[0]}
-                                            /*
-                                                ✅ FIX: alt had a trailing space.
-                                                Now descriptive with the movie title.
-                                            */
-                                            alt={`${movie.titulo} – preview screenshot`}
-                                            fill
-                                            style={{ objectFit: "contain" }}
-                                            unoptimized
-                                        />
-                                    </Box>
-                                </Grid>
+                                {galleryImages.map((image, index) => (
+                                    <Grid item xs={12} key={index}>
+                                        <Box
+                                            sx={{
+                                                position: "relative",
+                                                width: "100%",
+                                                height: { xs: "540px", sm: "720px", md: "1080px" },
+                                                borderRadius: "16px",
+                                                overflow: "hidden",
+                                                bgcolor: "#0a0a0a",
+                                                border: "1px solid rgba(255,255,255,0.05)",
+                                                boxShadow: "0 10px 40px rgba(0,0,0,0.8)",
+                                                cursor: "zoom-in",
+                                            }}
+                                            onClick={() => setSelectedImage(image)}
+                                        >
+                                            <Image
+                                                src={image}
+                                                alt={`${movie.titulo} – screenshot ${index + 1}`}
+                                                fill
+                                                style={{ objectFit: "contain" }}
+                                                unoptimized
+                                            />
+                                        </Box>
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Box>
                     )}
@@ -504,6 +558,65 @@ export default function MovieDetail() {
                             </Button>
                         </Link>
                     </Box>
+                    <Dialog
+                        open={Boolean(selectedImage)}
+                        onClose={() => setSelectedImage(null)}
+                        maxWidth={false}
+                        PaperProps={{
+                            sx: {
+                                width: "100vw",
+                                height: "100vh",
+                                maxWidth: "100vw",
+                                maxHeight: "100vh",
+                                margin: 0,
+                                backgroundColor: "#000",
+                            },
+                        }}
+                    >
+                        <IconButton
+                            onClick={() => setSelectedImage(null)}
+                            sx={{
+                                position: "fixed",
+                                top: 16,
+                                right: 16,
+                                zIndex: 9999,
+                                color: "#fff",
+                                backgroundColor: "rgba(0,0,0,0.6)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0,0,0,0.8)",
+                                },
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+
+                        <Box
+                            sx={{
+                                width: "100%",
+                                height: "100%",
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "flex-start",
+                                p: 2,
+                            }}
+                        >
+                            <img
+                                src={selectedImage}
+                                alt="Preview"
+                                style={{
+                                    height: "250vh",
+                                    width: "auto",
+                                    maxWidth: "100%",
+                                }}
+                            />
+                        </Box>
+                    </Dialog>
+
+
+
+
 
                     {/* ✅ NEW: SEO on-page text block — movie-specific, keyword-rich,
                         placed below the fold so it doesn't affect UX */}
@@ -531,7 +644,7 @@ export default function MovieDetail() {
                             <strong>{movie.titulo}</strong> is available for direct{" "}
                             <strong>HD porn download</strong> at novapornx. This full-length adult
                             film{movie.duration ? ` runs ${movie.duration}` : ""} and is available
-                            {movie.file_size ? ` at ${movie.file_size}` : ""} across multiple fast
+                            {movie.size ? ` at ${movie.size}` : ""} across multiple fast
                             download servers. No registration or subscription is required — click any
                             download server above to start your free <strong>premium porn movie download</strong> instantly.
                         </Typography>
