@@ -180,6 +180,18 @@ const SearchPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, []);
 
+    // ─── Ads Refresh ──────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.log("entro ad", window)
+            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+            // Push serve commands for the 3 ad zones present in this component
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+        }
+    }, [router.asPath]);
+
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>

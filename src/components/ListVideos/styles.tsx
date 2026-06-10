@@ -4,6 +4,7 @@ export const styles: { [key: string]: any } = {
     flexDirection: "column",
     minHeight: "100vh",
     backgroundColor: "#000",
+    overflowX: "hidden"
   },
   gridContainer: {
     // This style object is partially superseded by the sx prop in the component render,

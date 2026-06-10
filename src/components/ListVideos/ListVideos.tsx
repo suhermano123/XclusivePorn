@@ -290,6 +290,18 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
     }
   };
 
+  // ─── Ads Refresh ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log("entro ad", window)
+      const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+      // Push serve commands for the 3 ad zones present in this component
+      adProvider.push({ serve: {} });
+      adProvider.push({ serve: {} });
+      adProvider.push({ serve: {} });
+    }
+  }, [router.asPath]);
+
   // ─── JSON-LD: ItemList ────────────────────────────────────────────────────
   // Keywords from TF-IDF integrated in "name" and "description" fields:
   // porn (90%), videos (80%), sex (80%), watch (60%), milf/teen/latina per context
@@ -398,9 +410,6 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
       <div>
         <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
         <ins className="eas6a97888e31" data-zoneid="5941690" />
-        <Script id="magsrv-ad">
-          {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-        </Script>
 
         <div style={styles.container}>
           <Box
@@ -618,6 +627,23 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
           </Box>
 
           <TopVideosSlider />
+          <Script
+            src="https://a.magsrv.com/ad-provider.js"
+            strategy="afterInteractive"
+          />
+
+          <ins
+            className="eas6a97888e20"
+            data-zoneid="5946568"
+          />
+
+          <Script id="magsrv-zone-5946568">
+            {`
+      (window.AdProvider = window.AdProvider || []).push({
+        serve: {}
+      });
+    `}
+          </Script>
 
           {/* ─── Pagination ───────────────────────────────────────────────── */}
           <Box
@@ -769,17 +795,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
             </Box>
           )}
 
-          <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
           <ins className="eas6a97888e37" data-zoneid="5941734" />
-          <Script id="magsrv-zone-5941734">
-            {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-          </Script>
-
-          <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
           <ins className="eas6a97888e31" data-zoneid="5941732" />
-          <Script id="magsrv-zone-5941732">
-            {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-          </Script>
 
           <FooterComponent />
         </div>

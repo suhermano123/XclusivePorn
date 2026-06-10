@@ -179,6 +179,18 @@ export default function MovieDetail() {
         );
     }
 
+    // ─── Ads Refresh ──────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.log("entro ad", window)
+            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+            // Push serve commands for the 3 ad zones present in this component
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+        }
+    }, [router.asPath]);
+
     // ─── Main render ──────────────────────────────────────────────────────────
     return (
         <div style={{
@@ -345,7 +357,7 @@ export default function MovieDetail() {
                                         let buttonShadowHover = "rgba(240,19,229,0.6)";
                                         let buttonShadow = "rgba(240,19,229,0.4)";
                                         let buttonLabel = `Download Server ${idx + 1}`;
-                                        
+
                                         if (idx === 0) {
                                             buttonBg = "linear-gradient(90deg, #00853f, #00a64e)"; // uTorrent Green
                                             buttonShadowHover = "rgba(0,166,78,0.6)";

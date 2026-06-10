@@ -112,6 +112,18 @@ export default function MoviesDownload() {
         }
         : null;
 
+    // ─── Ads Refresh ──────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.log("entro ad", window)
+            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+            // Push serve commands for the 3 ad zones present in this component
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+        }
+    }, [router.asPath]);
+
     return (
         <div style={{
             backgroundColor: "#050505",
@@ -119,6 +131,7 @@ export default function MoviesDownload() {
             minHeight: "100vh",
             display: "flex",
             flexDirection: "column",
+            overflowX: "hidden"
         }}>
             <Head>
                 {/* ── Core meta ──────────────────────────────────────────── */}

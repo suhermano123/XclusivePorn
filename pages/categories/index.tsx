@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, Container, Grid, Box } from '@mui/material';
 import Head from 'next/head';
 import NavBar from '@/components/NavBar/NavBar';
@@ -7,6 +7,7 @@ import FooterComponent from '@/components/footer/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
+import { useRouter } from "next/router";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const BASE_URL = "https://novapornx.com";
@@ -67,6 +68,18 @@ const breadcrumbSchema = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const CategoriesPage: React.FC = () => {
+    const router = useRouter();
+    // ─── Ads Refresh ──────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.log("entro ad", window)
+            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+            // Push serve commands for the 3 ad zones present in this component
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+        }
+    }, [router.asPath]);
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>

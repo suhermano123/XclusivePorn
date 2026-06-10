@@ -198,6 +198,14 @@ const VideoPage = () => {
     }, [hoveredVideo, relatedVideos]);
 
     useEffect(() => {
+        if (router.asPath && typeof window !== "undefined") {
+            console.log("entro ad", window)
+            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+            // Push serve commands for the 3 ad zones present in this component
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+        }
         return () => {
             if (touchPreviewTimeoutRef.current) clearTimeout(touchPreviewTimeoutRef.current);
         };
@@ -444,6 +452,8 @@ const VideoPage = () => {
         })),
     } : null;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
 
     // ─── Render ──────────────────────────────────────────────────────────────
     return (

@@ -107,6 +107,18 @@ const CategoryPage: React.FC = () => {
 
     const totalPages = Math.ceil(totalCount / videosPerPage);
 
+    // ─── Ads Refresh ──────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.log("entro ad", window)
+            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
+            // Push serve commands for the 3 ad zones present in this component
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+            adProvider.push({ serve: {} });
+        }
+    }, [router.asPath]);
+
     return (
         <div style={styles.container}>
             <Head>
