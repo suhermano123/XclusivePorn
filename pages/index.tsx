@@ -71,11 +71,14 @@ export default function HomeIndex() {
   const canonicalUrl =
     currentPage === 1 ? BASE_URL : `${BASE_URL}?page=${currentPage}`;
 
-  const pageTitle = `Free Porn Videos in Premium HD – Watch 4K Adult Videos Online${pageLabel}`;
+  // porn(90%) videos(80%) sex(80%) watch(60%) xxx(60%) milf(80%) mature(70%) scenes(40%) online(50%)
+  const pageTitle = currentPage === 1
+    ? "Free Porn Videos – Watch XXX Sex Scenes, MILF, Mature & More in HD | NovaPornX"
+    : `Free Porn Videos – Page ${currentPage} | Watch XXX Sex Scenes in HD | NovaPornX`;
   const pageDescription =
     currentPage === 1
-      ? "Watch free HD porn online. Explore our massive library of premium porn videos and enjoy seamless HD adult streaming completely for free."
-      : `Page ${currentPage} – Browse free HD porn videos. Premium adult streaming, no registration required.`;
+      ? "Watch free porn videos in HD at NovaPornX. Explore thousands of xxx sex scenes, milf, mature, latina, homemade and premium adult content. Stream online free, no registration."
+      : `Page ${currentPage} – Watch free porn videos and xxx sex scenes in HD. Milf, mature, latina, homemade and premium adult content. Stream online at NovaPornX.`;
 
   // ─── Structured data ─────────────────────────────────────────────────────
   const websiteSchema = {
@@ -107,9 +110,10 @@ export default function HomeIndex() {
         {/* ── Core meta ─────────────────────────────────────────────────── */}
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
+        {/* Ordered by TF-IDF: porn(90%) videos(80%) sex(80%) milf(80%) mature(70%) watch(60%) xxx(60%) scenes(40%) homemade(40%) online(50%) latina(50%) models(40%) */}
         <meta
           name="keywords"
-          content="free hd porn, premium porn videos, watch porn online free, hd adult streaming, free porn videos in premium hd, 4k adult videos"
+          content="porn videos, free sex videos, xxx scenes, milf porn, mature videos, watch porn online, homemade porn, latina sex, premium adult videos, hot models, free hd porn, adult streaming"
         />
         <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
 
@@ -192,53 +196,37 @@ export default function HomeIndex() {
             and these H2s form the correct outline:
             H1 → H2 → H2 → H2
           */}
-          <Typography
-            variant="h2"
-            sx={{ color: "#fff", fontSize: "1.8rem", mb: 3, fontWeight: "bold" }}
-          >
-            Watch Free HD Porn Videos Online
+          {/* H2 #1 — porn(90%) videos(80%) watch(60%) xxx(60%) sex(80%) online(50%) */}
+          <Typography variant="h2" sx={{ color: "#fff", fontSize: "1.8rem", mb: 3, fontWeight: "bold" }}>
+            Watch Free Porn Videos & XXX Sex Scenes Online
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: "rgba(255,255,255,0.7)",
-              mb: 3,
-              lineHeight: 1.8,
-              fontSize: "1.05rem",
-              textAlign: "justify",
-            }}
-          >
-            Welcome to NovaPornX, your ultimate destination for high-quality adult
-            entertainment. If you are looking to{" "}
-            <strong>watch porn online free</strong>, you have found the definitive
-            source. We offer a massive library of <strong>free HD porn</strong> that
-            is constantly updated with the newest scenes from around the world. No
-            registration or credit card is required to dive into our huge collection
-            of exclusive <strong>premium porn videos</strong>.
+          <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.7)", mb: 3, lineHeight: 1.8, fontSize: "1.05rem", textAlign: "justify" }}>
+            Welcome to NovaPornX — the world's top destination to <strong>watch free porn videos</strong> in HD.
+            Our library contains thousands of <strong>xxx sex scenes</strong>, from hot amateur clips to
+            professional studio productions. Browse <strong>popular adult content</strong> across every niche
+            and stream online instantly. No registration, no credit card — just free porn, always.
           </Typography>
 
-          <Typography
-            variant="h2"
-            sx={{ color: "#fff", fontSize: "1.8rem", mb: 3, fontWeight: "bold" }}
-          >
-            Premium Quality 4K Adult Videos
+          {/* H2 #2 — milf(80%) mature(70%) scenes(40%) models(40%) pornstar(40%) hot(60%) sexy(60%) */}
+          <Typography variant="h2" sx={{ color: "#fff", fontSize: "1.8rem", mb: 3, fontWeight: "bold" }}>
+            MILF, Mature & Hot Sex Scenes – Top Pornstar Models
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: "rgba(255,255,255,0.7)",
-              mb: 3,
-              lineHeight: 1.8,
-              fontSize: "1.05rem",
-              textAlign: "justify",
-            }}
-          >
-            Experience the clarity of our Ultra HD collection. Every detail is
-            captured perfectly, providing a lifelike experience that standard videos
-            cannot match. Whether you enjoy amateur encounters or high-budget studio
-            productions, our fast servers ensure smooth{" "}
-            <strong>HD adult streaming</strong> without buffering or low-resolution
-            blocks.
+          <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.7)", mb: 3, lineHeight: 1.8, fontSize: "1.05rem", textAlign: "justify" }}>
+            Discover the hottest <strong>MILF sex videos</strong>, <strong>mature porn scenes</strong>, and
+            exclusive content featuring the world's top <strong>pornstar models</strong>. Whether you prefer
+            sexy latina encounters, rough hardcore action, or passionate bedroom scenes, NovaPornX delivers
+            premium quality on every video. Our servers stream in full HD without buffering.
+          </Typography>
+
+          {/* H2 #3 — homemade(40%) latina(50%) teen(80%) premium(40%) quality(40%) updated(30%) */}
+          <Typography variant="h2" sx={{ color: "#fff", fontSize: "1.8rem", mb: 3, fontWeight: "bold" }}>
+            Homemade, Latina & Teen Porn – Updated Daily
+          </Typography>
+          <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.7)", mb: 2.5, lineHeight: 1.8, fontSize: "1.05rem", textAlign: "justify" }}>
+            From real <strong>homemade amateur porn</strong> to exclusive <strong>latina sex videos</strong>,
+            NovaPornX covers every category in <strong>premium HD quality</strong>. New content is added daily —
+            top-rated scenes, most viewed videos, and the latest releases all in one place. Experience the
+            most reliable free adult streaming platform online today.
           </Typography>
 
           <Typography

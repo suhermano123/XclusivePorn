@@ -71,14 +71,16 @@ const CategoriesPage: React.FC = () => {
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
                 {/* ── Core meta ─────────────────────────────────────────────── */}
-                <title>Free HD Porn Categories – Amateur, MILF, Latina & More | NovaPornX</title>
+                {/* porn(90%) videos(80%) sex(80%) watch(60%) xxx(60%) milf(80%) mature(70%) scenes(40%) */}
+                <title>Free Porn Categories – Watch XXX Sex Videos: MILF, Amateur, Latina & More | NovaPornX</title>
                 <meta
                     name="description"
-                    content="Browse all free HD porn categories on NovaPornX: amateur, MILF, Latina, anal, lesbian, interracial and more. Stream premium 4K adult videos by category, no registration needed."
+                    content="Browse free porn categories and watch xxx sex videos in HD: MILF, amateur, mature, latina, lesbian, homemade, anal and more hot scenes. Stream online at NovaPornX, no registration."
                 />
+                {/* Ordered by TF-IDF weight: porn(90%), sex(80%), videos(80%), milf(80%), mature(70%), watch(60%), xxx(60%), scenes(40%), homemade(40%), models(40%) */}
                 <meta
                     name="keywords"
-                    content="free hd porn categories, amateur porn, milf videos, latina porn, anal sex videos, lesbian porn, interracial, hardcore, threesome, free 4k porn"
+                    content="porn categories, sex videos, free porn, milf porn, mature videos, xxx categories, watch porn online, amateur sex, homemade porn, lesbian scenes, latina models, adult video categories"
                 />
 
                 {/* ✅ Canonical */}
@@ -284,33 +286,30 @@ const CategoriesPage: React.FC = () => {
                 <ins className="eas6a97888e33" data-zoneid="5942504" />
 
                 {/* ── SEO text block ────────────────────────────────────────── */}
+                {/* SEO text block — keywords: porn(90%) sex(80%) videos(80%) milf(80%) mature(70%) watch(60%) xxx(60%) scenes(40%) homemade(40%) models(40%) pornstar(40%) online(50%) hot(60%) popular(60%) */}
                 <Box
                     component="section"
-                    aria-label="About our categories"
+                    aria-label="About our porn categories"
                     sx={{ mt: 8, p: 3, backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}
                 >
-                    {/*
-                        ✅ H2 (not H3) — maintains correct outline after the H1 above.
-                        H3 would skip a level, which is a minor but real SEO signal.
-                    */}
                     <Typography
                         component="h2"
                         variant="h6"
                         sx={{ color: '#fff', mb: 2, fontSize: '1.1rem' }}
                     >
-                        Free Premium HD Latina Videos &amp; Exclusive Content
+                        Watch Free Porn Videos by Category – XXX Sex Scenes in HD
                     </Typography>
                     <Typography
                         variant="body2"
-                        sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}
+                        sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.8 }}
                     >
-                        Welcome to the ultimate directory for{' '}
-                        <strong>free premium HD Latina videos</strong> and{' '}
-                        <strong>amateur HD porn from Colombia</strong>. Whether you are looking
-                        for intense hardcore scenes, passionate bedroom intimacy, or high-quality
-                        4K homemade Latina porn, our constantly updated categories have you covered.
-                        Browse through our HD MILF amateur videos, interracial scenes, and top-tier
-                        adult entertainment fully optimized for any device.
+                        NovaPornX is your go-to destination to <strong>watch free porn videos</strong> organized
+                        by category. Whether you're into hot <strong>MILF sex scenes</strong>, real{' '}
+                        <strong>homemade amateur porn</strong>, exotic <strong>latina xxx videos</strong>, or{' '}
+                        <strong>mature adult content</strong>, our library covers every niche in full HD quality.
+                        Browse popular categories featuring the world's top <strong>pornstar models</strong> and
+                        discover new scenes updated daily. All <strong>sex videos</strong> are free to stream
+                        online — no subscription, no registration required.
                     </Typography>
                 </Box>
             </Container>
