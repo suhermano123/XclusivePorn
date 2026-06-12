@@ -11,7 +11,7 @@ const PrivacyPolicyPage: React.FC = () => {
       <Head>
         <title>Privacy Policy - novapornx</title>
         <meta name="description" content="Privacy policy and data protection information for novapornx users." />
-        <meta name="robots" content="noindex, follow" />
+
       </Head>
       <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
       <div style={styles.privacyContainer}>

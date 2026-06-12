@@ -163,7 +163,7 @@ export default function MovieDetail() {
                 <Head>
                     <title>Loading Movie – novapornx</title>
                     {/* ✅ noindex while loading — avoid Google indexing a blank shell */}
-                    <meta name="robots" content="noindex" />
+
                 </Head>
                 <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
                 <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
@@ -185,8 +185,7 @@ export default function MovieDetail() {
             <div style={{ backgroundColor: "#050505", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
                 <Head>
                     <title>Movie Not Found – novapornx</title>
-                    {/* ✅ noindex + nofollow on 404-equivalent pages */}
-                    <meta name="robots" content="noindex, nofollow" />
+
                 </Head>
                 <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
                 <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />

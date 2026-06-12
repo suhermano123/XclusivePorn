@@ -76,8 +76,7 @@ export default function ImagesPage() {
           content="free porn pictures, sex images, nude galleries, free adult photos, nudes, babes, xxx images, adult pictures, porn pics, hd porn images"
         />
 
-        {/* ✅ noindex on deep pages — preserved from original, correct behavior */}
-        {page > NOINDEX_AFTER_PAGE && <meta name="robots" content="noindex, follow" />}
+
 
         {/* ── Canonical + pagination ──────────────────────────────────────── */}
         <link rel="canonical" href={canonicalUrl} />

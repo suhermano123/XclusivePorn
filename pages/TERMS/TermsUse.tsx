@@ -11,7 +11,7 @@ const TermsUsePage: React.FC = () => {
       <Head>
         <title>Terms of Use - novapornx</title>
         <meta name="description" content="Terms and conditions for using novapornx services." />
-        <meta name="robots" content="noindex, follow" />
+
       </Head>
       <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
       <div style={styles.termsContainer}>

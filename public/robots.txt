@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+# Bloquear búsqueda interna
+Disallow: /search
+
 Sitemap: https://novapornx.com/sitemap.xml
+

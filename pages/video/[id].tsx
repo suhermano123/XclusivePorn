@@ -366,7 +366,7 @@ const VideoPage = () => {
             <Box sx={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#000", color: "#fff" }}>
                 <Head>
                     <title>Video Not Found – NovaPornX</title>
-                    <meta name="robots" content="noindex, nofollow" />
+
                 </Head>
                 <Typography variant="h5">Video not found</Typography>
             </Box>
