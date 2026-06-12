@@ -4,8 +4,6 @@ import Link from "next/link";
 import { getVideosByCategoryPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
 import { Box, Button, Typography, Container, Skeleton } from "@mui/material";
 import FooterComponent from "@/components/footer/Footer";
-import AgeVerification from "@/components/OlderVerify/OlderVerify";
-import { getVisitorId } from "@/api/visitorIdHelper";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";

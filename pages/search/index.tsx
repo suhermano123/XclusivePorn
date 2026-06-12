@@ -7,8 +7,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FooterComponent from "@/components/footer/Footer";
-import AgeVerification from "@/components/OlderVerify/OlderVerify";
-import Image from "next/image";
 import { getVisitorId } from "@/api/visitorIdHelper";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";

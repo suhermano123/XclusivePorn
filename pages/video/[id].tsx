@@ -394,6 +394,8 @@ const VideoPage = () => {
     const tags = video.tags ? video.tags.split(",").map((t: string) => t.trim()) : [];
     const actresses = video.actresses ? video.actresses.split(",").map((a: string) => a.trim()) : [];
     const comments = parseComments(video.comment);
+    const videoFileUrl = video.video_stream_url || `${BASE_URL}/api/media?uuid=${video.uuid}&type=stream`;
+
 
     // ─── JSON-LD: VideoObject (primary, rich-results eligible) ──────────────
     const videoObjectSchema = {
@@ -405,8 +407,8 @@ const VideoPage = () => {
         "thumbnailUrl": [thumbnailUrl],
         "uploadDate": isoUploadDate,
         "duration": isoDuration,
-        "contentUrl": canonicalUrl,
-        "embedUrl": canonicalUrl,
+        "contentUrl": videoFileUrl,   // ✅ archivo de video real
+        "embedUrl": `${BASE_URL}/embed/${video.uuid}`, // ✅ si tienes (o creas) una ruta de embed
         "url": canonicalUrl,
         "inLanguage": "es",
         "interactionStatistic": [
