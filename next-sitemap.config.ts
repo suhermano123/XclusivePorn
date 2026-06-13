@@ -1,7 +1,8 @@
-/** @type {import('next-sitemap').IConfig} */
-module.exports = {
+import type { IConfig } from 'next-sitemap';
+
+const config: IConfig = {
   siteUrl: "https://novapornx.com",
-  generateRobotsTxt: false, // We manage robots.txt manually in /public
+  generateRobotsTxt: false,
   changefreq: "daily",
   priority: 0.7,
   sitemapSize: 5000,
@@ -18,8 +19,8 @@ module.exports = {
     "/images",
     "/images/*",
   ],
-  transform: async (config, path) => {
-    // Higher priority for key landing pages
+
+  transform: async (config: IConfig, path: string) => {
     let priority = config.priority;
     let changefreq = config.changefreq;
 
@@ -43,7 +44,12 @@ module.exports = {
     } else if (path.startsWith("/video/")) {
       priority = 0.6;
       changefreq = "weekly";
-    } else if (path === "/faq" || path.startsWith("/DMCA") || path.startsWith("/TERMS") || path.startsWith("/Privacy-policy")) {
+    } else if (
+      path === "/faq" ||
+      path.startsWith("/DMCA") ||
+      path.startsWith("/TERMS") ||
+      path.startsWith("/Privacy-policy")
+    ) {
       priority = 0.3;
       changefreq = "monthly";
     }
@@ -52,7 +58,11 @@ module.exports = {
       loc: path,
       changefreq,
       priority,
-      lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
+      lastmod: config.autoLastmod
+        ? new Date().toISOString()
+        : undefined,
     };
   },
 };
+
+export default config;
