@@ -9,6 +9,51 @@ import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
 import Script from "next/script";
 
+const BASE_URL = "https://novapornx.com";
+
+/** Normalize title into a URL-friendly slug */
+const buildSlug = (title: string): string =>
+    title
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, "")
+        .replace(/--+/g, "-");
+
+/** Get rich category-specific descriptive paragraphs */
+const getCategorySeoText = (category: string) => {
+    const formatted = category.charAt(0).toUpperCase() + category.slice(1);
+    switch (category.toLowerCase()) {
+        case "latina":
+            return [
+                "Welcome to the ultimate hub for Latina Porn Videos. Our specialized section is dedicated entirely to the fiery passion, stunning curves, and authentic beauty of Hispanic and Latina performers. Here, you will find premium HD Latina clips, amateur Colombian videos, and free homemade Latina scenes in beautiful high definition.",
+                "Latina adult content continues to be one of the most popular genres online. The performers bring unmatched energy, intense passion, and natural beauty to every scene. Browse through Mexican, Brazilian, Colombian, and other South American clips to find the perfect video that matches your desires."
+            ];
+        case "milf":
+            return [
+                "Welcome to our dedicated MILF Porn Videos section, featuring hot, experienced older women who know exactly what they want. Watch beautiful mothers, mature wives, and sophisticated ladies in passionate and intense scenes with younger partners or fellow mature performers.",
+                "The allure of mature and MILF adult entertainment lies in the confidence, experience, and raw sensuality that these older women bring to the screen. From passionate romantic encounters to wild homemade scenes, enjoy high-quality MILF videos on NovaPornX."
+            ];
+        case "amateur":
+            return [
+                "Explore the raw, authentic world of Amateur Porn Videos on NovaPornX. This section highlights real couples, homemade recordings, and indie content creators sharing their genuine intimate moments with the world in crystal clear high definition.",
+                "Unlike polished studio productions, amateur adult videos focus on natural interactions, real passion, and unscripted pleasure. Watch home sex videos and real-world encounters without any subscription or signup fees."
+            ];
+        case "anal":
+            return [
+                "Dive into our collection of free Anal Porn Videos, featuring top performers and daring amateurs exploring deep intimacy. Our catalog is curated with high-definition hardcore scenes, premium studio clips, and raw homemade videos.",
+                "Anal sex scenes demand high-quality production and clear camera angles to showcase the passion. NovaPornX provides top-tier anal adult entertainment with lightning-fast streaming speeds and zero registration requirements."
+            ];
+        default:
+            return [
+                `Welcome to the ${formatted} Porn Videos section of NovaPornX. Explore a wide variety of high-quality sex clips and adult scenes featuring your favorite performers in the ${formatted} category. We bring you premium content updated daily.`,
+                `Stream the best ${formatted} adult movies online in high-definition (1080p and 4K) for free. Browse through our extensive library of ${formatted} scenes, including studio releases and raw amateur recordings, completely free of charge.`
+            ];
+    }
+};
+
 const CategoryPage: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -117,21 +162,81 @@ const CategoryPage: React.FC = () => {
         }
     }, [router.asPath]);
 
+    // Dynamic SEO strings
+    const categoryTitle = categoryQuery
+        ? `${categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1)}`
+        : "";
+    const pageTitle = categoryQuery
+        ? `Free ${categoryTitle} Porn Videos – Watch ${categoryTitle} Sex Movies Online | NovaPornX`
+        : "Free Adult Porn Video Categories | NovaPornX";
+    const pageDescription = categoryQuery
+        ? `Explore the best free ${categoryQuery} porn videos online. Watch high quality ${categoryQuery} sex clips and amateur HD content on NovaPornX with no registration.`
+        : "Explore free adult categories on NovaPornX. Watch free premium HD adult videos and amateur porn online.";
+    const pageUrl = categoryQuery
+        ? `${BASE_URL}/category/${encodeURIComponent(categoryQuery.toLowerCase())}`
+        : `${BASE_URL}/categories`;
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
+            { "@type": "ListItem", "position": 2, "name": "Categories", "item": `${BASE_URL}/categories` },
+            ...(categoryQuery ? [{ "@type": "ListItem", "position": 3, "name": categoryTitle, "item": pageUrl }] : []),
+        ],
+    };
+
+    const collectionSchema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": pageTitle,
+        "description": pageDescription,
+        "url": pageUrl,
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "NovaPornX",
+            "url": BASE_URL,
+        },
+    };
+
+    const seoParagraphs = categoryQuery ? getCategorySeoText(categoryQuery) : [];
+
     return (
         <div style={styles.container}>
             <Head>
-                <title>{categoryQuery ? `${categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1)} Porn - Free HD Adult Videos` : 'Category'} - novapornx</title>
-                <meta name="description" content={categoryQuery ? `Explore the best ${categoryQuery} porn videos for free. Watch high quality ${categoryQuery} sex videos and amateur HD content.` : `Explore free adult categories on novapornx. Watch free premium HD latina videos and amateur HD porn.`} />
-                <meta name="keywords" content={categoryQuery ? `${categoryQuery} porn, ${categoryQuery} sex, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free` : 'free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hd milf amateur videos free'} />
-                {categoryQuery ? <link rel="canonical" href={`https://novapornx.com/category/${encodeURIComponent(categoryQuery.toLowerCase())}`} /> : null}
-                <meta name="robots" content="index, follow" />
+                {/* ── Core Meta ─────────────────────────────────────────────── */}
+                <title>{pageTitle}</title>
+                <meta name="description" content={pageDescription} />
+                <meta name="keywords" content={categoryQuery ? `${categoryQuery} porn, ${categoryQuery} sex, free premium hd ${categoryQuery} videos, amateur hd porn ${categoryQuery}, free 4k homemade ${categoryQuery} porn, hd ${categoryQuery} amateur videos free, novapornx` : 'free premium adult videos, amateur hd porn, free 4k homemade porn, novapornx'} />
+                <link rel="canonical" href={pageUrl} />
+
+                {/* ── Open Graph ────────────────────────────────────────────── */}
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={pageUrl} />
+                <meta property="og:title" content={pageTitle} />
+                <meta property="og:description" content={pageDescription} />
+                <meta property="og:image" content={`${BASE_URL}/assets/backGround.png`} />
+                <meta property="og:image:width" content="1280" />
+                <meta property="og:image:height" content="720" />
+                <meta property="og:site_name" content="NovaPornX" />
+
+                {/* ── Twitter Card ──────────────────────────────────────────── */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:url" content={pageUrl} />
+                <meta name="twitter:title" content={pageTitle} />
+                <meta name="twitter:description" content={pageDescription} />
+                <meta name="twitter:image" content={`${BASE_URL}/assets/backGround.png`} />
+
+                {/* ── Structured Data ───────────────────────────────────────── */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
             </Head>
             <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
             <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
                 {categoryQuery ? (
-                    <Typography variant="h4" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                    <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
                         {categoryQuery.toUpperCase()} PORN VIDEOS
                         {!isLoading && <span style={{ fontSize: '16px', color: '#aaa', marginLeft: '10px' }}>({totalCount} videos)</span>}
                     </Typography>
@@ -152,6 +257,7 @@ const CategoryPage: React.FC = () => {
                         : videoL.map((video) => {
                             const isHovered = hoveredVideo === video.uuid;
                             const title = video.titulo || video.title || "Video";
+                            const slug = buildSlug(title);
 
                             let currentImage = video.imagen_url || video.img_src || "/assets/placeholder.png";
                             let mp4Preview = null;
@@ -169,7 +275,7 @@ const CategoryPage: React.FC = () => {
                             }
 
                             return (
-                                <Link href={`/video/${video.uuid}`} key={video.uuid} passHref>
+                                <Link href={`/video/${video.uuid}-${slug}`} key={video.uuid} passHref>
                                     <Box
                                         onMouseEnter={() => setHoveredVideo(video.uuid)}
                                         onMouseLeave={() => setHoveredVideo(null)}
@@ -264,6 +370,21 @@ const CategoryPage: React.FC = () => {
                         </Button>
                     </Box>
                 )}
+
+                {/* Rich Category Descriptive Paragraphs */}
+                {!isLoading && seoParagraphs.length > 0 && (
+                    <Box sx={{ mt: 8, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                        <Typography component="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
+                            Watch Free {categoryTitle} Porn Videos Online
+                        </Typography>
+                        {seoParagraphs.map((par, i) => (
+                            <Typography key={i} variant="body1" sx={{ color: "rgba(255,255,255,0.7)", mb: 2.5, lineHeight: 1.8, fontSize: "1.05rem", textAlign: "justify" }}>
+                                {par}
+                            </Typography>
+                        ))}
+                    </Box>
+                )}
+
                 <>
                     <Script
                         src="https://a.magsrv.com/ad-provider.js"

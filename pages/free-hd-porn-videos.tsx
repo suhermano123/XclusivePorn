@@ -6,6 +6,8 @@ import FooterComponent from "@/components/footer/Footer";
 import VideoGrid from "@/components/ListVideos/ListVideos";
 import { Container, Typography, Box } from "@mui/material";
 
+const BASE_URL = "https://novapornx.com";
+
 const seoParagraphs = [
     "Welcome to the ultimate destination for Free HD Porn Videos. Our platform is dedicated to providing users with the highest quality adult entertainment available on the internet today. When you're searching for premium content without the premium price tag, novapornx is the only site you need. We understand that finding high-definition, crystal clear adult videos can be a challenge, which is why we have curated an extensive library of the best scenes to satisfy your every desire, updating our catalog constantly so you never run out of amazing content to watch.",
     "Our Free HD Porn Videos guarantee an immersive experience where every detail matters. From the beads of sweat to the intense expressions of passion, 1080p and 4K resolutions ensure that nothing is left to the imagination. No registration is required to start your journey into the world of high-quality streaming. We consistently update our database daily to ensure fresh, exciting, and exclusive models are always available for your viewing pleasure. We know what our viewers crave, and we deliver it entirely for free.",
@@ -19,28 +21,72 @@ const seoParagraphs = [
     "In conclusion, novapornx stands as a beacon for those who refuse to compromise on quality. Our commitment to providing Free HD Porn Videos without hidden fees or invasive tracking sets us apart. Dive into our incredible library today, explore diverse categories, and enjoy a streaming experience that rivals the most expensive premium platforms, entirely for free."
 ];
 
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
+        { "@type": "ListItem", "position": 2, "name": "Free HD Porn Videos", "item": `${BASE_URL}/free-hd-porn-videos` },
+    ],
+};
+
+const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Watch Free HD Porn Videos | Exclusive High Definition Adult Movies - novapornx",
+    "description": "Watch the best Free HD Porn videos online. Enjoy thousands of premium quality adult videos, amateur porn, and exclusive hardcore sex scenes on novapornx.",
+    "url": `${BASE_URL}/free-hd-porn-videos`,
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "NovaPornX",
+        "url": BASE_URL,
+    },
+};
+
 export default function FreeHDPornVideos() {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
-                <title>Watch Free HD Porn Videos | Exclusive High Definition Adult Movies - novapornx</title>
-                <meta name="description" content="Watch the best Free HD Porn videos online. Enjoy thousands of premium quality adult videos, amateur porn, and exclusive hardcore sex scenes on novapornx." />
-                <meta name="keywords" content="free hd porn videos, free porn, hd porn, premium porn, amateur porn hd, novapornx" />
-                <link rel="canonical" href="https://novapornx.com/free-hd-porn-videos" />
+                {/* ── Core Meta ─────────────────────────────────────────────── */}
+                <title>Watch Free HD Porn Videos | Exclusive High Definition Adult Movies | NovaPornX</title>
+                <meta name="description" content="Watch the best Free HD Porn videos online. Enjoy thousands of premium quality adult videos, amateur porn, and exclusive hardcore sex scenes on NovaPornX with no registration." />
+                <meta name="keywords" content="free hd porn videos, free porn, hd porn, premium porn, amateur porn hd, novapornx, watch porn online free" />
+                <link rel="canonical" href={`${BASE_URL}/free-hd-porn-videos`} />
+
+                {/* ── Open Graph ────────────────────────────────────────────── */}
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={`${BASE_URL}/free-hd-porn-videos`} />
+                <meta property="og:title" content="Watch Free HD Porn Videos | Exclusive High Definition | NovaPornX" />
+                <meta property="og:description" content="Enjoy thousands of premium quality adult videos, amateur porn, and exclusive hardcore sex scenes for free on NovaPornX." />
+                <meta property="og:image" content={`${BASE_URL}/assets/backGround.png`} />
+                <meta property="og:image:width" content="1280" />
+                <meta property="og:image:height" content="720" />
+                <meta property="og:site_name" content="NovaPornX" />
+
+                {/* ── Twitter Card ──────────────────────────────────────────── */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:url" content={`${BASE_URL}/free-hd-porn-videos`} />
+                <meta name="twitter:title" content="Free HD Porn Videos | Exclusive High Definition | NovaPornX" />
+                <meta name="twitter:description" content="Enjoy premium quality adult videos, amateur porn, and exclusive hardcore sex scenes for free." />
+                <meta name="twitter:image" content={`${BASE_URL}/assets/backGround.png`} />
+
+                {/* ── Structured Data ───────────────────────────────────────── */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
             </Head>
 
             <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
             <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
-                <Typography variant="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
                     Free HD Porn Videos
                 </Typography>
 
                 <VideoGrid searchQuery="hd" />
 
                 <Box sx={{ mt: 8, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
-                    <Typography variant="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
+                    <Typography component="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
                         The Best Free HD Porn Videos Online
                     </Typography>
                     {seoParagraphs.map((par, i) => (

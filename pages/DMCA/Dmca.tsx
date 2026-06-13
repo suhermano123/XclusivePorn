@@ -5,18 +5,39 @@ import NavBar from '@/components/NavBar/NavBar';
 import Head from 'next/head';
 import { CSSProperties } from 'react';
 
+const BASE_URL = "https://novapornx.com";
+
 const DmcaPage: React.FC = () => {
   return (
     <div style={{ backgroundColor: '#000' }}>
       <Head>
-        <title>DMCA Policy - novapornx</title>
-        <meta name="description" content="Legal disclaimer and DMCA copyright infringement notice for novapornx." />
+        {/* ── Core Meta ─────────────────────────────────────────────── */}
+        <title>DMCA Copyright Policy & Legal Disclaimer | NovaPornX</title>
+        <meta name="description" content="Read the Digital Millennium Copyright Act (DMCA) compliance policy, copyright infringement notification procedure, and legal disclaimer for NovaPornX." />
+        <meta name="keywords" content="novapornx dmca, copyright policy, copyright infringement, report video, legal notice" />
+        <link rel="canonical" href={`${BASE_URL}/DMCA/Dmca`} />
 
+        {/* ── Open Graph ────────────────────────────────────────────── */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${BASE_URL}/DMCA/Dmca`} />
+        <meta property="og:title" content="DMCA Copyright Policy & Legal Disclaimer | NovaPornX" />
+        <meta property="og:description" content="Digital Millennium Copyright Act (DMCA) compliance policy and legal disclaimer for NovaPornX." />
+        <meta property="og:image" content={`${BASE_URL}/assets/backGround.png`} />
+        <meta property="og:image:width" content="1280" />
+        <meta property="og:image:height" content="720" />
+        <meta property="og:site_name" content="NovaPornX" />
+
+        {/* ── Twitter Card ──────────────────────────────────────────── */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={`${BASE_URL}/DMCA/Dmca`} />
+        <meta name="twitter:title" content="DMCA Copyright Policy & Legal Disclaimer | NovaPornX" />
+        <meta name="twitter:description" content="DMCA copyright compliance policy and notification procedure." />
+        <meta name="twitter:image" content={`${BASE_URL}/assets/backGround.png`} />
       </Head>
       <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
       <div style={styles.dmcaContainer}>
         <div style={styles.dmcaContent}>
-          <Typography variant="h5" style={styles.title}>
+          <Typography component="h1" variant="h5" style={styles.title}>
             Legal Disclaimer
           </Typography>
           <Typography variant="body1" style={styles.text}>
@@ -28,7 +49,7 @@ const DmcaPage: React.FC = () => {
             We take copyright violation very seriously and will vigorously protect the rights of legal copyright owners.
             If you are the copyright owner of content which appears on the novapornx website and you did not authorize the use of the content you must notify us in writing in order for us to identify the allegedly infringing content and take action.
           </Typography>
-          <Typography variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px' }}>
+          <Typography component="h2" variant="h6" style={{ ...styles.title, marginTop: '20px', fontSize: '18px' }}>
             DMCA Notice of Alleged Infringement
           </Typography>
           <Typography variant="body1" style={styles.text}>
@@ -43,7 +64,7 @@ const DmcaPage: React.FC = () => {
             6. A statement that the information in the notification is accurate, and under penalty of perjury, that the complaining party is authorized to act on behalf of the owner.
           </Typography>
 
-          <Typography variant="h6" style={{ ...styles.title, marginTop: '40px', fontSize: '18px' }}>
+          <Typography component="h2" variant="h6" style={{ ...styles.title, marginTop: '40px', fontSize: '18px' }}>
             How to Report a Video using our Built-in Tool
           </Typography>
           <Typography variant="body1" style={styles.text}>

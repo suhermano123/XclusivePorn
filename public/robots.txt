@@ -1,7 +1,23 @@
+# Crawlers
 User-agent: *
 Allow: /
-# Bloquear búsqueda interna
 Disallow: /search
+Disallow: /api/
+Disallow: /AdminDelete/
+Disallow: /VideoDownloader/
+Disallow: /_next/
+Disallow: /moviesDownload/
 
+# Block aggressive bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Crawl-delay: 10
+
+# Sitemap
 Sitemap: https://novapornx.com/sitemap.xml
-
+Sitemap: https://novapornx.com/sitemap-0.xml

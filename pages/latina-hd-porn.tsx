@@ -6,6 +6,8 @@ import FooterComponent from "@/components/footer/Footer";
 import VideoGrid from "@/components/ListVideos/ListVideos";
 import { Container, Typography, Box } from "@mui/material";
 
+const BASE_URL = "https://novapornx.com";
+
 const seoParagraphs = [
     "Welcome to the ultimate hub for Latina HD Porn on novapornx. Our specialized category is dedicated entirely to the fiery passion, stunning curves, and authentic beauty of Hispanic and Latina performers. If you are looking for free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn, you have arrived at the definitive source on the internet. We curate thousands of high-definition scenes to satisfy your cravings.",
     "Latina HD Porn is consistently one of the most sought-after categories in adult entertainment, and it's easy to see why. The performers bring an unparalleled level of energy, intense passion, and natural beauty to the screen. From stunning Brazilian models to thick Colombian amateurs and curvy Mexican beauties, our extensive catalog represents the beautiful diversity of Latina women in breathtaking 1080p and 4K definition.",
@@ -19,28 +21,72 @@ const seoParagraphs = [
     "Dive right into the heat and passion of the best Latina HD Porn available online today. Explore deep catalogs of free 4k homemade latina porn, enjoy the raw, authentic amateur hd porn colombian, and marvel at the stunning models in our free premium hd latina videos. novapornx is your premier destination for high-quality, entirely free Hispanic adult entertainment."
 ];
 
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
+        { "@type": "ListItem", "position": 2, "name": "Latina HD Porn", "item": `${BASE_URL}/latina-hd-porn` },
+    ],
+};
+
+const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Latina HD Porn | Hot Hispanic & Amateur Colombian Sex | NovaPornX",
+    "description": "Watch the hottest Latina HD Porn online on NovaPornX. Enjoy free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn.",
+    "url": `${BASE_URL}/latina-hd-porn`,
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "NovaPornX",
+        "url": BASE_URL,
+    },
+};
+
 export default function LatinaHDPornVideos() {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
-                <title>Latina HD Porn | Hot Hispanic & Amateur Colombian Sex - novapornx</title>
-                <meta name="description" content="Watch the hottest Latina HD Porn online on novapornx. Enjoy free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn." />
+                {/* ── Core Meta ─────────────────────────────────────────────── */}
+                <title>Latina HD Porn | Hot Hispanic & Amateur Colombian Sex | NovaPornX</title>
+                <meta name="description" content="Watch the hottest Latina HD Porn online on NovaPornX. Enjoy free premium hd latina videos, amateur hd porn colombian, and free 4k homemade latina porn." />
                 <meta name="keywords" content="latina hd porn, free premium hd latina videos, amateur hd porn colombian, free 4k homemade latina porn, hispanic porn hd, novapornx" />
-                <link rel="canonical" href="https://novapornx.com/latina-hd-porn" />
+                <link rel="canonical" href={`${BASE_URL}/latina-hd-porn`} />
+
+                {/* ── Open Graph ────────────────────────────────────────────── */}
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={`${BASE_URL}/latina-hd-porn`} />
+                <meta property="og:title" content="Latina HD Porn | Hot Hispanic & Amateur Colombian Sex | NovaPornX" />
+                <meta property="og:description" content="Watch the hottest Latina HD Porn online. Free premium latina videos, amateur Colombian porn, and 4k homemade clips." />
+                <meta property="og:image" content={`${BASE_URL}/assets/backGround.png`} />
+                <meta property="og:image:width" content="1280" />
+                <meta property="og:image:height" content="720" />
+                <meta property="og:site_name" content="NovaPornX" />
+
+                {/* ── Twitter Card ──────────────────────────────────────────── */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:url" content={`${BASE_URL}/latina-hd-porn`} />
+                <meta name="twitter:title" content="Latina HD Porn | Hot Hispanic & Colombian Sex | NovaPornX" />
+                <meta name="twitter:description" content="Watch the hottest Latina HD Porn online. Free premium latina videos and Colombian amateur clips." />
+                <meta name="twitter:image" content={`${BASE_URL}/assets/backGround.png`} />
+
+                {/* ── Structured Data ───────────────────────────────────────── */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
             </Head>
 
             <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
             <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
-                <Typography variant="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
                     Latina HD Porn Videos
                 </Typography>
 
                 <VideoGrid category="latina" />
 
                 <Box sx={{ mt: 8, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
-                    <Typography variant="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
+                    <Typography component="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
                         Free Premium HD Latina Videos & Amateur HD Porn Colombian
                     </Typography>
                     {seoParagraphs.map((par, i) => (

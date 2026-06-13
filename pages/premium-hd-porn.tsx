@@ -6,6 +6,8 @@ import FooterComponent from "@/components/footer/Footer";
 import VideoGrid from "@/components/ListVideos/ListVideos";
 import { Container, Typography, Box } from "@mui/material";
 
+const BASE_URL = "https://novapornx.com";
+
 const seoParagraphs = [
     "Discover the ultimate collection of Premium HD Porn exclusively on novapornx. When you're searching for adult entertainment that rises above the standard fare, our premium sections provide you with exactly what you need. Our carefully curated archive is built for connoisseurs who appreciate the fine details, high production values, and stunning performers that only premium content can offer, all provided to our users absolutely free.",
     "What defines Premium HD Porn? It is more than just high-resolution video; it's about the entire production value. From professional lighting that highlights every curve to crystal clear audio that immerses you in the experience, premium adult videos are shot with cinematic intent. The performers are top-tier, featuring the most famous and desired stars in the adult industry alongside breathtaking new talent.",
@@ -19,28 +21,72 @@ const seoParagraphs = [
     "In summary, if you demand the best, you have found your home. novapornx's Premium HD Porn section is the internet's best-kept secret for high-end, professionally shot adult videos available entirely for free. We invite you to explore our massive library, find your favorite stars, and experience adult entertainment the way it was meant to be seen: in glorious High Definition."
 ];
 
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
+        { "@type": "ListItem", "position": 2, "name": "Premium HD Porn", "item": `${BASE_URL}/premium-hd-porn` },
+    ],
+};
+
+const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Premium HD Porn | Top Quality Exclusive Adult Videos | NovaPornX",
+    "description": "Watch the best Premium HD Porn online. Get access to top-tier, high-resolution adult adult sex movies, exclusive studio content, and beautiful models.",
+    "url": `${BASE_URL}/premium-hd-porn`,
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "NovaPornX",
+        "url": BASE_URL,
+    },
+};
+
 export default function PremiumHDPornVideos() {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
-                <title>Premium HD Porn | Top Quality Exclusive Adult Videos - novapornx</title>
-                <meta name="description" content="Watch the best Premium HD Porn online. Get access to top-tier, high-resolution adult adult sex movies, exclusive studio content, and beautiful models." />
+                {/* ── Core Meta ─────────────────────────────────────────────── */}
+                <title>Premium HD Porn | Top Quality Exclusive Adult Videos | NovaPornX</title>
+                <meta name="description" content="Watch the best Premium HD Porn online. Get free access to top-tier, high-resolution adult sex movies, exclusive studio content, and beautiful models with no signup." />
                 <meta name="keywords" content="premium hd porn, premium porn, exclusive porn, hd sex movies, high quality porn, novapornx" />
-                <link rel="canonical" href="https://novapornx.com/premium-hd-porn" />
+                <link rel="canonical" href={`${BASE_URL}/premium-hd-porn`} />
+
+                {/* ── Open Graph ────────────────────────────────────────────── */}
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={`${BASE_URL}/premium-hd-porn`} />
+                <meta property="og:title" content="Premium HD Porn | Top Quality Exclusive Adult Videos | NovaPornX" />
+                <meta property="og:description" content="Get free access to top-tier, high-resolution adult sex movies, exclusive studio content, and beautiful models." />
+                <meta property="og:image" content={`${BASE_URL}/assets/backGround.png`} />
+                <meta property="og:image:width" content="1280" />
+                <meta property="og:image:height" content="720" />
+                <meta property="og:site_name" content="NovaPornX" />
+
+                {/* ── Twitter Card ──────────────────────────────────────────── */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:url" content={`${BASE_URL}/premium-hd-porn`} />
+                <meta name="twitter:title" content="Premium HD Porn | Exclusive Adult Videos | NovaPornX" />
+                <meta name="twitter:description" content="Get free access to top-tier, high-resolution adult sex movies, exclusive studio content, and beautiful models." />
+                <meta name="twitter:image" content={`${BASE_URL}/assets/backGround.png`} />
+
+                {/* ── Structured Data ───────────────────────────────────────── */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
             </Head>
 
             <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
             <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
-                <Typography variant="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
                     Premium HD Porn
                 </Typography>
 
                 <VideoGrid searchQuery="premium" />
 
                 <Box sx={{ mt: 8, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
-                    <Typography variant="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
+                    <Typography component="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
                         Experience the Best Premium HD Porn
                     </Typography>
                     {seoParagraphs.map((par, i) => (

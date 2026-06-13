@@ -73,12 +73,12 @@ export default function HomeIndex() {
 
   // porn(90%) videos(80%) sex(80%) watch(60%) xxx(60%) milf(80%) mature(70%) scenes(40%) online(50%)
   const pageTitle = currentPage === 1
-    ? "Free Porn Videos – Watch XXX Sex Scenes, MILF, Mature & More in HD | NovaPornX"
-    : `Free Porn Videos – Page ${currentPage} | Watch XXX Sex Scenes in HD | NovaPornX`;
+    ? "Free Premium HD Porn Videos – Watch Porn Online Free No Signup | NovaPornX"
+    : `Free Premium HD Porn Videos – Page ${currentPage} | Watch Porn Online Free No Signup | NovaPornX`;
   const pageDescription =
     currentPage === 1
-      ? "Watch free porn videos in HD at NovaPornX. Explore thousands of xxx sex scenes, milf, mature, latina, homemade and premium adult content. Stream online free, no registration."
-      : `Page ${currentPage} – Watch free porn videos and xxx sex scenes in HD. Milf, mature, latina, homemade and premium adult content. Stream online at NovaPornX.`;
+      ? "Watch free premium HD porn videos at NovaPornX. Stream hot amateur homemade porn, mature sex scenes, and premium adult videos online with no signup or registration."
+      : `Page ${currentPage} – Watch free premium HD porn videos at NovaPornX. Stream amateur homemade porn and premium adult videos online with no signup.`;
 
   // ─── Structured data ─────────────────────────────────────────────────────
   const websiteSchema = {
@@ -119,6 +119,8 @@ export default function HomeIndex() {
 
         {/* ── Canonical + pagination ────────────────────────────────────── */}
         <link rel="canonical" href={canonicalUrl} />
+        <link rel="alternate" hrefLang="en" href={canonicalUrl} />
+        <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />
         {/* rel=prev / rel=next are injected by VideoGrid which has access to totalPages */}
 
         {/* ── Open Graph ───────────────────────────────────────────────── */}
