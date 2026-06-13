@@ -238,7 +238,7 @@ export default function PrimarySearchAppBar(props: any) {
               }}
             >
               <img
-                src="/assets/oficial_logo.png"
+                src="/assets/oficial_logo.webp"
                 alt="NovaPornX – Free HD Porn Videos"
                 style={{
                   width: "100%",

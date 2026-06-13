@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
-import useWasabiObjectUrl from "@/hooks/UseWasabiGetObject";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "./VideoPlayer.css";
@@ -35,9 +34,9 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   autoLandscapeOnMobile = true,
 }, ref) => {
   const isFullUrl = videoEmbedUrl?.startsWith('http') || videoEmbedUrl?.startsWith('//') || videoEmbedUrl?.startsWith('/');
-  const { url, loading, error } = useWasabiObjectUrl(isFullUrl ? '' : videoEmbedUrl);
 
-  let videoUrl = isFullUrl ? videoEmbedUrl : url?.toString();
+
+  let videoUrl = isFullUrl ? videoEmbedUrl : "";
 
   // Bypass CORS by using the local proxy defined in next.config.ts
   if (videoUrl?.includes('pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev')) {
@@ -143,7 +142,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
 
   // Initialize and update video.js
   useEffect(() => {
-    if (!videoRef.current || !videoUrl || loading || error) return;
+    if (!videoRef.current || !videoUrl) return;
 
     const isHls = videoUrl.toLowerCase().includes(".m3u8") || videoUrl.includes("type=stream");
 
@@ -279,7 +278,7 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
       techElement?.removeEventListener("webkitbeginfullscreen", handleNativeFullscreenStart);
       techElement?.removeEventListener("webkitendfullscreen", handleNativeFullscreenEnd);
     };
-  }, [videoUrl, loading, error, firstThumbnail, autoplay, muted]);
+  }, [videoUrl, firstThumbnail, autoplay, muted]);
 
   // JuicyAds Float Ad - Only on Desktop
   useEffect(() => {
@@ -308,21 +307,9 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   }, []);
 
 
-  if (loading) return (
-    <div style={{ width: '100%', aspectRatio: '16/9', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#111', borderRadius: '16px', color: '#fff' }}>
-      <p>Loading video...</p>
-    </div>
-  );
-
-  if (error) return (
-    <div style={{ width: '100%', aspectRatio: '16/9', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#111', borderRadius: '16px', color: '#fff' }}>
-      <p>Error: {error}</p>
-    </div>
-  );
-
   if (!videoUrl) return <div style={{ color: '#fff', padding: '20px' }}>Video URL is not available.</div>;
   console.log("google", (window as any).google);
-console.log("ima", (window as any).google?.ima);
+  console.log("ima", (window as any).google?.ima);
 
   return (
     <div className="video-player-shell" style={{
