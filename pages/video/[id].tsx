@@ -19,7 +19,6 @@ import {
     Favorite, Visibility
 } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
-import { trackVisitorAction } from '@/api/visitorService';
 import Script from "next/script";
 import TopVideosSlider from '@/components/TopVideosSlider/TopVideosSlider';
 import { styles } from '../../styles/videoStyles';
@@ -313,8 +312,6 @@ const VideoPage = () => {
                 "https://s.pemsrv.com/v1/link.php?cat=&idzone=5943532&type=8",
                 "_blank"
             );
-
-            trackVisitorAction(video.video_stream_url);
 
             const link = document.createElement("a");
             link.href = `/api/download-video?uuid=${video.uuid}`;

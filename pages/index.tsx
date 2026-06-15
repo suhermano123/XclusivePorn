@@ -30,41 +30,6 @@ export default function HomeIndex() {
     }
   }, [router.isReady, router.query.page]);
 
-  // ─── Visitor tracking & Service Worker ──────────────────────────────────
-  useEffect(() => {
-    const fetchIPInfo = async () => {
-      try {
-        const response = await fetch("https://api.ipify.org?format=json");
-        const { ip } = await response.json();
-        const geoResponse = await fetch(`http://ip-api.com/json/${ip}`);
-        const geoData = await geoResponse.json();
-        if (geoData?.query !== "179.1.136.81") {
-          getVisitorInfoAndInsert(geoData);
-        }
-      } catch (error) {
-        console.error("Error fetching IP information:", error);
-      }
-    };
-
-    const registerServiceWorker = () => {
-      if ("serviceWorker" in navigator) {
-        const register = () => {
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then((registration) => console.log("OK"))
-            .catch((err) => console.log("SW registration failed: ", err));
-        };
-        if (document.readyState === "complete") {
-          register();
-        } else {
-          window.addEventListener("load", register);
-        }
-      }
-    };
-
-    fetchIPInfo();
-    registerServiceWorker();
-  }, []);
 
   // ─── Dynamic meta values ─────────────────────────────────────────────────
   const pageLabel = currentPage > 1 ? ` – Page ${currentPage}` : "";
