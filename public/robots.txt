@@ -5,8 +5,9 @@ Disallow: /search
 Disallow: /api/
 Disallow: /AdminDelete/
 Disallow: /VideoDownloader/
-Disallow: /_next/
 Disallow: /moviesDownload/
+Disallow: /_next/data/
+# /_next/static/ (JS/CSS) stays crawlable so Google can render pages.
 
 # Block aggressive bots
 User-agent: AhrefsBot
@@ -20,4 +21,3 @@ Crawl-delay: 10
 
 # Sitemap
 Sitemap: https://novapornx.com/sitemap.xml
-Sitemap: https://novapornx.com/sitemap-0.xml

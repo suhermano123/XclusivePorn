@@ -1,10 +1,15 @@
+import type { InferGetServerSidePropsType } from "next";
 import React from "react";
 import Head from "next/head";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import FooterComponent from "@/components/footer/Footer";
 import VideoGrid from "@/components/ListVideos/ListVideos";
+import { landingVideosGSSP } from "@/api/ssrVideos";
 import { Container, Typography, Box } from "@mui/material";
+
+// Cloudflare Pages requires the Edge runtime for pages using getServerSideProps.
+export const config = { runtime: "experimental-edge" };
 
 const BASE_URL = "https://novapornx.com";
 
@@ -43,7 +48,10 @@ const webPageSchema = {
     },
 };
 
-export default function PremiumHDPornVideos() {
+export default function PremiumHDPornVideos({
+    items,
+    totalCount,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
@@ -83,7 +91,7 @@ export default function PremiumHDPornVideos() {
                     Premium HD Porn
                 </Typography>
 
-                <VideoGrid searchQuery="premium" />
+                <VideoGrid initialItems={items} initialTotalCount={totalCount} />
 
                 <Box sx={{ mt: 8, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
                     <Typography component="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
@@ -101,3 +109,7 @@ export default function PremiumHDPornVideos() {
         </div>
     );
 }
+
+// Only ~2 videos contain "premium" in their metadata; the whole library is the
+// "premium HD" offering, so this page frames all of it.
+export const getServerSideProps = landingVideosGSSP({});
