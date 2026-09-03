@@ -1,10 +1,10 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { createClient } from "@supabase/supabase-js";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { getVideosByCategoryPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
-import { Box, Button, Typography, Container, Skeleton } from "@mui/material";
+import { SupabaseVideo } from "@/api/videoSupabaseService";
+import { Box, Button, Typography, Container } from "@mui/material";
 import FooterComponent from "@/components/footer/Footer";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
@@ -64,6 +64,7 @@ const CategoryPage = ({
     category: categoryQuery,
     initialVideos,
     initialTotalCount,
+    page,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const router = useRouter();
 
@@ -71,58 +72,20 @@ const CategoryPage = ({
     const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
     const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
 
-    const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState<number>(initialTotalCount || 0);
     const [votedVideos, setVotedVideos] = useState<Set<string>>(new Set());
-    const [isLoading, setIsLoading] = useState(false);
     const videosPerPage = PAGE_SIZE;
+    const currentPage = page;
 
-    // Page 1 is server-rendered via getServerSideProps — skip the first client fetch.
-    const hydratedRef = useRef(true);
-
-    const loadVideos = async (page: number, category: string) => {
-        setIsLoading(true);
-        try {
-            const { items, totalCount: count } = await getVideosByCategoryPaginated(category, videosPerPage, page);
-            setVideoL(items);
-            setTotalCount(count);
-        } catch (error) {
-            console.error("Error loading category videos:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Sync current page with URL query parameter
+    // Each ?page=N is its own server-rendered URL; keep the grid in sync when
+    // the router navigates between them client-side.
     useEffect(() => {
-        if (router.isReady) {
-            const pageQuery = router.query.page;
-            if (pageQuery && typeof pageQuery === 'string') {
-                const pageNum = parseInt(pageQuery, 10);
-                if (!isNaN(pageNum) && pageNum > 0) {
-                    setCurrentPage(pageNum);
-                }
-            }
-        }
-    }, [router.isReady, router.query.page]);
+        setVideoL(initialVideos || []);
+        setTotalCount(initialTotalCount || 0);
+    }, [initialVideos, initialTotalCount]);
 
-    const handlePageChange = (pageNum: number) => {
-        setCurrentPage(pageNum);
-        router.push({
-            pathname: router.pathname,
-            query: { ...router.query, page: pageNum }
-        }, undefined, { shallow: true });
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    useEffect(() => {
-        if (hydratedRef.current) {
-            hydratedRef.current = false;
-            return;
-        }
-        if (categoryQuery) loadVideos(currentPage, categoryQuery);
-    }, [categoryQuery, currentPage]);
+    const pageHref = (n: number) =>
+        `/category/${encodeURIComponent(categoryQuery)}${n > 1 ? `?page=${n}` : ""}`;
 
     useEffect(() => {
         if (videoL.length > 0) {
@@ -170,18 +133,15 @@ const CategoryPage = ({
     }, [router.asPath]);
 
     // Dynamic SEO strings
-    const categoryTitle = categoryQuery
-        ? `${categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1)}`
-        : "";
-    const pageTitle = categoryQuery
-        ? `Free ${categoryTitle} Porn Videos – Watch ${categoryTitle} Sex Movies Online | NovaPornX`
-        : "Free Adult Porn Video Categories | NovaPornX";
-    const pageDescription = categoryQuery
-        ? `Explore the best free ${categoryQuery} porn videos online. Watch high quality ${categoryQuery} sex clips and amateur HD content on NovaPornX with no registration.`
-        : "Explore free adult categories on NovaPornX. Watch free premium HD adult videos and amateur porn online.";
-    const pageUrl = categoryQuery
-        ? `${BASE_URL}/category/${encodeURIComponent(categoryQuery.toLowerCase())}`
-        : `${BASE_URL}/categories`;
+    const categoryTitle = categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1);
+    const pageSuffix = currentPage > 1 ? ` – Page ${currentPage}` : "";
+    const pageTitle = `Free ${categoryTitle} Porn Videos${pageSuffix} – Watch ${categoryTitle} Sex Movies Online | NovaPornX`;
+    const pageDescription = currentPage > 1
+        ? `Page ${currentPage} – free ${categoryQuery} porn videos in HD. High quality ${categoryQuery} sex clips and amateur content on NovaPornX, no registration.`
+        : `Explore the best free ${categoryQuery} porn videos online. Watch high quality ${categoryQuery} sex clips and amateur HD content on NovaPornX with no registration.`;
+    const categoryBaseUrl = `${BASE_URL}/category/${encodeURIComponent(categoryQuery.toLowerCase())}`;
+    const pageUrl = currentPage > 1 ? `${categoryBaseUrl}?page=${currentPage}` : categoryBaseUrl;
+    const absPageHref = (n: number) => (n > 1 ? `${categoryBaseUrl}?page=${n}` : categoryBaseUrl);
 
     const breadcrumbSchema = {
         "@context": "https://schema.org",
@@ -189,7 +149,7 @@ const CategoryPage = ({
         "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
             { "@type": "ListItem", "position": 2, "name": "Categories", "item": `${BASE_URL}/categories` },
-            ...(categoryQuery ? [{ "@type": "ListItem", "position": 3, "name": categoryTitle, "item": pageUrl }] : []),
+            { "@type": "ListItem", "position": 3, "name": categoryTitle, "item": categoryBaseUrl },
         ],
     };
 
@@ -206,7 +166,7 @@ const CategoryPage = ({
         },
     };
 
-    const seoParagraphs = categoryQuery ? getCategorySeoText(categoryQuery) : [];
+    const seoParagraphs = currentPage > 1 ? [] : getCategorySeoText(categoryQuery);
 
     return (
         <div style={styles.container}>
@@ -214,8 +174,10 @@ const CategoryPage = ({
                 {/* ── Core Meta ─────────────────────────────────────────────── */}
                 <title>{pageTitle}</title>
                 <meta name="description" content={pageDescription} />
-                <meta name="keywords" content={categoryQuery ? `${categoryQuery} porn, ${categoryQuery} sex, free premium hd ${categoryQuery} videos, amateur hd porn ${categoryQuery}, free 4k homemade ${categoryQuery} porn, hd ${categoryQuery} amateur videos free, novapornx` : 'free premium adult videos, amateur hd porn, free 4k homemade porn, novapornx'} />
+                <meta name="keywords" content={`${categoryQuery} porn, ${categoryQuery} sex videos, free hd ${categoryQuery} porn, ${categoryQuery} sex scenes, watch ${categoryQuery} porn online, novapornx`} />
                 <link rel="canonical" href={pageUrl} />
+                {currentPage > 1 && <link rel="prev" href={absPageHref(currentPage - 1)} />}
+                {currentPage < totalPages && <link rel="next" href={absPageHref(currentPage + 1)} />}
 
                 {/* ── Open Graph ────────────────────────────────────────────── */}
                 <meta property="og:type" content="website" />
@@ -242,26 +204,13 @@ const CategoryPage = ({
             <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
 
             <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
-                {categoryQuery ? (
-                    <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
-                        {categoryQuery.toUpperCase()} PORN VIDEOS
-                        {!isLoading && <span style={{ fontSize: '16px', color: '#aaa', marginLeft: '10px' }}>({totalCount} videos)</span>}
-                    </Typography>
-                ) : (
-                    <Skeleton variant="text" width="30%" height={40} sx={{ bgcolor: "rgba(255,255,255,0.1)", mb: 4 }} />
-                )}
+                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                    {categoryQuery.toUpperCase()} PORN VIDEOS
+                    <span style={{ fontSize: '16px', color: '#aaa', marginLeft: '10px' }}>({totalCount} videos){currentPage > 1 ? ` — Page ${currentPage}` : ''}</span>
+                </Typography>
 
                 <Box sx={styles.gridContainer}>
-                    {isLoading
-                        ? Array.from(new Array(videosPerPage)).map((_, i) => (
-                            <Box key={i} sx={{ ...styles.videoCardSx, height: '100%' }}>
-                                <Skeleton variant="rectangular" width="100%" height={0} sx={{ paddingTop: '56.25%', bgcolor: "rgba(255,255,255,0.1)" }} />
-                                <Box sx={{ p: 1 }}>
-                                    <Skeleton variant="text" width="60%" sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
-                                </Box>
-                            </Box>
-                        ))
-                        : videoL.map((video) => {
+                    {videoL.map((video) => {
                             const isHovered = hoveredVideo === video.uuid;
                             const title = video.titulo || video.title || "Video";
                             const slug = buildSlug(title);
@@ -329,32 +278,31 @@ const CategoryPage = ({
                         })}
                 </Box>
 
-                {!isLoading && videoL.length === 0 && (
+                {videoL.length === 0 && (
                     <Typography variant="h6" sx={{ color: '#aaa', textAlign: 'center', mt: 8 }}>
                         No videos found in this category.
                     </Typography>
                 )}
 
-                {/* Pagination */}
-                {!isLoading && totalPages > 1 && (
-                    <Box sx={{ display: "flex", justifyContent: "center", mt: 6, mb: 4, gap: '10px' }}>
-                        <Button
-                            variant="contained"
-                            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                            disabled={currentPage === 1}
-                            sx={styles.paginationBtnSx}
-                        >
-                            Back
-                        </Button>
+                {/* Pagination — real <a> links so crawlers can reach every page */}
+                {totalPages > 1 && (
+                    <Box component="nav" aria-label="Category pagination" sx={{ display: "flex", justifyContent: "center", mt: 6, mb: 4, gap: '10px' }}>
+                        {currentPage > 1 && (
+                            <Button component={Link} href={pageHref(currentPage - 1)} variant="contained" sx={styles.paginationBtnSx} aria-label="Previous page">
+                                Back
+                            </Button>
+                        )}
 
                         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                            let pageNum = totalPages <= 5 ? i + 1 : Math.max(1, Math.min(currentPage - 2, totalPages - 4)) + i;
+                            const pageNum = totalPages <= 5 ? i + 1 : Math.max(1, Math.min(currentPage - 2, totalPages - 4)) + i;
                             if (pageNum > totalPages) return null;
                             return (
                                 <Button
                                     key={pageNum}
+                                    component={Link}
+                                    href={pageHref(pageNum)}
+                                    aria-current={pageNum === currentPage ? "page" : undefined}
                                     variant={pageNum === currentPage ? "contained" : "outlined"}
-                                    onClick={() => handlePageChange(pageNum)}
                                     sx={{
                                         ...styles.pageNumberBtnSx,
                                         backgroundColor: pageNum === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
@@ -367,19 +315,16 @@ const CategoryPage = ({
                             );
                         })}
 
-                        <Button
-                            variant="contained"
-                            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                            disabled={currentPage === totalPages}
-                            sx={styles.paginationBtnSx}
-                        >
-                            Next
-                        </Button>
+                        {currentPage < totalPages && (
+                            <Button component={Link} href={pageHref(currentPage + 1)} variant="contained" sx={styles.paginationBtnSx} aria-label="Next page">
+                                Next
+                            </Button>
+                        )}
                     </Box>
                 )}
 
                 {/* Rich Category Descriptive Paragraphs */}
-                {!isLoading && seoParagraphs.length > 0 && (
+                {seoParagraphs.length > 0 && (
                     <Box sx={{ mt: 8, p: { xs: 3, md: 5 }, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
                         <Typography component="h2" sx={{ color: '#fff', fontSize: '1.8rem', mb: 3, fontWeight: 'bold' }}>
                             Watch Free {categoryTitle} Porn Videos Online
@@ -510,9 +455,13 @@ export const getServerSideProps: GetServerSideProps<{
     category: string;
     initialVideos: SupabaseVideo[];
     initialTotalCount: number;
-}> = async ({ params, res }) => {
-    const category = String(params?.id ?? "").trim();
+    page: number;
+}> = async ({ params, query, res }) => {
+    const category = String(params?.id ?? "").trim().replace(/[(),*%]/g, "");
     if (!category) return { notFound: true };
+
+    const page = Math.max(1, parseInt(String(query.page ?? "1"), 10) || 1);
+    const from = (page - 1) * PAGE_SIZE;
 
     const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -524,7 +473,7 @@ export const getServerSideProps: GetServerSideProps<{
         .select("*", { count: "exact" })
         .ilike("tags", `%${category}%`)
         .order("created_at", { ascending: false })
-        .range(0, PAGE_SIZE - 1);
+        .range(from, from + PAGE_SIZE - 1);
 
     try {
         res.setHeader(
@@ -540,6 +489,7 @@ export const getServerSideProps: GetServerSideProps<{
             category,
             initialVideos: (data as SupabaseVideo[]) || [],
             initialTotalCount: count || 0,
+            page,
         },
     };
 };
