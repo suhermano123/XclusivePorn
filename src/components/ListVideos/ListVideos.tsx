@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Head from "next/head";
 import { getVideosPaginated, searchVideosPaginated, getVideosByCategoryPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
 import { Skeleton, Box, Button, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -18,6 +17,10 @@ import { styles } from "./styles";
 interface VideoGridProps {
   category?: string;
   searchQuery?: string;
+  /** Server-rendered first page of videos (from a page's getServerSideProps). */
+  initialItems?: SupabaseVideo[];
+  initialTotalCount?: number;
+  initialPage?: number;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -74,7 +77,7 @@ const BASE_URL = "https://novapornx.com";
  * Page 1: keyword-dense, complete.
  * Page 2+: same pattern + page number (keeps title unique per page).
  */
-const buildTitle = (page: number, category?: string, searchQuery?: string): string => {
+export const buildTitle = (page: number, category?: string, searchQuery?: string): string => {
   if (category) {
     const cap = category.charAt(0).toUpperCase() + category.slice(1);
     return page > 1
@@ -86,10 +89,10 @@ const buildTitle = (page: number, category?: string, searchQuery?: string): stri
       ? `"${searchQuery}" – Free Porn Videos Page ${page} | NovaPornX`
       : `"${searchQuery}" – Watch Free Porn Videos & Sex Scenes | NovaPornX`;
   }
-  // Homepage / default gallery — Tier 1 keywords: porn, videos, sex, watch, milf, xxx
+  // Homepage / default gallery — primary target: "free porn videos in premium HD"
   return page > 1
-    ? `Free Porn Videos & XXX Sex Scenes – Page ${page} | NovaPornX`
-    : `Free Porn Videos – Watch HD Sex Scenes, XXX & Milf Online | NovaPornX`;
+    ? `Free Porn Videos in Premium HD – XXX Sex Scenes – Page ${page} | NovaPornX`
+    : `Free Porn Videos in Premium HD – Watch HD Sex Scenes, XXX & MILF Online | NovaPornX`;
 };
 
 /**
@@ -97,7 +100,7 @@ const buildTitle = (page: number, category?: string, searchQuery?: string): stri
  * 150–160 chars, integrates Tier 1 + Tier 2 keywords naturally.
  * Unique per context (category, search, page number).
  */
-const buildDescription = (page: number, category?: string, searchQuery?: string): string => {
+export const buildDescription = (page: number, category?: string, searchQuery?: string): string => {
   if (category) {
     const cap = category.charAt(0).toUpperCase() + category.slice(1);
     return page > 1
@@ -116,7 +119,7 @@ const buildDescription = (page: number, category?: string, searchQuery?: string)
  * Builds the <meta name="keywords"> tag.
  * Max ~10 terms, ordered by TF-IDF weight, relevant to context.
  */
-const buildKeywords = (category?: string, searchQuery?: string): string => {
+export const buildKeywords = (category?: string, searchQuery?: string): string => {
   const base = [
     "porn videos",
     "free sex videos",
@@ -159,31 +162,34 @@ const buildSchemaDescription = (page: number, category?: string, searchQuery?: s
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
-const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
-  const [videoL, setVideoL] = useState<SupabaseVideo[]>([]);
+const VideoGrid: React.FC<VideoGridProps> = ({
+  category,
+  searchQuery,
+  initialItems,
+  initialTotalCount,
+  initialPage,
+}) => {
+  const [videoL, setVideoL] = useState<SupabaseVideo[]>(initialItems || []);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const [loadingPreviews, setLoadingPreviews] = useState<{ [key: string]: boolean }>({});
   const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [totalCount, setTotalCount] = useState<number>(initialTotalCount || 0);
   const [votedVideos, setVotedVideos] = useState<Set<string>>(new Set());
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage || 1);
+
+  // True once we've fetched client-side at least once — lets us render the
+  // server-provided first page immediately without a skeleton flash.
+  const hydratedRef = useRef(!!initialItems);
 
   const router = useRouter();
   const videosPerPage = 24;
   const totalPages = Math.ceil(totalCount / videosPerPage);
 
-  // ─── Canonical & pagination meta ─────────────────────────────────────────
+  // Canonical URL for the ItemList schema below. All <head> tags (title,
+  // description, canonical, prev/next) are owned by the host page.
   const buildPageUrl = (page: number) =>
     page === 1 ? BASE_URL : `${BASE_URL}?page=${page}`;
-
   const canonicalUrl = buildPageUrl(currentPage);
-  const prevUrl = currentPage > 1 ? buildPageUrl(currentPage - 1) : null;
-  const nextUrl = currentPage < totalPages ? buildPageUrl(currentPage + 1) : null;
-
-  // ─── Computed SEO values ──────────────────────────────────────────────────
-  const pageTitle = buildTitle(currentPage, category, searchQuery);
-  const pageDescription = buildDescription(currentPage, category, searchQuery);
-  const pageKeywords = buildKeywords(category, searchQuery);
 
   // ─── Sync page with URL ───────────────────────────────────────────────────
   useEffect(() => {
@@ -224,6 +230,12 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
   };
 
   useEffect(() => {
+    // Skip the first client fetch when this page was server-rendered with
+    // initialItems — avoids a redundant request and a skeleton flash.
+    if (hydratedRef.current) {
+      hydratedRef.current = false;
+      return;
+    }
     loadVideos(currentPage);
   }, [currentPage, category, searchQuery]);
 
@@ -364,48 +376,19 @@ const VideoGrid: React.FC<VideoGridProps> = ({ category, searchQuery }) => {
   };
 
   // ─── Render ───────────────────────────────────────────────────────────────
+  // This component renders NO <head> tags. Every page that embeds <VideoGrid>
+  // owns its own <title>/description/canonical (server-rendered via that page's
+  // getServerSideProps). Only body-level JSON-LD lives here.
   return (
     <>
-      <Head>
-        {/*
-          ── TITLE ────────────────────────────────────────────────────────────
-          Pattern: [Tier1 keyword] [Tier1 keyword] – [Tier2 action] [qualifier] | Brand
-          Keywords used: porn (90%), videos (80%), sex (80%), xxx (60%), watch (60%), milf (80%)
-          Example default: "Free Porn Videos – Watch HD Sex Scenes, XXX & Milf Online | NovaPornX"
-          Example category: "Milf Porn Videos – Free HD Sex Scenes | Watch Online | NovaPornX"
-        */}
-        <title>{pageTitle}</title>
-
-        {/*
-          ── DESCRIPTION ──────────────────────────────────────────────────────
-          150–160 chars. Keywords used across all variants:
-          porn (90%), videos/video (80%), sex (80%), xxx (60%), milf (80%),
-          teen (80%), latina (50%), homemade (40%), premium (40%), watch (60%)
-        */}
-        <meta name="description" content={pageDescription} />
-
-        {/*
-          ── KEYWORDS ─────────────────────────────────────────────────────────
-          Top TF-IDF terms for this page type. Ordered by weight.
-          Not a direct ranking factor but supports semantic indexing.
-        */}
-        <meta name="keywords" content={pageKeywords} />
-
-        {/* Canonical + pagination */}
-        <link rel="canonical" href={canonicalUrl} />
-        {prevUrl && <link rel="prev" href={prevUrl} />}
-        {nextUrl && <link rel="next" href={nextUrl} />}
-
-        {/* JSON-LD */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-        />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
       <div>
         <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />

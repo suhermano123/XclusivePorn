@@ -1,100 +1,101 @@
-import VideoGrid from "@/components/ListVideos/ListVideos";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { createClient } from "@supabase/supabase-js";
+import VideoGrid, { buildTitle, buildDescription, buildKeywords } from "@/components/ListVideos/ListVideos";
 import "../styles/globals.css";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
 import { useEffect } from "react";
-import { insertVisitorInfo } from "@/api/visitorService";
-import TopVideosSlider from "@/components/TopVideosSlider/TopVideosSlider";
-import FooterComponent from "@/components/footer/Footer";
+import type { SupabaseVideo } from "@/api/videoSupabaseService";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt/PWAInstallPrompt";
 import { Container, Typography, Box } from "@mui/material";
 
-const getVisitorInfoAndInsert = async (data: any) => {
-  await insertVisitorInfo(data);
-};
+// Cloudflare Pages requires the Edge runtime for pages using getServerSideProps.
+export const config = { runtime: "experimental-edge" };
 
+const BASE_URL = "https://novapornx.com";
+const PAGE_SIZE = 24;
 
-export default function HomeIndex() {
+export default function HomeIndex({
+  items,
+  totalCount,
+  page,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   useEffect(() => {
-    const fetchIPInfo = async () => {
-      try {
-        const response = await fetch("https://api.ipify.org?format=json");
-        const { ip } = await response.json();
-
-        const geoResponse = await fetch(`http://ip-api.com/json/${ip}`);
-        const geoData = await geoResponse.json();
-        if (geoData?.query != '179.1.136.81')
-          getVisitorInfoAndInsert(geoData)
-        //console.log("Visitor IP Information:", geoData);
-      } catch (error) {
-        console.error("Error fetching IP information:", error);
-      }
-    };
-
     const registerServiceWorker = () => {
-      if ('serviceWorker' in navigator) {
+      if ("serviceWorker" in navigator) {
         const register = () => {
-          navigator.serviceWorker.register('/sw.js').then((registration) => {
-            console.log('SW registered: ', registration);
-          }).catch((registrationError) => {
-            console.log('SW registration failed: ', registrationError);
-          });
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((registration) => console.log("SW registered: ", registration))
+            .catch((err) => console.log("SW registration failed: ", err));
         };
-
-        if (document.readyState === 'complete') {
-          register();
-        } else {
-          window.addEventListener('load', register);
-        }
+        if (document.readyState === "complete") register();
+        else window.addEventListener("load", register);
       }
     };
-
     registerServiceWorker();
   }, []);
+
+  const title = buildTitle(page);
+  const description = buildDescription(page);
+  const canonical = page > 1 ? `${BASE_URL}/?page=${page}` : BASE_URL;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   return (
     <div>
       <Head>
-        <title>Free Porn Videos in Premium HD – Watch 4K Adult Videos Online</title>
+        <title>{title}</title>
         <meta name="juicyads-site-verification" content="f483025e8fb2d3cfaa1a93f7fde3d85d" />
-        <link rel="canonical" href="https://novapornx.com" />
-        <meta
-          name="description"
-          content="Watch free hd porn online. Explore our massive library of premium porn videos and enjoy seamless hd adult streaming completely for free."
-        />
-        <meta name="keywords" content="free hd porn, premium porn videos, watch porn online free, hd adult streaming, free porn videos in premium hd, 4k adult videos" />
+        <link rel="canonical" href={canonical} />
+        {page > 1 && (
+          <link
+            rel="prev"
+            href={page - 1 === 1 ? BASE_URL : `${BASE_URL}/?page=${page - 1}`}
+          />
+        )}
+        {page < totalPages && <link rel="next" href={`${BASE_URL}/?page=${page + 1}`} />}
+        <meta name="description" content={description} />
+        <meta name="keywords" content={buildKeywords()} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://novapornx.com" />
-        <meta property="og:title" content="Free Porn Videos in Premium HD – Watch 4K Adult Videos Online" />
-        <meta
-          property="og:description"
-          content="Watch free hd porn online. Explore our massive library of premium porn videos and enjoy seamless hd adult streaming completely for free."
-        />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta property="og:image" content="https://novapornx.com/assets/backGround.png" />
+        <meta property="og:site_name" content="NovaPornX" />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://novapornx.com" />
-        <meta property="twitter:title" content="Free Porn Videos in Premium HD – Watch 4K Adult Videos Online" />
-        <meta
-          property="twitter:description"
-          content="Watch free hd porn online. Explore our massive library of premium porn videos and enjoy seamless hd adult streaming completely for free."
-        />
+        <meta property="twitter:url" content={canonical} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
         <meta property="twitter:image" content="https://novapornx.com/assets/backGround.png" />
       </Head>
 
       <NavBar sx={{ backgroundColor: "#e91ec4" }} />
       <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
 
-      {/* Visually hidden H1 for SEO */}
-      <Typography component="h1" sx={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
-        Free Premium HD Porn Videos
+      <Typography
+        component="h1"
+        sx={{
+          color: "#fff",
+          fontWeight: "bold",
+          px: { xs: 1.5, sm: 2, md: 2.5 },
+          pt: { xs: 2, md: 3 },
+          fontSize: { xs: "1.35rem", md: "1.9rem" },
+          borderLeft: "4px solid #f013e5",
+          ml: { xs: 1, md: 1.5 },
+          lineHeight: 1.25,
+        }}
+      >
+        {page > 1
+          ? `Free Porn Videos in Premium HD — Page ${page}`
+          : "Free Porn Videos in Premium HD"}
       </Typography>
 
-      <VideoGrid />
+      <VideoGrid initialItems={items} initialTotalCount={totalCount} initialPage={page} />
 
       {/* SEO On-Page Text Block */}
       <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
@@ -126,3 +127,41 @@ export default function HomeIndex() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  items: SupabaseVideo[];
+  totalCount: number;
+  page: number;
+}> = async ({ query, res }) => {
+  const parsed = parseInt(String(query.page ?? "1"), 10);
+  const page = Number.isNaN(parsed) || parsed < 1 ? 1 : parsed;
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+  );
+
+  const from = (page - 1) * PAGE_SIZE;
+  const { data, count } = await supabase
+    .from("posted_videos")
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(from, from + PAGE_SIZE - 1);
+
+  try {
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=600, stale-while-revalidate=86400"
+    );
+  } catch {
+    /* edge runtime may not expose res.setHeader */
+  }
+
+  return {
+    props: {
+      items: (data as SupabaseVideo[]) || [],
+      totalCount: count || 0,
+      page,
+    },
+  };
+};
