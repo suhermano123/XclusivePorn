@@ -401,9 +401,9 @@ const VideoGrid: React.FC<VideoGridProps> = ({
               gridTemplateColumns: {
                 xs: "repeat(2, 1fr)",
                 sm: "repeat(3, 1fr)",
-                md: "repeat(4, 1fr)",
-                lg: "repeat(4, 1fr)",
-                xl: "repeat(4, 1fr)",
+                md: "repeat(6, 1fr)",
+                lg: "repeat(6, 1fr)",
+                xl: "repeat(6, 1fr)",
               },
               gap: { xs: "6px", sm: "10px", md: "15px" },
               padding: { xs: "6px", sm: "10px", md: "15px" },
