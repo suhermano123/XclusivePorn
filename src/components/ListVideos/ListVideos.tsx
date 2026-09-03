@@ -12,6 +12,7 @@ import Image from "next/image";
 import { getVisitorId } from "@/api/visitorIdHelper";
 import Script from "next/script";
 import { styles } from "./styles";
+import { normalizeStreamUrl } from "@/api/ssrVideos";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface VideoGridProps {
@@ -336,8 +337,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({
           "name": title,
           // ✅ Keywords in description: "free porn video" + "watch online" (TF-IDF: watch 60%, porn 90%)
           "description": `Watch "${title}" – free porn video in HD. Sexy adult content, xxx scene available online at NovaPornX.`,
-          "thumbnailUrl": video.imagen_url || video.img_src || "",
-          "contentUrl": videoUrl,
+          "thumbnailUrl": normalizeStreamUrl(video.imagen_url || video.img_src) || "",
+          "embedUrl": `${BASE_URL}/embed/${video.uuid}`,
           "url": videoUrl,
           ...(video.created_at ? { "uploadDate": video.created_at } : {}),
           ...(video.duracion_segundos && video.duracion_segundos > 0
@@ -450,8 +451,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                   "@type": "VideoObject",
                   "name": videoTitle,
                   "description": `Watch "${videoTitle}" – free porn video in HD. Sexy xxx adult scene available online at NovaPornX.`,
-                  "thumbnailUrl": video.imagen_url || video.img_src || "",
-                  "contentUrl": `${BASE_URL}${videoUrl}`,
+                  "thumbnailUrl": normalizeStreamUrl(video.imagen_url || video.img_src) || "",
+                  "embedUrl": `${BASE_URL}/embed/${video.uuid}`,
                   "url": `${BASE_URL}${videoUrl}`,
                   ...(video.created_at ? { "uploadDate": video.created_at } : {}),
                   ...(video.duracion_segundos && video.duracion_segundos > 0

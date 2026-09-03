@@ -21,7 +21,7 @@ import {
     Favorite, Visibility
 } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
-import { isValidEntityName } from '@/api/ssrVideos';
+import { isValidEntityName, normalizeStreamUrl } from '@/api/ssrVideos';
 import Script from "next/script";
 import TopVideosSlider from '@/components/TopVideosSlider/TopVideosSlider';
 import { styles } from '../../styles/videoStyles';
@@ -358,11 +358,11 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
         ? toISODuration(video.duracion_segundos)
         : durationStringToISO(video.duracion);
 
-    const thumbnailUrl = video.imagen_url || `${BASE_URL}/assets/backGround.png`;
+    const thumbnailUrl = normalizeStreamUrl(video.imagen_url) || `${BASE_URL}/assets/backGround.png`;
     const tags = video.tags ? video.tags.split(",").map((t: string) => t.trim()) : [];
     const actresses = (video.actresses ? video.actresses.split(",").map((a: string) => a.trim()) : []).filter(isValidEntityName);
     const comments = parseComments(video.comment);
-    const videoFileUrl = video.video_stream_url || `${BASE_URL}/api/media?uuid=${video.uuid}&type=stream`;
+    const videoFileUrl = normalizeStreamUrl(video.video_stream_url || `${BASE_URL}/api/media?uuid=${video.uuid}&type=stream`);
 
 
     // ─── JSON-LD: VideoObject (primary, rich-results eligible) ──────────────

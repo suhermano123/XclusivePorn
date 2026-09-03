@@ -190,3 +190,27 @@ export async function fetchEntityIndex(
     .filter((e) => e.count >= minCount)
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
+
+/**
+ * Map raw R2 dev bucket URLs (pub-*.r2.dev, on older rows) to the branded custom
+ * domain for that bucket. schema.org content/thumbnail URLs should be on-domain
+ * and cache-friendly. Non-R2 hosts (e.g. xmoviescdn.online thumbnails) pass through.
+ */
+const R2_HOST_MAP: Record<string, string> = {
+  "pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev": "cdn.novapornx.com",     // videos-play (HLS)
+  "pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev": "img.novapornx.com",     // video-previews (thumbs)
+  "pub-15e6f7ea96c24e029fddf76d90aa3a9c.r2.dev": "preview.novapornx.com", // videos-info (preview mp4)
+};
+
+export function normalizeStreamUrl(url: string | null | undefined): string {
+  if (!url) return "";
+  for (const [raw, cdn] of Object.entries(R2_HOST_MAP)) {
+    if (url.includes(raw)) return url.replace(`http://${raw}`, `https://${cdn}`).replace(`https://${raw}`, `https://${cdn}`);
+  }
+  // source-site thumbnail CDN -> same-origin proxy (next.config.ts rewrite)
+  if (url.includes("xmoviescdn.online")) {
+    return url.replace(/https?:\/\/xmoviescdn\.online/i, "https://novapornx.com/image-proxy");
+  }
+  // any other pub-*.r2.dev -> assume the HLS bucket
+  return url.replace(/https?:\/\/pub-[a-z0-9]+\.r2\.dev/i, "https://cdn.novapornx.com");
+}
