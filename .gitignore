@@ -37,6 +37,15 @@ storage/
 .claude/
 scripts-r2/
 
+# scraper
+__pycache__/
+*.pyc
+scraper/work/
+scraper/videos-*.txt
+nltk_data/
+# notebook viejo: tiene credenciales hardcodeadas, reemplazado por scraper/
+ScrapingMovies.ipynb
+
 # debug
 npm-debug.log*
 yarn-debug.log*
