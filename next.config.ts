@@ -12,6 +12,18 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'cdn.novapornx.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.novapornx.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'files.novapornx.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev',
       },
       {
@@ -56,11 +68,11 @@ const nextConfig = {
     return [
       {
         source: '/media-proxy/:path*',
-        destination: 'https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev/:path*',
+        destination: 'https://cdn.novapornx.com/:path*',
       },
       {
         source: '/capturas-proxy/:path*',
-        destination: 'https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev/:path*',
+        destination: 'https://img.novapornx.com/:path*',
       },
       {
         source: '/image-proxy/:path*',

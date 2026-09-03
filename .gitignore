@@ -33,6 +33,10 @@ storage/
 .DS_Store
 *.pem
 
+# claude code
+.claude/
+scripts-r2/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
