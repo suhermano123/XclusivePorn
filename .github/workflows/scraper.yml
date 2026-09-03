@@ -9,7 +9,15 @@ on:
       limite:
         description: "LIMITE_VIDEOS para esta corrida"
         required: false
-        default: "12"
+        default: "24"
+      workers:
+        description: "Videos en paralelo (WORKERS)"
+        required: false
+        default: "3"
+      dl_conns:
+        description: "Conexiones por descarga (DL_CONNS)"
+        required: false
+        default: "16"
 
 concurrency:
   group: scraper
@@ -25,7 +33,9 @@ jobs:
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       SUPABASE_URL: https://gegdnoqjglidnijpmhay.supabase.co
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      LIMITE_VIDEOS: ${{ github.event.inputs.limite || '12' }}
+      LIMITE_VIDEOS: ${{ github.event.inputs.limite || '24' }}
+      WORKERS: ${{ github.event.inputs.workers || '3' }}
+      DL_CONNS: ${{ github.event.inputs.dl_conns || '16' }}
       WORKDIR: ${{ github.workspace }}/work
 
     steps:
@@ -33,7 +43,8 @@ jobs:
 
       - name: Liberar disco del runner
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+            /opt/hostedtoolcache/CodeQL /usr/local/share/boost "$AGENT_TOOLSDIRECTORY" || true
           df -h /
 
       - uses: actions/setup-python@v5
