@@ -41,6 +41,8 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
   // Bypass CORS by using the local proxy defined in next.config.ts
   if (videoUrl?.includes('pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev')) {
     videoUrl = videoUrl.replace('https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev', '/media-proxy');
+  } else if (videoUrl?.includes('cdn.novapornx.com')) {
+    videoUrl = videoUrl.replace('https://cdn.novapornx.com', '/media-proxy');
   }
 
   const [isMobile, setIsMobile] = useState(false);
@@ -79,6 +81,10 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
     firstThumbnail = firstThumbnail.replace('https://pub-c9afcfde57fd4b9fbc70f2802ea3ed05.r2.dev', '/capturas-proxy');
   } else if (firstThumbnail?.includes('pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev')) {
     firstThumbnail = firstThumbnail.replace('https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev', '/media-proxy');
+  } else if (firstThumbnail?.includes('img.novapornx.com')) {
+    firstThumbnail = firstThumbnail.replace('https://img.novapornx.com', '/capturas-proxy');
+  } else if (firstThumbnail?.includes('cdn.novapornx.com')) {
+    firstThumbnail = firstThumbnail.replace('https://cdn.novapornx.com', '/media-proxy');
   } else if (firstThumbnail?.includes('xmoviescdn.online')) {
     firstThumbnail = firstThumbnail.replace('https://xmoviescdn.online', '/image-proxy');
   }

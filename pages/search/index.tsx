@@ -157,6 +157,12 @@ const SearchPage: React.FC = () => {
         if (url.includes('pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev')) {
             return url.replace('https://pub-8a7870d75cc841b788eafa8b0f0fbf0c.r2.dev', '/media-proxy');
         }
+        if (url.includes('img.novapornx.com')) {
+            return url.replace('https://img.novapornx.com', '/capturas-proxy');
+        }
+        if (url.includes('cdn.novapornx.com')) {
+            return url.replace('https://cdn.novapornx.com', '/media-proxy');
+        }
         if (url.includes('xmoviescdn.online')) {
             return url.replace('https://xmoviescdn.online', '/image-proxy');
         }
