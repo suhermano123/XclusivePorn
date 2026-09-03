@@ -13,6 +13,20 @@ const supabaseServer = () =>
 /** Strip characters that would break a PostgREST `.or()` / `.ilike()` filter string. */
 const clean = (s: string) => s.replace(/[(),*%]/g, "").trim();
 
+/**
+ * Rejects junk entries the scraper sometimes writes into the comma-separated
+ * `actresses` cell — e.g. "STUDIO: BangBros" or "Not available". Without this
+ * they become bogus /pornstar/ pages.
+ */
+export const isValidEntityName = (name: string): boolean => {
+  const n = name.trim();
+  if (n.length < 2) return false;
+  const lower = n.toLowerCase();
+  if (lower === "not available" || lower === "unknown" || lower === "n/a") return false;
+  if (/^(studio|site|network|tags?|actriz|actress(es)?)\s*[:=]/i.test(n)) return false;
+  return true;
+};
+
 export interface VideosPageResult {
   items: SupabaseVideo[];
   totalCount: number;
@@ -81,4 +95,98 @@ export function landingVideosGSSP(opts: {
     }
     return { props: { items, totalCount } };
   };
+}
+
+/** URL-safe slug, same normalisation used across the app. */
+export const slugifyName = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-");
+
+/** Turn a slug back into a search term ("isis-love" -> "isis love"). */
+export const deslugify = (slug: string) => slug.replace(/-+/g, " ").trim();
+
+export interface PersonPageResult extends VideosPageResult {
+  /** Properly cased name as stored in the DB, or null when nothing matched. */
+  displayName: string | null;
+}
+
+/**
+ * Videos where `column` (comma-separated text: "actresses" or "studio")
+ * contains `term`. Also recovers the canonical casing of the matched entry.
+ */
+export async function fetchVideosByEntity(opts: {
+  column: "actresses" | "studio";
+  slug: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<PersonPageResult> {
+  const pageSize = opts.pageSize ?? DEFAULT_PAGE_SIZE;
+  const page = Math.max(1, opts.page ?? 1);
+  const from = (page - 1) * pageSize;
+  const term = clean(deslugify(opts.slug));
+  if (!term) return { items: [], totalCount: 0, displayName: null };
+
+  const { data, count } = await supabaseServer()
+    .from("posted_videos")
+    .select("*", { count: "exact" })
+    .ilike(opts.column, `%${term}%`)
+    .order("created_at", { ascending: false })
+    .range(from, from + pageSize - 1);
+
+  const items = (data as SupabaseVideo[]) || [];
+
+  // Recover canonical casing from the first row's comma-separated cell.
+  let displayName: string | null = null;
+  for (const row of items) {
+    const cell = String((row as any)[opts.column] || "");
+    const match = cell
+      .split(",")
+      .map((p) => p.trim())
+      .find((p) => isValidEntityName(p) && slugifyName(p) === opts.slug);
+    if (match) {
+      displayName = match;
+      break;
+    }
+  }
+  if (!displayName && items.length > 0) {
+    displayName = term.replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  return { items, totalCount: count || 0, displayName };
+}
+
+/** Distinct entities (with video counts) for the /pornstars and /studios indexes. */
+export async function fetchEntityIndex(
+  column: "actresses" | "studio",
+  minCount = 1
+): Promise<{ name: string; slug: string; count: number }[]> {
+  const { data } = await supabaseServer()
+    .from("posted_videos")
+    .select(column)
+    .limit(5000);
+
+  const counts = new Map<string, { name: string; count: number }>();
+  for (const row of (data as any[]) || []) {
+    const cell = String(row?.[column] || "");
+    for (const raw of cell.split(",")) {
+      const name = raw.trim();
+      if (!name || !isValidEntityName(name)) continue;
+      const slug = slugifyName(name);
+      if (!slug) continue;
+      const prev = counts.get(slug);
+      if (prev) prev.count += 1;
+      else counts.set(slug, { name, count: 1 });
+    }
+  }
+
+  return [...counts.entries()]
+    .map(([slug, v]) => ({ slug, name: v.name, count: v.count }))
+    .filter((e) => e.count >= minCount)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }

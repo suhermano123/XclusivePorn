@@ -21,6 +21,7 @@ import {
     Favorite, Visibility
 } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
+import { isValidEntityName } from '@/api/ssrVideos';
 import Script from "next/script";
 import TopVideosSlider from '@/components/TopVideosSlider/TopVideosSlider';
 import { styles } from '../../styles/videoStyles';
@@ -345,7 +346,9 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
 
     // ✅ FIX: use UUID-slug canonical, not the raw `id` param from URL
     // The raw `id` could be a legacy format; canonical must always be the clean URL
-    const pageTitle = `${videoTitle} – Watch Free HD Porn Video Online | NovaPornX`;
+    const studioName = (video.studio || "").trim();
+    const studioPrefix = studioName ? `[${studioName}] ` : "";
+    const pageTitle = `${studioPrefix}${videoTitle} – Free HD Porn Video | NovaPornX`;
     const pageDescription =
         video.descripcion ||
         `Watch "${videoTitle}" free HD porn video online at NovaPornX. Hot xxx sex scene, premium quality, no registration required.`;
@@ -357,7 +360,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
 
     const thumbnailUrl = video.imagen_url || `${BASE_URL}/assets/backGround.png`;
     const tags = video.tags ? video.tags.split(",").map((t: string) => t.trim()) : [];
-    const actresses = video.actresses ? video.actresses.split(",").map((a: string) => a.trim()) : [];
+    const actresses = (video.actresses ? video.actresses.split(",").map((a: string) => a.trim()) : []).filter(isValidEntityName);
     const comments = parseComments(video.comment);
     const videoFileUrl = video.video_stream_url || `${BASE_URL}/api/media?uuid=${video.uuid}&type=stream`;
 
@@ -646,6 +649,32 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                     {video.descripcion || "No description available."}
                                 </Typography>
 
+                                {studioName && (
+                                    <Box sx={{ mb: 2, mt: 1 }}>
+                                        <Typography
+                                            component="h2"
+                                            sx={{ color: "rgba(255,255,255,0.5)", mb: 1, textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.75rem", fontWeight: "bold" }}
+                                        >
+                                            Studio:
+                                        </Typography>
+                                        <Chip
+                                            label={studioName}
+                                            size="small"
+                                            component="a"
+                                            href={`/studio/${buildSlug(studioName)}`}
+                                            clickable
+                                            sx={{
+                                                backgroundColor: "rgba(240,19,229,0.1)",
+                                                color: "#f013e5",
+                                                fontWeight: "bold",
+                                                borderRadius: "6px",
+                                                border: "1px solid rgba(240,19,229,0.3)",
+                                                textDecoration: "none",
+                                            }}
+                                        />
+                                    </Box>
+                                )}
+
                                 {actresses.length > 0 && (
                                     <Box sx={{ mb: 2, mt: 1 }}>
                                         <Typography
@@ -661,7 +690,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                                     label={actress}
                                                     size="small"
                                                     component="a"
-                                                    href={`${BASE_URL}/search?q=${encodeURIComponent(actress)}`}
+                                                    href={`/pornstar/${buildSlug(actress)}`}
                                                     clickable
                                                     sx={{
                                                         backgroundColor: "rgba(240,19,229,0.1)",
@@ -687,7 +716,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                                 label={tag}
                                                 size="small"
                                                 component="a"
-                                                href={`${BASE_URL}/search?q=${encodeURIComponent(tag)}`}
+                                                href={`/category/${encodeURIComponent(tag.toLowerCase())}`}
                                                 clickable
                                                 icon={<Favorite sx={{ fontSize: "14px !important", color: "#f013e5 !important" }} />}
                                                 sx={{

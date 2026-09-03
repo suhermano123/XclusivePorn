@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { createClient } from '@supabase/supabase-js';
+import { isValidEntityName } from '@/api/ssrVideos';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -11,6 +12,8 @@ const BASE_URL = "https://novapornx.com";
 const generateSlug = (text: string) => {
   return text
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
@@ -70,7 +73,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     });
 
-    return [...staticRoutes, ...categoryRoutes, ...videoRoutes];
+    // 3. Performer + studio routes, derived from the catalogue metadata
+    const entityRoutes: MetadataRoute.Sitemap = [];
+    try {
+      const { data: meta } = await supabase
+        .from('posted_videos')
+        .select('actresses, studio')
+        .limit(5000);
+
+      const collect = (cell: unknown, into: Set<string>) => {
+        for (const raw of String(cell || '').split(',')) {
+          const name = raw.trim();
+          if (!name || !isValidEntityName(name)) continue;
+          const slug = generateSlug(name);
+          if (slug) into.add(slug);
+        }
+      };
+
+      const performers = new Set<string>();
+      const studios = new Set<string>();
+      for (const row of meta || []) {
+        collect((row as any).actresses, performers);
+        collect((row as any).studio, studios);
+      }
+
+      entityRoutes.push(
+        { url: `${BASE_URL}/pornstars`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+        { url: `${BASE_URL}/studios`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+        ...[...performers].map((slug) => ({
+          url: `${BASE_URL}/pornstar/${slug}`,
+          lastModified: now,
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        })),
+        ...[...studios].map((slug) => ({
+          url: `${BASE_URL}/studio/${slug}`,
+          lastModified: now,
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        })),
+      );
+    } catch (e) {
+      console.error('Sitemap: performer/studio routes failed:', e);
+    }
+
+    return [...staticRoutes, ...categoryRoutes, ...entityRoutes, ...videoRoutes];
   } catch (err) {
     console.error('Sitemap generation failed:', err);
     return [...staticRoutes, ...categoryRoutes];

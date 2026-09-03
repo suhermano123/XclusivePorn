@@ -18,6 +18,7 @@ export interface SupabaseVideo {
     report_comment?: string; // Concatenated JSON report comments
     preview_images_urls?: string; // JSON array of image URLs/keys
     actresses?: string; // Comma separated actresses
+    studio?: string; // Producing studio / site name
     // Legacy fields - keep optional if needed or remove if fully migrating
     id_post?: string;
     title?: string;

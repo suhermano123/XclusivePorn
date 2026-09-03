@@ -9,6 +9,8 @@ import { Box } from "@mui/material";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
+import StarIcon from "@mui/icons-material/Star";
+import CategoryIcon from "@mui/icons-material/Category";
 
 export default function NavMenu(props: any) {
   const [open, setOpen] = React.useState(false);
@@ -39,15 +41,43 @@ export default function NavMenu(props: any) {
       <Grid container sx={{ justifyContent: "center" }} component="ul" >
 
         <Grid item component="li">
-          <Tooltip disableFocusListener disableTouchListener title="Browse porn channels">
+          <Tooltip disableFocusListener disableTouchListener title="Browse porn videos by performer">
             <Button
               component={Link}
-              href="/channels"
-              aria-label="Browse porn channels"
+              href="/pornstars"
+              aria-label="Browse porn videos by pornstar"
+              style={navLinkStyle}
+            >
+              <StarIcon sx={{ fontSize: 20 }} aria-hidden="true" />
+              Pornstars
+            </Button>
+          </Tooltip>
+        </Grid>
+
+        <Grid item component="li">
+          <Tooltip disableFocusListener disableTouchListener title="Browse porn videos by studio">
+            <Button
+              component={Link}
+              href="/studios"
+              aria-label="Browse porn videos by studio"
               style={navLinkStyle}
             >
               <LiveTvIcon sx={{ fontSize: 20 }} aria-hidden="true" />
-              Channels
+              Studios
+            </Button>
+          </Tooltip>
+        </Grid>
+
+        <Grid item component="li">
+          <Tooltip disableFocusListener disableTouchListener title="Browse porn categories">
+            <Button
+              component={Link}
+              href="/categories"
+              aria-label="Browse porn categories"
+              style={navLinkStyle}
+            >
+              <CategoryIcon sx={{ fontSize: 20 }} aria-hidden="true" />
+              Categories
             </Button>
           </Tooltip>
         </Grid>
