@@ -6,13 +6,34 @@ cron diario 07:00 UTC, y también a mano con *Run workflow*.
 
 ## Flujo (`run.py`)
 
-Por-video, borrando el local después de cada uno (el runner tiene ~14 GB):
+1. `scrape.py` — listado de `xmoviesforyou.com`; el detalle de cada tarjeta
+   (streamtape, actriz, studio, tags) se baja en paralelo (`SCRAPE_WORKERS`).
+2. dedup en batch contra `posted_videos.titulo` (1 query para todos los candidatos).
+3. `WORKERS` videos a la vez. Por video:
+   - `download.py` — resuelve el mp4 de streamtape (sin navegador) y lo baja con
+     `DL_CONNS` conexiones en paralelo (streamtape estrangula por conexión a
+     ~0.7 MB/s; con 16 conns son ~7-8 MB/s). Después `ffmpeg -c copy` remuxea el
+     mp4 local a HLS. Si el server no acepta Range, cae al método viejo
+     (`ffmpeg` leyendo la URL).
+   - `preview.py` — recorta 5 trozos → preview mp4 de ~5 s / 320 px.
+   - `upload.py` — sube los `.ts` a R2 en paralelo (`UPLOAD_WORKERS`), el
+     `.m3u8` al final, y crea la fila en Supabase.
+   - borra el local.
 
-1. `scrape.py` — listado de `xmoviesforyou.com` → metadata (título, actriz, studio, tags).
-2. dedup contra `posted_videos.titulo`.
-3. `download.py` — Playwright resuelve el stream de streamtape → `ffmpeg` baja el HLS.
-4. `preview.py` — recorta 5 trozos → preview mp4 de ~5 s / 320 px.
-5. `upload.py` — sube a R2 con `Cache-Control` y crea la fila en Supabase.
+Un video ~650 MB pasó de ~15 min a ~2 min. Cada fase loguea su tiempo
+(`download=Xs remux=Ys`, `subidos N .ts en Zs`, `PUBLICADO en Ws`).
+
+### Env de paralelismo (opcional, todo tiene default)
+
+| var | default | qué |
+|---|---|---|
+| `LIMITE_VIDEOS` | 24 | videos a publicar por corrida |
+| `WORKERS` | 3 | videos procesados a la vez |
+| `DL_CONNS` | 16 | conexiones HTTP por descarga |
+| `SCRAPE_WORKERS` | 6 | páginas de detalle en paralelo |
+| `UPLOAD_WORKERS` | 16 | subidas `.ts` a R2 en paralelo |
+
+Ojo con el disco: pico ≈ `WORKERS × ~1.3 GB`. Con `WORKERS=3` sobra en el runner.
 
 ## Destinos R2 → CDN
 

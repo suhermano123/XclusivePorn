@@ -35,6 +35,12 @@ CC_IMMUTABLE = "public, max-age=31536000, immutable"   # .ts, preview mp4, thumb
 CC_PLAYLIST = "public, max-age=3600"                    # .m3u8
 
 LIMITE_VIDEOS = int(os.environ.get("LIMITE_VIDEOS", "12"))
+
+# Paralelismo
+WORKERS = int(os.environ.get("WORKERS", "3"))            # videos en paralelo
+DL_CONNS = int(os.environ.get("DL_CONNS", "16"))         # conexiones por descarga
+SCRAPE_WORKERS = int(os.environ.get("SCRAPE_WORKERS", "6"))  # fetch de detalle en paralelo
+UPLOAD_WORKERS = int(os.environ.get("UPLOAD_WORKERS", "16")) # subidas .ts a R2 en paralelo
 SCRAPE_BASE_URL = os.environ.get("SCRAPE_BASE_URL", "https://xmoviesforyou.com/")
 
 # Rutas de trabajo (efímeras, se limpian por video)

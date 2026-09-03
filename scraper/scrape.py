@@ -4,15 +4,15 @@ Sustituye la celda 1 del notebook. En vez de escribir videos-{fecha}.txt
 devuelve una lista de dicts en memoria.
 """
 import re
-import time
 import uuid
 import logging
+import concurrent.futures as cf
 from urllib.parse import urljoin
 
 import cloudscraper
 from bs4 import BeautifulSoup
 
-from config import SCRAPE_BASE_URL
+from config import SCRAPE_BASE_URL, SCRAPE_WORKERS
 
 log = logging.getLogger("scrape")
 
@@ -85,24 +85,27 @@ def scrape_listing(limite: int) -> list[dict]:
     if not grid:
         raise RuntimeError("No se encontró el contenedor de videos (cambió el HTML?)")
 
-    articulos = grid.find_all("a", href=True)
-    resultados = []
-
-    for art in articulos:
-        if len(resultados) >= limite:
+    # 1) Datos base de cada tarjeta del listado (sin red)
+    bases = []
+    for art in grid.find_all("a", href=True):
+        if len(bases) >= limite:
             break
         href = urljoin(SCRAPE_BASE_URL, art.get("href", ""))
         if not href:
             continue
-
         img_tag = art.find("img")
-        img_src = img_tag.get("src", "") if img_tag else ""
         h3 = art.find("h3")
-        titulo = limpiar_titulo(h3.get_text(strip=True) if h3 else "No Title")
+        bases.append({
+            "href": href,
+            "img_src": img_tag.get("src", "") if img_tag else "",
+            "titulo": limpiar_titulo(h3.get_text(strip=True) if h3 else "No Title"),
+        })
 
+    # 2) Página de detalle de cada uno, en paralelo
+    def _detalle(base: dict) -> dict:
+        href, titulo = base["href"], base["titulo"]
         actriz = studio = descripcion = tags_ia = categorias = streamtape = ""
         try:
-            time.sleep(1)
             rv = scraper.get(href, timeout=15)
             if rv.status_code == 200:
                 m = re.search(r"https?://streamtape\.com/[ve]/([A-Za-z0-9]+)", rv.text)
@@ -143,18 +146,22 @@ def scrape_listing(limite: int) -> list[dict]:
         except Exception as e:
             log.warning("No se pudo leer detalle de %s: %s", href, e)
 
-        resultados.append({
+        log.info("listado: %s | actriz=%s | st=%s",
+                 titulo[:45], actriz or "-", "si" if streamtape else "NO")
+        return {
             "id": str(uuid.uuid4()),
             "titulo": titulo,
             "actriz": actriz,
             "studio": studio,
             "enlace": href,
             "streamtape": streamtape,
-            "imagen": img_src,
+            "imagen": base["img_src"],
             "descripcion": descripcion,
             "tags_ia": tags_ia,
             "TAG": categorias,
-        })
-        log.info("listado: %s | actriz=%s | st=%s", titulo[:45], actriz or "-", "si" if streamtape else "NO")
+        }
+
+    with cf.ThreadPoolExecutor(max_workers=SCRAPE_WORKERS) as ex:
+        resultados = list(ex.map(_detalle, bases))
 
     return resultados

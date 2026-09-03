@@ -8,6 +8,7 @@ import time
 import random
 import logging
 import datetime
+import concurrent.futures as cf
 
 import boto3
 import requests
@@ -20,7 +21,7 @@ from config import (
     CDN_PLAY, CDN_INFO, CDN_IMAGES,
     CC_IMMUTABLE, CC_PLAYLIST,
     SUPABASE_URL, SUPABASE_KEY,
-    HLS_DIR, PREVIEW_DIR,
+    HLS_DIR, PREVIEW_DIR, UPLOAD_WORKERS,
 )
 
 log = logging.getLogger("upload")
@@ -47,23 +48,33 @@ def duracion_hls(video_id: str) -> int:
     return int(total)
 
 
+def _put_ts(archivo, video_id: str):
+    key = f"{video_id}/{archivo.name}"
+    s3.upload_file(
+        str(archivo), BUCKET_PLAY, key,
+        ExtraArgs={"ContentType": "video/MP2T", "CacheControl": CC_IMMUTABLE},
+    )
+
+
 def subir_hls(video_id: str) -> tuple[str, str]:
     carpeta = HLS_DIR / video_id
-    m3u8_url = video_key = ""
-    for archivo in sorted(carpeta.iterdir()):
-        key = f"{video_id}/{archivo.name}"
-        if archivo.suffix == ".m3u8":
-            ctype, cc = "application/vnd.apple.mpegurl", CC_PLAYLIST
-        else:
-            ctype, cc = "video/MP2T", CC_IMMUTABLE
-        s3.upload_file(
-            str(archivo), BUCKET_PLAY, key,
-            ExtraArgs={"ContentType": ctype, "CacheControl": cc},
-        )
-        if archivo.suffix == ".m3u8":
-            video_key = key
-            m3u8_url = f"{CDN_PLAY}/{key}"
-    return m3u8_url, video_key
+    archivos = sorted(carpeta.iterdir())
+    ts_files = [a for a in archivos if a.suffix == ".ts"]
+    m3u8 = next((a for a in archivos if a.suffix == ".m3u8"), None)
+
+    t0 = time.time()
+    with cf.ThreadPoolExecutor(max_workers=UPLOAD_WORKERS) as ex:
+        list(ex.map(lambda a: _put_ts(a, video_id), ts_files))
+    log.info("  subidos %d .ts en %.0fs", len(ts_files), time.time() - t0)
+
+    if not m3u8:
+        return "", ""
+    key = f"{video_id}/{m3u8.name}"
+    s3.upload_file(
+        str(m3u8), BUCKET_PLAY, key,
+        ExtraArgs={"ContentType": "application/vnd.apple.mpegurl", "CacheControl": CC_PLAYLIST},
+    )
+    return f"{CDN_PLAY}/{key}", key
 
 
 def subir_preview(video_id: str) -> tuple[str, str]:
@@ -133,6 +144,20 @@ def ya_existe(titulo: str) -> bool:
         return False
 
 
+def titulos_existentes(titulos: list[str]) -> set[str]:
+    """Los titulos de `titulos` que ya estan en posted_videos (1 sola query)."""
+    out: set[str] = set()
+    titulos = [t for t in titulos if t]
+    for i in range(0, len(titulos), 100):
+        lote = titulos[i:i + 100]
+        try:
+            res = supabase.table("posted_videos").select("titulo").in_("titulo", lote).execute()
+            out.update(r["titulo"] for r in (res.data or []))
+        except Exception as e:
+            log.warning("  dedup batch fallo: %s", e)
+    return out
+
+
 def publicar(meta: dict) -> bool:
     """Sube todo lo de work/ para meta['id'] e inserta en Supabase. True si insertó."""
     video_id = meta["id"]
@@ -140,7 +165,6 @@ def publicar(meta: dict) -> bool:
     video_url, video_key = subir_hls(video_id)
     preview_url, preview_key = subir_preview(video_id)
     imagen_url, _ = subir_thumbnail(video_id, meta.get("imagen", ""))
-    time.sleep(1.0)
 
     payload = {
         "uuid": video_id,
