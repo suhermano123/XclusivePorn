@@ -1,10 +1,12 @@
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useState, useRef } from 'react';
 import {
-    getVideoById, getVideoByTitle, SupabaseVideo, registerVote,
-    getRelatedVideosByTags, addCommentToVideo, addReportToVideo, incrementVideoViews
+    SupabaseVideo, registerVote,
+    addCommentToVideo, addReportToVideo, incrementVideoViews
 } from '@/api/videoSupabaseService';
-import VideoPlayer, { VideoPlayerRef } from '@/components/VideoPlayer/VideoPlayer';
 import NavBar from '@/components/NavBar/NavBar';
 import NavMenu from '@/components/NavMenu/NavMenu';
 import FooterComponent from '@/components/footer/Footer';
@@ -22,6 +24,12 @@ import { getVisitorId } from '@/api/visitorIdHelper';
 import Script from "next/script";
 import TopVideosSlider from '@/components/TopVideosSlider/TopVideosSlider';
 import { styles } from '../../styles/videoStyles';
+
+// Cloudflare Pages requires the Edge runtime for pages using getServerSideProps.
+export const config = { runtime: 'experimental-edge' };
+
+// video.js is browser-only — keep it out of the SSR/edge bundle.
+const VideoPlayer = dynamic(() => import('@/components/VideoPlayer/VideoPlayer'), { ssr: false });
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const BASE_URL = "https://novapornx.com";
@@ -112,13 +120,11 @@ const parseComments = (commentStr?: string): any[] => {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-const VideoPage = () => {
+const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const router = useRouter();
-    const { id } = router.query;
 
-    const [video, setVideo] = useState<SupabaseVideo | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [relatedVideos, setRelatedVideos] = useState<SupabaseVideo[]>([]);
+    const [video, setVideo] = useState<SupabaseVideo>(initialVideo);
+    const [relatedVideos, setRelatedVideos] = useState<SupabaseVideo[]>(related || []);
     const [hasVoted, setHasVoted] = useState<"likes" | "dislikes" | null>(null);
     const [newCommentText, setNewCommentText] = useState("");
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
@@ -135,47 +141,27 @@ const VideoPage = () => {
     const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
     const videosPerRelatedPage = 13;
-    const videoPlayerRef = useRef<VideoPlayerRef>(null);
     const viewedRef = useRef(false);
     const touchPreviewVideoRef = useRef<string | null>(null);
     const suppressNextRecommendationClickRef = useRef(false);
     const touchPreviewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const popupOpened = useRef(false);
 
-    // ─── Fetch video ─────────────────────────────────────────────────────────
+    // ─── Sync state when navigating between video pages ─────────────────────
     useEffect(() => {
-        if (!id) return;
-        const fetchVideo = async () => {
-            setLoading(true);
-            try {
-                const idStr = id as string;
-                const potentialUuid = idStr.length >= 36 ? idStr.substring(0, 36) : "";
-                const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(potentialUuid);
+        setVideo(initialVideo);
+        setRelatedVideos(related || []);
+        setHasVoted(null);
+        setRelatedPage(1);
+        viewedRef.current = false;
+        popupOpened.current = false;
+    }, [initialVideo, related]);
 
-                let data: SupabaseVideo | null = null;
-                if (isUuid) {
-                    data = await getVideoById(potentialUuid);
-                } else {
-                    data = await getVideoById(idStr);
-                    if (!data) data = await getVideoByTitle(idStr);
-                }
-
-                if (data) {
-                    setVideo(data);
-                    const voted = localStorage.getItem(`voted_${data.uuid}`);
-                    if (voted === "likes" || voted === "dislikes") setHasVoted(voted as any);
-                    const related = await getRelatedVideosByTags(data.tags, 30, data.uuid);
-                    setRelatedVideos(related);
-                }
-            } catch (error) {
-                console.error("Error loading video:", error);
-            } finally {
-                setLoading(false);
-                viewedRef.current = false;
-            }
-        };
-        fetchVideo();
-    }, [id]);
+    // ─── Restore local vote state ──────────────────────────────────────────
+    useEffect(() => {
+        const voted = localStorage.getItem(`voted_${video.uuid}`);
+        if (voted === "likes" || voted === "dislikes") setHasVoted(voted);
+    }, [video.uuid]);
 
     // ─── Preview cycling for related videos ─────────────────────────────────
     useEffect(() => {
@@ -348,29 +334,7 @@ const VideoPage = () => {
         }, 3500);
     };
 
-    // ─── Loading / not found states ──────────────────────────────────────────
-    if (loading) {
-        return (
-            <Box sx={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#000", color: "#fff" }}>
-                <Head><title>Loading Video – NovaPornX</title></Head>
-                <CircularProgress color="secondary" />
-            </Box>
-        );
-    }
-
-    if (!video) {
-        return (
-            <Box sx={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#000", color: "#fff" }}>
-                <Head>
-                    <title>Video Not Found – NovaPornX</title>
-
-                </Head>
-                <Typography variant="h5">Video not found</Typography>
-            </Box>
-        );
-    }
-
-    // ─── Derived SEO values (computed once, after video is loaded) ───────────
+    // ─── Derived SEO values (computed on the server, from getServerSideProps) ─
     const videoTitle = video.titulo || "HD Video";
     const slug = buildSlug(videoTitle);
     const canonicalUrl = `${BASE_URL}/video/${video.uuid}-${slug}`;
@@ -536,7 +500,6 @@ const VideoPage = () => {
                     <Grid item xs={12} lg={8.5} sx={{ minWidth: 0 }}>
                         <Box sx={{ width: "100%", mb: { xs: 2, md: 3 }, borderRadius: { xs: 0, sm: "14px" }, overflow: "hidden", bgcolor: "#000" }}>
                             <VideoPlayer
-                                ref={videoPlayerRef}
                                 videoEmbedUrl={video.video_stream_url || `/api/media?uuid=${video.uuid}&type=stream`}
                                 poster={video.imagen_url}
                                 autoplay={false}
@@ -1148,6 +1111,83 @@ const VideoPage = () => {
             <FooterComponent />
         </div>
     );
+};
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export const getServerSideProps: GetServerSideProps<{
+    video: SupabaseVideo;
+    related: SupabaseVideo[];
+}> = async ({ params, res }) => {
+    const raw = String(params?.id ?? "");
+    const uuid = raw.slice(0, 36).toLowerCase();
+    if (!UUID_RE.test(uuid)) return { notFound: true };
+
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+    );
+
+    const { data: video, error } = await supabase
+        .from("posted_videos")
+        .select("*")
+        .eq("uuid", uuid)
+        .single();
+
+    if (error || !video) return { notFound: true };
+
+    // Canonicalise the URL to /video/<uuid>-<slug> (301 wrong or missing slugs).
+    const slug = buildSlug(video.titulo || "video");
+    const canonical = slug ? `${uuid}-${slug}` : uuid;
+    if (raw !== canonical) {
+        return { redirect: { destination: `/video/${canonical}`, statusCode: 301 } };
+    }
+
+    // Related videos, server-rendered so crawlers get real internal links.
+    const safeTags = String(video.tags || "")
+        .split(",")
+        .map((t) => t.trim().replace(/[(),*%]/g, ""))
+        .filter(Boolean)
+        .slice(0, 5);
+
+    let related: SupabaseVideo[] = [];
+    if (safeTags.length > 0) {
+        const orQuery = safeTags.map((t) => `tags.ilike.%${t}%`).join(",");
+        const { data } = await supabase
+            .from("posted_videos")
+            .select("*")
+            .or(orQuery)
+            .neq("uuid", uuid)
+            .limit(30);
+        related = (data as SupabaseVideo[]) || [];
+    }
+    if (related.length < 12) {
+        const { data } = await supabase
+            .from("posted_videos")
+            .select("*")
+            .neq("uuid", uuid)
+            .order("created_at", { ascending: false })
+            .limit(30);
+        const seen = new Set(related.map((v) => v.uuid));
+        for (const v of (data as SupabaseVideo[]) || []) {
+            if (!seen.has(v.uuid)) {
+                related.push(v);
+                seen.add(v.uuid);
+            }
+        }
+    }
+    related = related.slice(0, 30);
+
+    try {
+        res.setHeader(
+            "Cache-Control",
+            "public, s-maxage=3600, stale-while-revalidate=86400"
+        );
+    } catch {
+        /* the edge runtime may not expose res.setHeader — handled by a zone Cache Rule */
+    }
+
+    return { props: { video: video as SupabaseVideo, related } };
 };
 
 export default VideoPage;
