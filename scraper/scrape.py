@@ -100,11 +100,14 @@ def scrape_listing(limite: int) -> list[dict]:
         h3 = art.find("h3")
         titulo = limpiar_titulo(h3.get_text(strip=True) if h3 else "No Title")
 
-        actriz = studio = descripcion = tags_ia = categorias = ""
+        actriz = studio = descripcion = tags_ia = categorias = streamtape = ""
         try:
             time.sleep(1)
             rv = scraper.get(href, timeout=15)
             if rv.status_code == 200:
+                m = re.search(r"https?://streamtape\.com/[ve]/([A-Za-z0-9]+)", rv.text)
+                if m:
+                    streamtape = f"https://streamtape.com/e/{m.group(1)}"
                 sv = BeautifulSoup(rv.text, "html.parser")
                 actrices, studios = [], []
                 for a in sv.select("a[href]"):
@@ -146,11 +149,12 @@ def scrape_listing(limite: int) -> list[dict]:
             "actriz": actriz,
             "studio": studio,
             "enlace": href,
+            "streamtape": streamtape,
             "imagen": img_src,
             "descripcion": descripcion,
             "tags_ia": tags_ia,
             "TAG": categorias,
         })
-        log.info("listado: %s | actriz=%s", titulo[:50], actriz or "-")
+        log.info("listado: %s | actriz=%s | st=%s", titulo[:45], actriz or "-", "si" if streamtape else "NO")
 
     return resultados

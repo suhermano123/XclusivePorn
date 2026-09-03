@@ -1,102 +1,100 @@
-"""Fase 2: para UN video, resuelve el stream (streamtape) con Playwright y baja
-el HLS con ffmpeg a work/videos-hls/<video_id>/.
+"""Fase 2: para UN video, resuelve el mp4 de streamtape (sin navegador) y lo
+baja como HLS con ffmpeg a work/videos-hls/<video_id>/.
 
-Sustituye la celda 5 del notebook, pero por-video (no batch) para no llenar disco.
+streamtape ya no necesita Playwright: la pagina /e/<id> trae el link real en
+un getElementById('robotlink').innerHTML = 'PREFIX' + ('BODY').substring(n)...
 """
 import re
 import shutil
-import asyncio
 import logging
+import subprocess
 
-from playwright.async_api import async_playwright
+import requests
 
 from config import HLS_DIR
 
 log = logging.getLogger("download")
 
-
-def _hms(s: str) -> float:
-    try:
-        h, m, sec = s.split(":")
-        return int(h) * 3600 + int(m) * 60 + float(sec)
-    except Exception:
-        return 0.0
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 
 
-async def _ffmpeg_hls(src_url: str, dest_dir, titulo: str) -> bool:
+def _eval_innerhtml(expr: str) -> str | None:
+    """'PREFIX' + ('BODY').substring(1).substring(2)  ->  PREFIX + BODY[3:]"""
+    m = re.match(
+        r"""\s*["'](.*?)["']\s*\+\s*\(?\s*["'](.*?)["']\s*\)?((?:\s*\.substring\(\d+\))*)""",
+        expr,
+    )
+    if not m:
+        return None
+    prefix, body, subs = m.group(1), m.group(2), m.group(3)
+    for n in re.findall(r"substring\((\d+)\)", subs):
+        body = body[int(n):]
+    return prefix + body
+
+
+def resolver_streamtape(embed_url: str, sess: requests.Session) -> str | None:
+    r = sess.get(embed_url, timeout=25)
+    r.raise_for_status()
+    for m in re.finditer(r"getElementById\('([a-z]+)'\)\.innerHTML\s*=\s*(.+?);", r.text):
+        name, expr = m.group(1), m.group(2)
+        if "link" not in name:
+            continue
+        rel = _eval_innerhtml(expr)
+        if not rel or "get_video" not in rel:
+            continue
+        url = ("https:" + rel) if rel.startswith("//") else rel
+        url += "&stream=1"
+        try:
+            h = sess.get(url, timeout=25, stream=True, allow_redirects=True)
+            ok = h.status_code == 200 and "video" in (h.headers.get("Content-Type") or "")
+            h.close()
+            if ok:
+                return url
+        except Exception:
+            continue
+    return None
+
+
+def _ffmpeg_hls(src_url: str, dest_dir, titulo: str) -> bool:
     dest_dir.mkdir(parents=True, exist_ok=True)
     playlist = dest_dir / "index.m3u8"
     cmd = [
-        "ffmpeg", "-y", "-loglevel", "info",
-        "-headers", "User-Agent: Mozilla/5.0\r\nReferer: https://streamtape.com/\r\n",
+        "ffmpeg", "-y", "-loglevel", "warning",
+        "-user_agent", UA,
         "-i", src_url,
-        "-c", "copy",
-        "-f", "hls",
-        "-hls_time", "10",
-        "-hls_list_size", "0",
+        "-c", "copy", "-bsf:a", "aac_adtstoasc",
+        "-f", "hls", "-hls_time", "10", "-hls_list_size", "0",
         str(playlist),
     ]
-    proc = await asyncio.create_subprocess_exec(
-        *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    last = 0
-    while True:
-        line = await proc.stderr.readline()
-        if not line:
-            break
-        m = re.search(r"time=(\d{2}:\d{2}:\d{2}\.\d{2})", line.decode(errors="ignore"))
-        if m:
-            cur = int(_hms(m.group(1)))
-            if cur - last >= 30:
-                log.info("  %s: %ds descargados", titulo[:30], cur)
-                last = cur
-    await proc.wait()
-    ok = proc.returncode == 0 and playlist.exists() and any(dest_dir.glob("*.ts"))
+    p = subprocess.run(cmd, capture_output=True, text=True)
+    ok = p.returncode == 0 and playlist.exists() and any(dest_dir.glob("*.ts"))
     if not ok:
-        log.warning("  ffmpeg falló (rc=%s) para %s", proc.returncode, titulo[:40])
+        log.warning("  ffmpeg rc=%s: %s", p.returncode, (p.stderr or "")[-400:])
     return ok
 
 
-async def _resolve_and_download(video_id: str, titulo: str, page_url: str) -> bool:
+def download_video(video_id: str, titulo: str, embed_url: str) -> bool:
+    """True si work/videos-hls/<video_id>/ quedó con index.m3u8 + segmentos.
+    `embed_url` = https://streamtape.com/e/<id> (viene de scrape.py)."""
+    if not embed_url:
+        log.warning("  sin streamtape: %s", titulo[:45])
+        return False
+
     dest = HLS_DIR / video_id
     if dest.exists():
         shutil.rmtree(dest)
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        ctx = await browser.new_context(user_agent="Mozilla/5.0")
-        page = await ctx.new_page()
-        try:
-            await page.goto(page_url, timeout=60000)
-            el = page.locator("a[href*='streamtape.com']").first
-            url_st = await el.get_attribute("href")
-            if not url_st:
-                log.warning("  sin enlace streamtape: %s", titulo[:40])
-                return False
+    sess = requests.Session()
+    sess.headers.update({"User-Agent": UA})
+    try:
+        mp4 = resolver_streamtape(embed_url, sess)
+    except Exception as e:
+        log.warning("  streamtape %s: %s", embed_url, e)
+        return False
+    if not mp4:
+        log.warning("  no se resolvió el mp4: %s", titulo[:45])
+        return False
 
-            await page.goto(url_st, timeout=60000)
-            bot = await page.evaluate("document.getElementById('norobotlink')?.innerText")
-            if not bot:
-                log.warning("  sin norobotlink: %s", titulo[:40])
-                return False
-            final_url = "https:" + bot if bot.startswith("//") else bot
-
-            await page.goto(final_url, timeout=60000)
-            data = await page.evaluate(
-                "() => { const v = document.querySelector('video');"
-                " return v ? {src: (v.currentSrc || v.src)} : null; }"
-            )
-            if not data or not data.get("src"):
-                log.warning("  sin <video> src: %s", titulo[:40])
-                return False
-
-            return await _ffmpeg_hls(data["src"], dest, titulo)
-        finally:
-            await page.close()
-            await ctx.close()
-            await browser.close()
-
-
-def download_video(video_id: str, titulo: str, page_url: str) -> bool:
-    """True si work/videos-hls/<video_id>/ quedó con index.m3u8 + segmentos."""
-    return asyncio.run(_resolve_and_download(video_id, titulo, page_url))
+    log.info("  bajando: %s", titulo[:45])
+    return _ffmpeg_hls(mp4, dest, titulo)

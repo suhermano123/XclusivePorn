@@ -56,7 +56,7 @@ def main() -> int:
 
         log.info("--- %s ---", titulo[:60])
         try:
-            if not download_video(meta["id"], titulo, meta["enlace"]):
+            if not download_video(meta["id"], titulo, meta.get("streamtape", "")):
                 fallidos += 1
                 _limpiar_video(meta["id"])
                 continue

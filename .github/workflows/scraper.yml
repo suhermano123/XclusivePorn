@@ -48,9 +48,6 @@ jobs:
       - name: Instalar dependencias Python
         run: pip install -r scraper/requirements.txt
 
-      - name: Instalar Chromium para Playwright
-        run: python -m playwright install --with-deps chromium
-
       - name: Descargar datos NLTK
         run: python -m nltk.downloader -q stopwords punkt punkt_tab
 
