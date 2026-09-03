@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { createClient } from "@supabase/supabase-js";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { getVideosByCategoryPaginated, SupabaseVideo } from "@/api/videoSupabaseService";
@@ -9,7 +11,11 @@ import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
 import Script from "next/script";
 
+// Cloudflare Pages requires the Edge runtime for pages using getServerSideProps.
+export const config = { runtime: "experimental-edge" };
+
 const BASE_URL = "https://novapornx.com";
+const PAGE_SIZE = 30;
 
 /** Normalize title into a URL-friendly slug */
 const buildSlug = (title: string): string =>
@@ -54,20 +60,25 @@ const getCategorySeoText = (category: string) => {
     }
 };
 
-const CategoryPage: React.FC = () => {
+const CategoryPage = ({
+    category: categoryQuery,
+    initialVideos,
+    initialTotalCount,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const router = useRouter();
-    const { id } = router.query;
-    const categoryQuery = typeof id === 'string' ? id : '';
 
-    const [videoL, setVideoL] = useState<SupabaseVideo[]>([]);
+    const [videoL, setVideoL] = useState<SupabaseVideo[]>(initialVideos || []);
     const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
     const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalCount, setTotalCount] = useState<number>(0);
+    const [totalCount, setTotalCount] = useState<number>(initialTotalCount || 0);
     const [votedVideos, setVotedVideos] = useState<Set<string>>(new Set());
-    const [isLoading, setIsLoading] = useState(true);
-    const videosPerPage = 30;
+    const [isLoading, setIsLoading] = useState(false);
+    const videosPerPage = PAGE_SIZE;
+
+    // Page 1 is server-rendered via getServerSideProps — skip the first client fetch.
+    const hydratedRef = useRef(true);
 
     const loadVideos = async (page: number, category: string) => {
         setIsLoading(true);
@@ -106,16 +117,12 @@ const CategoryPage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!router.isReady) return;
-
-        if (categoryQuery) {
-            loadVideos(currentPage, categoryQuery);
-        } else {
-            setVideoL([]);
-            setTotalCount(0);
-            setIsLoading(false);
+        if (hydratedRef.current) {
+            hydratedRef.current = false;
+            return;
         }
-    }, [categoryQuery, currentPage, router.isReady]);
+        if (categoryQuery) loadVideos(currentPage, categoryQuery);
+    }, [categoryQuery, currentPage]);
 
     useEffect(() => {
         if (videoL.length > 0) {
@@ -497,6 +504,44 @@ const styles: { [key: string]: any } = {
         minWidth: "40px",
         borderRadius: "50%",
     }
+};
+
+export const getServerSideProps: GetServerSideProps<{
+    category: string;
+    initialVideos: SupabaseVideo[];
+    initialTotalCount: number;
+}> = async ({ params, res }) => {
+    const category = String(params?.id ?? "").trim();
+    if (!category) return { notFound: true };
+
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+    );
+
+    const { data, count } = await supabase
+        .from("posted_videos")
+        .select("*", { count: "exact" })
+        .ilike("tags", `%${category}%`)
+        .order("created_at", { ascending: false })
+        .range(0, PAGE_SIZE - 1);
+
+    try {
+        res.setHeader(
+            "Cache-Control",
+            "public, s-maxage=600, stale-while-revalidate=86400"
+        );
+    } catch {
+        /* the edge runtime may not expose res.setHeader */
+    }
+
+    return {
+        props: {
+            category,
+            initialVideos: (data as SupabaseVideo[]) || [],
+            initialTotalCount: count || 0,
+        },
+    };
 };
 
 export default CategoryPage;
