@@ -516,6 +516,9 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                           ) : (
                             <Image
                               priority={index < 6}
+                              // next/image no deriva fetchPriority de `priority`: hay que pasarlo aparte
+                              // o el <link rel="preload"> y el <img> salen sin fetchpriority=high.
+                              fetchPriority={index < 6 ? "high" : "auto"}
                               height={200}
                               width={300}
                               src={currentImg || "/assets/placeholder.png"}
