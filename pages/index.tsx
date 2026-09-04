@@ -22,19 +22,14 @@ export default function HomeIndex({
   page,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   useEffect(() => {
-    const registerServiceWorker = () => {
-      if ("serviceWorker" in navigator) {
-        const register = () => {
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then((registration) => console.log("SW registered: ", registration))
-            .catch((err) => console.log("SW registration failed: ", err));
-        };
-        if (document.readyState === "complete") register();
-        else window.addEventListener("load", register);
-      }
-    };
-    registerServiceWorker();
+    // El SW anterior (passthrough `fetch`) rompía navegaciones de forma
+    // intermitente. Desregistrar cualquiera que haya quedado en los clientes.
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((regs) => regs.forEach((r) => r.unregister()))
+        .catch(() => {});
+    }
   }, []);
 
   const title = buildTitle(page);
