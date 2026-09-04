@@ -7,9 +7,11 @@ import Script from "next/script";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return <Provider store={store}>
+    {/* SDK de anuncios (IMA). No debe bloquear el render: se carga en idle.
+        VideoPlayer espera a que `window.google.ima` exista antes de pedir el pre-roll. */}
     <Script
         src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
       />
     <Component {...pageProps} />
   </Provider>

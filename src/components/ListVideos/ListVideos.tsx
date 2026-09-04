@@ -435,10 +435,13 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                   previewUrl &&
                   (previewUrl.endsWith(".mp4") || previewUrl.endsWith(".webm"));
 
-                const currentImg =
+                // normalizeStreamUrl: pub-*.r2.dev (sin Cache-Control, sin edge cache)
+                // -> img.novapornx.com (custom domain con Cache Rule de 30 días).
+                const currentImg = normalizeStreamUrl(
                   isHovered && thumbnails.length > 0
                     ? thumbnails[currentPreview[video.uuid] || 0]
-                    : video.imagen_url || video.img_src;
+                    : video.imagen_url || video.img_src
+                );
 
                 const videoTitle = video.titulo || video.title || "video";
                 const slug = buildSlug(videoTitle);
@@ -515,7 +518,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                               priority={index < 6}
                               height={200}
                               width={300}
-                              src={currentImg || video.imagen_url || video.img_src || "/assets/placeholder.png"}
+                              src={currentImg || "/assets/placeholder.png"}
                               // ✅ Alt: title + keyword context (porn, video, HD)
                               // TF-IDF: porn (90%), video (80%), hot (60%)
                               alt={`${videoTitle} – free HD porn video`}

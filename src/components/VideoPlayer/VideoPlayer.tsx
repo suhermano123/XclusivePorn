@@ -230,8 +230,10 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
     }, () => {
       console.log("Player ready");
 
-      // SOLO si google.ima existe
-      if ((window as any).google?.ima) {
+      // El SDK de IMA se carga con strategy="lazyOnload" (fuera del critical path),
+      // así que puede no estar listo cuando el player lo está. Esperamos a que aparezca.
+      const initIma = () => {
+        if (playerRef.current !== player || player.isDisposed()) return;
 
         (player as any).ima({
           adTagUrl: "https://s.magsrv.com/v1/vast.php?idz=5942506",
@@ -242,17 +244,23 @@ const VideoPlayer = forwardRef<VideoPlayerRef, {
           (player as any).ima.requestAds();
         });
 
-        player.on("ads-ad-started", () => {
-          console.log("Ad started");
-        });
-
-        player.on("ads-ad-ended", () => {
-          console.log("Ad ended");
-        });
-
         player.on("adserror", (err: any) => {
           console.error("Ad error:", err);
         });
+      };
+
+      if ((window as any).google?.ima) {
+        initIma();
+      } else {
+        let tries = 0;
+        const imaWait = setInterval(() => {
+          if ((window as any).google?.ima) {
+            clearInterval(imaWait);
+            initIma();
+          } else if (++tries > 40 || player.isDisposed()) {
+            clearInterval(imaWait); // ~10s sin SDK: seguimos sin pre-roll
+          }
+        }, 250);
       }
 
     }));

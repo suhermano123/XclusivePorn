@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Box, Button, Typography } from "@mui/material";
 import type { SupabaseVideo } from "@/api/videoSupabaseService";
+import { normalizeStreamUrl } from "@/api/ssrVideos";
 
 const buildSlug = (title: string): string =>
   title
@@ -64,7 +65,8 @@ const VideoCardGrid: React.FC<Props> = ({
         {videos.map((video) => {
           const title = video.titulo || video.title || "Video";
           const href = `/video/${video.uuid}-${buildSlug(title)}`;
-          const img = video.imagen_url || video.img_src || "/assets/placeholder.png";
+          const img =
+            normalizeStreamUrl(video.imagen_url || video.img_src) || "/assets/placeholder.png";
           return (
             <Link href={href} key={video.uuid} passHref legacyBehavior>
               <Box
