@@ -1,390 +1,240 @@
 import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import Drawer from "@mui/material/Drawer";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import { NAV_LINKS } from "../NavMenu/NavMenu";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: "50px",
-  backgroundColor: alpha(theme.palette.common.white, 0.1),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  transition: theme.transitions.create(["background-color", "width", "box-shadow"]),
-  border: "1px solid rgba(255, 255, 255, 0.1)",
-  display: "flex",
-  alignItems: "center",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-    minWidth: "300px",
-  },
-}));
+const PINK = "#f013e5";
+const BAR_BG = "#0d0d0d";
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+const TOP_BUTTONS = [
+  { href: "/categories", label: "Categories" },
+  { href: "/moviesDownload", label: "Movies" },
+];
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    fontSize: "0.9rem",
-    [theme.breakpoints.up("md")]: {
-      width: "30ch",
-    },
-  },
-}));
-
-export default function PrimarySearchAppBar(props: any) {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    React.useState<null | HTMLElement>(null);
-  const [searchQuery, setSearchQuery] = React.useState("");
+/**
+ * Primary app bar — same dark look on every page (no style override prop).
+ * Desktop: one row. Mobile: hamburger + logo + auth on row 1, search on row 2,
+ * the section links live in a drawer.
+ */
+export default function NavBar() {
   const router = useRouter();
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [query, setQuery] = React.useState("");
+  const [drawer, setDrawer] = React.useState(false);
 
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const submitSearch = () => {
+    const q = query.trim();
+    if (q) router.push(`/search?q=${encodeURIComponent(q)}`);
+    setDrawer(false);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+  const outlineBtn = {
+    color: "#fff",
+    borderColor: "rgba(255,255,255,0.25)",
+    borderRadius: "20px",
+    textTransform: "none",
+    fontWeight: 700,
+    px: 2.5,
+    whiteSpace: "nowrap",
+    "&:hover": { borderColor: "#fff", backgroundColor: "rgba(255,255,255,0.08)" },
+  } as const;
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+  const pinkBtn = {
+    backgroundColor: PINK,
+    color: "#fff",
+    borderRadius: "20px",
+    textTransform: "none",
+    fontWeight: 700,
+    px: 2.5,
+    whiteSpace: "nowrap",
+    boxShadow: "0 0 12px rgba(240,19,229,0.35)",
+    "&:hover": { backgroundColor: "#e91ec4" },
+  } as const;
 
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
+  const searchBox = (compact = false) => (
+    <Box
+      component="form"
+      onSubmit={(e: React.FormEvent) => { e.preventDefault(); submitSearch(); }}
+      sx={{
+        display: "flex",
+        alignItems: "stretch",
+        width: "100%",
+        maxWidth: compact ? "none" : { lg: 620 },
+        minWidth: 0,
+        backgroundColor: "rgba(255,255,255,0.07)",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: "10px",
+        overflow: "hidden",
       }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
+      <SearchIcon sx={{ alignSelf: "center", ml: 1.25, color: "rgba(255,255,255,0.55)", fontSize: 20 }} />
+      <InputBase
+        placeholder="Search…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        inputProps={{ "aria-label": "Search videos", size: 1 }}
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          color: "#fff",
+          fontSize: "0.9rem",
+          py: 0.75,
+          pl: 1,
+          "& .MuiInputBase-input": { minWidth: 0, p: 0 },
+        }}
+      />
+      {compact ? (
+        <IconButton type="submit" aria-label="Search" sx={{ flexShrink: 0, borderRadius: 0, color: "#fff", backgroundColor: PINK, px: 1.5, "&:hover": { backgroundColor: "#e91ec4" } }}>
+          <SearchIcon sx={{ fontSize: 20 }} />
         </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
+      ) : (
+        <Button
+          type="submit"
+          sx={{
+            flexShrink: 0,
+            backgroundColor: PINK,
+            color: "#fff",
+            borderRadius: 0,
+            px: 3,
+            fontWeight: 700,
+            textTransform: "none",
+            whiteSpace: "nowrap",
+            "&:hover": { backgroundColor: "#e91ec4" },
+          }}
         >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
+          Search
+        </Button>
+      )}
+    </Box>
   );
-
-  React.useEffect(() => {
-    const loadAdScript = () => {
-      if (
-        !document.querySelector(
-          `script[src="https://poweredby.jads.co/js/jads.js"]`
-        )
-      ) {
-        const script1 = document.createElement("script");
-        script1.type = "text/javascript";
-        script1.setAttribute("data-cfasync", "false");
-        script1.async = true;
-        script1.src = "https://poweredby.jads.co/js/jads.js";
-        document.body.appendChild(script1);
-      }
-
-      const adContainer = document.getElementById("juicy-ads-banner");
-      if (adContainer) {
-        adContainer.innerHTML =
-          '<ins id="1081333" data-width="468" data-height="60"></ins>';
-        const script2 = document.createElement("script");
-        script2.type = "text/javascript";
-        script2.setAttribute("data-cfasync", "false");
-        script2.async = true;
-        script2.innerHTML = `(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1081333});`;
-        adContainer.appendChild(script2);
-      }
-    };
-
-    loadAdScript();
-  }, []);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <>
       <AppBar
         position="sticky"
+        elevation={0}
         sx={{
-          background: "linear-gradient(90deg, #e91ec4 0%, #d81b60 100%)",
-          backdropFilter: "blur(15px)",
-          backgroundColor: alpha("#e91ec4", 0.8),
-          height: 64,
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-          justifyContent: "center",
+          background: `linear-gradient(180deg, #161616 0%, ${BAR_BG} 100%)`,
+          borderBottom: "1px solid rgba(240,19,229,0.25)",
+          color: "#fff",
         }}
-        {...props}
       >
         <Toolbar
+          disableGutters
           sx={{
+            px: { xs: 1.5, md: 3 },
+            minHeight: { xs: 56, md: 64 },
             display: "flex",
-            flexWrap: { xs: "wrap", md: "nowrap" },
-            gap: 1,
-            py: { xs: 1, md: 0 },
-            minHeight: { xs: "auto", md: 64 },
+            alignItems: "center",
+            gap: { xs: 1, md: 1.5 },
           }}
         >
           <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 3 }}
+            aria-label="Open menu"
+            onClick={() => setDrawer(true)}
+            sx={{ color: "#fff", display: { lg: "none" }, ml: -0.5 }}
           >
             <MenuIcon />
           </IconButton>
 
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex' }} passHref>
+          <Box component={Link} href="/" sx={{ display: "flex", flexShrink: 0, alignItems: "center" }}>
             <Box
-              sx={{
-                cursor: "pointer",
-                flexShrink: 0,
-                mr: { xs: 0, md: 2 }
-              }}
-            >
-              <img
-                src="/assets/oficial_logo.webp"
-                alt="NovaPornX – Free HD Porn Videos"
-                style={{
-                  width: "100%",
-                  maxWidth: "140px",
-                  height: "auto",
-                }}
-              />
-            </Box>
-          </Link>
-
-          <Search
-            sx={{
-              flexGrow: 1,
-              width: {
-                xs: "100%",
-                sm: "100%",
-                md: "auto"
-              },
-              minWidth: {
-                xs: "100%",
-                md: "400px"
-              },
-              order: {
-                xs: 3,
-                md: 0
-              }
-            }}
-          >
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchQuery.trim() !== '') {
-                  router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-                }
-              }}
-              sx={{ flexGrow: 1 }}
+              component="img"
+              src="/assets/oficial_logo.webp"
+              alt="NovaPornX – Free HD Porn Videos"
+              sx={{ height: { xs: 24, md: 32 }, width: "auto", display: "block" }}
             />
-            <Button
-              onClick={() => {
-                if (searchQuery.trim() !== '') {
-                  router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-                }
-              }}
-              sx={{
-                backgroundColor: '#f013e5',
-                color: '#fff',
-                borderRadius: '0 50px 50px 0',
-                padding: '6px 20px',
-                minWidth: 'auto',
-                fontWeight: 'bold',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#e91ec4'
-                }
-              }}
-            >
-              Search
-            </Button>
-          </Search>
-
-          <Button
-            component={Link}
-            href="/categories"
-            variant="contained"
-            sx={{
-              display: { xs: '30%', lg: 'flex' },
-              ml: 2,
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              color: '#fff',
-              borderRadius: '20px',
-              textTransform: 'none',
-              fontWeight: 'bold',
-              px: 3,
-              boxShadow: 'none',
-              border: '1px solid rgba(255,255,255,0.2)',
-              '&:hover': { backgroundColor: '#f013e5', borderColor: '#f013e5' }
-            }}
-          >
-            Categories
-          </Button>
-
-          <Box sx={{ flexGrow: 1 }} />
-          <Button
-            component={Link}
-            href="/moviesDownload"
-            variant="contained"
-            sx={{
-              display: { xs: '30%', lg: 'flex' },
-              ml: 2,
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              color: '#fff',
-              borderRadius: '20px',
-              textTransform: 'none',
-              fontWeight: 'bold',
-              px: 3,
-              boxShadow: 'none',
-              border: '1px solid rgba(255,255,255,0.2)',
-              '&:hover': { backgroundColor: '#f013e5', borderColor: '#f013e5' }
-            }}
-          >
-            Movies
-          </Button>
-
-          <Box sx={{ display: { xs: '30%', md: 'flex' }, alignItems: 'center', gap: 2 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                color: '#fff',
-                borderColor: 'rgba(255,255,255,0.3)',
-                borderRadius: '20px',
-                textTransform: 'none',
-                fontWeight: 'bold',
-                px: 3,
-                '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255,255,255,0.1)' }
-              }}
-            >
-              Log In
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#f013e5',
-                color: '#fff',
-                borderRadius: '20px',
-                textTransform: 'none',
-                fontWeight: 'bold',
-                px: 3,
-                boxShadow: '0 0 10px rgba(240, 19, 229, 0.4)',
-                '&:hover': { backgroundColor: '#e91ec4' }
-              }}
-            >
-              Sign Up
-            </Button>
           </Box>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
 
-      {/* FOOTER */}
-    </Box>
+          {/* Inline search — lg and up */}
+          <Box sx={{ flexGrow: 1, mx: 2, display: { xs: "none", lg: "flex" }, justifyContent: "center" }}>
+            {searchBox(false)}
+          </Box>
+
+          {TOP_BUTTONS.map((b) => (
+            <Button
+              key={b.href}
+              component={Link}
+              href={b.href}
+              variant="outlined"
+              sx={{ ...outlineBtn, display: { xs: "none", lg: "inline-flex" } }}
+            >
+              {b.label}
+            </Button>
+          ))}
+
+          <Box sx={{ flexGrow: 1, display: { xs: "block", lg: "none" } }} />
+
+          <Button variant="outlined" sx={{ ...outlineBtn, display: { xs: "none", md: "inline-flex" } }}>
+            Log In
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ ...pinkBtn, px: { xs: 1.75, md: 2.5 }, fontSize: { xs: "0.8rem", md: "0.875rem" } }}
+          >
+            Sign Up
+          </Button>
+        </Toolbar>
+
+        {/* Search row — below lg */}
+        <Box sx={{ display: { xs: "block", lg: "none" }, px: 1.5, pb: 1 }}>{searchBox(true)}</Box>
+      </AppBar>
+
+      <Drawer
+        anchor="left"
+        open={drawer}
+        onClose={() => setDrawer(false)}
+        PaperProps={{ sx: { width: 280, backgroundColor: BAR_BG, color: "#fff" } }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2, py: 1.5, borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <Box component="img" src="/assets/oficial_logo.webp" alt="NovaPornX" sx={{ height: 26 }} />
+          <IconButton onClick={() => setDrawer(false)} sx={{ color: "#fff" }} aria-label="Close menu">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <Box component="nav" sx={{ display: "flex", flexDirection: "column", py: 1 }}>
+          {[...NAV_LINKS, ...TOP_BUTTONS.map((b) => ({ ...b, Icon: undefined }))].map((l: any) => (
+            <Box
+              key={l.href}
+              component={Link}
+              href={l.href}
+              onClick={() => setDrawer(false)}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.2,
+                px: 2.5,
+                py: 1.5,
+                color: "rgba(255,255,255,0.9)",
+                textDecoration: "none",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.3px",
+                "&:hover": { backgroundColor: "rgba(240,19,229,0.12)", color: "#fff" },
+              }}
+            >
+              {l.Icon ? <l.Icon sx={{ fontSize: 20, color: PINK }} /> : <Box sx={{ width: 20 }} />}
+              {l.label}
+            </Box>
+          ))}
+        </Box>
+
+        <Box sx={{ mt: "auto", p: 2, display: "flex", gap: 1.5, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <Button fullWidth variant="outlined" sx={outlineBtn}>Log In</Button>
+          <Button fullWidth variant="contained" sx={pinkBtn}>Sign Up</Button>
+        </Box>
+      </Drawer>
+    </>
   );
 }

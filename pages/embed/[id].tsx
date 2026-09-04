@@ -61,7 +61,6 @@ export default function EmbedPage({
         <title>{title}</title>
         <meta name="robots" content="noindex, follow, max-video-preview:-1" />
         <link rel="canonical" href={watchUrl} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}

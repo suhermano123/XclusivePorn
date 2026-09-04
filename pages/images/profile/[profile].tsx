@@ -14,6 +14,7 @@ import { useProfileImages } from "@/hooks/useImages";
 import { updateImageRating } from "@/api/image.service";
 import FooterComponent from "@/components/footer/Footer";
 import NavBar from "@/components/NavBar/NavBar";
+import NavMenu from "@/components/NavMenu/NavMenu";
 
 const isVideo = (url?: string) => {
   if (!url) return false;
@@ -83,7 +84,8 @@ export default function ProfilePage() {
 
   return (
     <Box >
-      <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+      <NavBar />
+      <NavMenu />
       <Typography variant="h4" sx={{ mb: 3 }}>
         {profile}
       </Typography>

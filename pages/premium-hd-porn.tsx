@@ -83,8 +83,8 @@ export default function PremiumHDPornVideos({
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
             </Head>
 
-            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+            <NavBar />
+            <NavMenu />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
                 <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>

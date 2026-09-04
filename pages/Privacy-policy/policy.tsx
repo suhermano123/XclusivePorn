@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
+import NavMenu from '@/components/NavMenu/NavMenu';
 import Head from 'next/head';
 import { CSSProperties } from 'react';
 
@@ -13,7 +14,8 @@ const PrivacyPolicyPage: React.FC = () => {
         <meta name="description" content="Privacy policy and data protection information for novapornx users." />
 
       </Head>
-      <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+      <NavBar />
+      <NavMenu />
       <div style={styles.privacyContainer}>
         <div style={styles.privacyContent}>
           <Typography variant="h5" style={styles.title}>

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import ImageGrid from "@/components/images/ImageGrid";
 import { Box, Button, Typography, Container } from "@mui/material";
 import NavBar from "@/components/NavBar/NavBar";
+import NavMenu from "@/components/NavMenu/NavMenu";
 import FooterComponent from "@/components/footer/Footer";
 import Link from "next/link";
 
@@ -113,7 +114,8 @@ export default function ImagesPage() {
         />
       </Head>
 
-      <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+      <NavBar />
+      <NavMenu />
 
       {/*
         ✅ <main> landmark — original used <Box component="main"> which is correct,

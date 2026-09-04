@@ -128,8 +128,8 @@ const CategoriesPage: React.FC = () => {
                 />
             </Head>
 
-            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+            <NavBar />
+            <NavMenu />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
                 <Script

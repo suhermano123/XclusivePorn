@@ -54,8 +54,8 @@ export default function PornstarsIndex({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       </Head>
 
-      <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-      <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+      <NavBar />
+      <NavMenu />
 
       <Container maxWidth="xl" sx={{ py: 4, flexGrow: 1 }}>
         <Typography

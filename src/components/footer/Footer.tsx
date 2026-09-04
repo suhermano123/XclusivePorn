@@ -5,11 +5,13 @@ import Link from "next/link";
 const FooterComponent: React.FC = () => {
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "center", gap: "20px" }} aria-hidden="true">
+      <div style={{ maxWidth: "100%", overflow: "hidden" }} aria-hidden="true">
         <Box sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'center',
-          overflow: 'hidden'
+          gap: 2,
+          maxWidth: '100%',
         }}>
           {/* Contenedor del nuevo anuncio izquierdo */}
           <div>
@@ -20,7 +22,7 @@ const FooterComponent: React.FC = () => {
               scrolling="no"
               loading="lazy"
               title="Advertisement Left"
-              style={{ border: "none" }}
+              style={{ border: "none", maxWidth: "100%" }}
             ></iframe>
           </div>
 
@@ -33,7 +35,7 @@ const FooterComponent: React.FC = () => {
               scrolling="no"
               loading="lazy"
               title="Advertisement Right"
-              style={{ border: "none" }}
+              style={{ border: "none", maxWidth: "100%" }}
             ></iframe>
           </div>
         </Box>

@@ -165,8 +165,8 @@ export default function MovieDetail() {
                     {/* ✅ noindex while loading — avoid Google indexing a blank shell */}
 
                 </Head>
-                <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-                <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+                <NavBar />
+                <NavMenu />
                 <Container maxWidth="lg" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
                         <Skeleton variant="rectangular" height={400} sx={{ bgcolor: "rgba(255,255,255,0.05)", borderRadius: 2 }} />
@@ -187,8 +187,8 @@ export default function MovieDetail() {
                     <title>Movie Not Found – novapornx</title>
 
                 </Head>
-                <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-                <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+                <NavBar />
+                <NavMenu />
                 <Container maxWidth="lg" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
                     <Typography variant="h5" color="error" align="center" sx={{ mt: 10 }}>
                         Movie not found.
@@ -254,8 +254,8 @@ export default function MovieDetail() {
                 />
             </Head>
 
-            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+            <NavBar />
+            <NavMenu />
 
             <Container maxWidth="lg" component="main" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
 

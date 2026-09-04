@@ -428,8 +428,8 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
     // ─── Render ──────────────────────────────────────────────────────────────
     return (
         <div style={{ backgroundColor: "#000", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+            <NavBar />
+            <NavMenu />
 
             {/* ── SEO Head ─────────────────────────────────────────────────── */}
             <Head>

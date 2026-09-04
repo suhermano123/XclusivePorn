@@ -4,8 +4,7 @@ export default function Document() {
     return (
         <Html lang="en">
             <Head>
-                {/* ── Viewport ─────────────────────────────────────────────── */}
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                {/* viewport lives in _app.tsx (must not be in _document per Next) */}
 
                 {/* ── Adult Content Rating ──────────────────────────────────── */}
                 <meta name="rating" content="adult" />

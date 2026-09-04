@@ -74,8 +74,8 @@ export default function HomeIndex({
         <meta property="twitter:image" content="https://novapornx.com/assets/backGround.png" />
       </Head>
 
-      <NavBar sx={{ backgroundColor: "#e91ec4" }} />
-      <NavMenu sx={{ backgroundColor: "#e91ec4" }} />
+      <NavBar />
+      <NavMenu />
 
       <Typography
         component="h1"

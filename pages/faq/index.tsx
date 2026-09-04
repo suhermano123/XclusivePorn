@@ -3,6 +3,7 @@ import { Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FooterComponent from '@/components/footer/Footer';
 import NavBar from '@/components/NavBar/NavBar';
+import NavMenu from '@/components/NavMenu/NavMenu';
 import Head from 'next/head';
 import { CSSProperties } from 'react';
 
@@ -69,7 +70,8 @@ const FaqPage: React.FC = () => {
                 {/* ── Structured Data ───────────────────────────────────────── */}
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             </Head>
-            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
+            <NavBar />
+      <NavMenu />
             <div style={styles.faqContainer}>
                 <div style={styles.faqContent}>
                     <Typography component="h1" variant="h5" style={styles.title}>

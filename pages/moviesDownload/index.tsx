@@ -176,8 +176,8 @@ export default function MoviesDownload() {
                 )}
             </Head>
 
-            <NavBar sx={{ backgroundColor: "#111", borderBottom: "1px solid rgba(240,19,229,0.2)" }} />
-            <NavMenu sx={{ backgroundColor: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
+            <NavBar />
+            <NavMenu />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: { xs: 4, md: 6 }, px: { xs: 1.5, sm: 3, md: 5 } }}>
 
