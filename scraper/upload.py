@@ -4,10 +4,13 @@ fila en Supabase posted_videos.
 Sustituye la celda 11 del notebook. URLs -> dominios CDN nuevos.
 """
 import io
+import re
 import time
 import random
 import logging
 import datetime
+import threading
+import unicodedata
 import concurrent.futures as cf
 
 import boto3
@@ -133,34 +136,106 @@ def subir_thumbnail(video_id: str, image_url: str) -> tuple[str, str]:
         return "", ""
 
 
+def norm_titulo(titulo: str) -> str:
+    """Clave de comparación: sin acentos, sin puntuación, minúsculas, 1 espacio.
+
+    Así 'Hot Wife / 01.02.2024', 'hot  wife' y 'Hôt Wife!' colapsan a la misma
+    clave y no se descarga/inserta la misma película dos veces.
+    """
+    if not titulo:
+        return ""
+    t = unicodedata.normalize("NFKD", titulo)
+    t = "".join(c for c in t if not unicodedata.combining(c))
+    t = t.lower()
+    t = re.sub(r"[^\w\s]", " ", t)
+    t = re.sub(r"\s+", " ", t)
+    return t.strip()
+
+
 def ya_existe(titulo: str) -> bool:
+    """Chequeo puntual contra la DB justo antes de insertar (exacto + normalizado)."""
     if not titulo:
         return False
     try:
-        res = supabase.table("posted_videos").select("uuid").eq("titulo", titulo).limit(1).execute()
-        return bool(res.data)
+        res = supabase.table("posted_videos").select("titulo").eq("titulo", titulo).limit(1).execute()
+        if res.data:
+            return True
+        # segundo intento tolerante a mayúsculas/espacios sobrantes
+        like = "%" + re.sub(r"\s+", "%", titulo.strip()) + "%"
+        res = supabase.table("posted_videos").select("titulo").ilike("titulo", like).limit(20).execute()
+        objetivo = norm_titulo(titulo)
+        return any(norm_titulo(r.get("titulo", "")) == objetivo for r in (res.data or []))
     except Exception as e:
         log.warning("  no se pudo comprobar duplicado: %s", e)
         return False
 
 
-def titulos_existentes(titulos: list[str]) -> set[str]:
-    """Los titulos de `titulos` que ya estan en posted_videos (1 sola query)."""
+def titulos_publicados_norm() -> set[str]:
+    """TODAS las claves normalizadas ya en posted_videos. Pagina la tabla entera
+    (solo la columna `titulo`)."""
     out: set[str] = set()
-    titulos = [t for t in titulos if t]
-    for i in range(0, len(titulos), 100):
-        lote = titulos[i:i + 100]
+    paso = 1000
+    desde = 0
+    while True:
         try:
-            res = supabase.table("posted_videos").select("titulo").in_("titulo", lote).execute()
-            out.update(r["titulo"] for r in (res.data or []))
+            res = (supabase.table("posted_videos")
+                   .select("titulo")
+                   .range(desde, desde + paso - 1)
+                   .execute())
         except Exception as e:
-            log.warning("  dedup batch fallo: %s", e)
+            log.warning("  no se pudo listar títulos existentes: %s", e)
+            break
+        filas = res.data or []
+        for r in filas:
+            n = norm_titulo(r.get("titulo", ""))
+            if n:
+                out.add(n)
+        if len(filas) < paso:
+            break
+        desde += paso
+    log.info("títulos ya publicados: %d", len(out))
     return out
+
+
+class RegistroTitulos:
+    """Set thread-safe de claves normalizadas: lo ya publicado + lo reservado en
+    esta corrida. `reservar` es atómico (check-and-set) para que dos workers no
+    procesen la misma película en paralelo."""
+
+    def __init__(self, iniciales: set[str]):
+        self._set = set(iniciales)
+        self._lock = threading.Lock()
+
+    def existe(self, titulo: str) -> bool:
+        n = norm_titulo(titulo)
+        if not n:
+            return False
+        with self._lock:
+            return n in self._set
+
+    def reservar(self, titulo: str) -> bool:
+        """True si quedó reservado para este worker; False si ya estaba (duplicado)."""
+        n = norm_titulo(titulo)
+        if not n:
+            return False
+        with self._lock:
+            if n in self._set:
+                return False
+            self._set.add(n)
+            return True
 
 
 def publicar(meta: dict) -> bool:
     """Sube todo lo de work/ para meta['id'] e inserta en Supabase. True si insertó."""
     video_id = meta["id"]
+
+    # Chequeo final contra la DB antes de subir nada: cubre la ventana entre el
+    # dedup inicial y este momento (corridas largas, título que ya se coló).
+    if ya_existe(meta.get("titulo", "")):
+        log.info("  duplicado detectado antes de insertar, salto: %s",
+                 meta.get("titulo", "")[:50])
+        return False
+
     dur = duracion_hls(video_id)
     video_url, video_key = subir_hls(video_id)
     preview_url, preview_key = subir_preview(video_id)

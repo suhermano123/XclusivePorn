@@ -2,7 +2,9 @@
 
 Flujo:
   1. scrape del listado -> metadata de LIMITE_VIDEOS*3 candidatos (detalle en paralelo)
-  2. dedup en batch contra posted_videos.titulo (1 query)
+  2. dedup: título normalizado contra posted_videos (tabla entera) y contra el
+     propio lote; reserva atómica por worker antes de descargar; y un último
+     chequeo contra la DB justo antes del INSERT
   3. WORKERS videos en paralelo:  download -> preview -> upload R2 + Supabase -> borrar local
   4. resumen
 
@@ -27,7 +29,7 @@ from config import LIMITE_VIDEOS, WORKERS, WORKDIR, HLS_DIR, PREVIEW_DIR
 from scrape import scrape_listing
 from download import download_video
 from preview import generar_preview
-from upload import publicar, titulos_existentes
+from upload import publicar, titulos_publicados_norm, RegistroTitulos, norm_titulo
 
 
 def _limpiar_video(video_id: str):
@@ -36,12 +38,17 @@ def _limpiar_video(video_id: str):
     (HLS_DIR / f"{video_id}.src.mp4").unlink(missing_ok=True)
 
 
-def _procesar(meta: dict) -> str:
-    """Devuelve 'ok' | 'fail'. Limpia el local pase lo que pase."""
+def _procesar(meta: dict, registro: RegistroTitulos) -> str:
+    """Devuelve 'ok' | 'fail' | 'dup'. Limpia el local pase lo que pase."""
     titulo = meta["titulo"]
     vid = meta["id"]
     t0 = time.time()
     try:
+        # Reserva atómica: si otro worker ya tomó esta película (o ya está
+        # publicada) no se descarga nada.
+        if not registro.reservar(titulo):
+            log.info("  duplicado, no se descarga: %s", titulo[:50])
+            return "dup"
         if not download_video(vid, titulo, meta.get("streamtape", "")):
             return "fail"
         generar_preview(vid)  # opcional
@@ -65,21 +72,32 @@ def main() -> int:
     candidatos = scrape_listing(LIMITE_VIDEOS * 3)
     log.info("candidatos: %d  (%.0fs)", len(candidatos), time.time() - t_start)
 
-    ya = titulos_existentes([c["titulo"] for c in candidatos])
-    pendientes = [c for c in candidatos if c["titulo"] and c["titulo"] not in ya]
+    registro = RegistroTitulos(titulos_publicados_norm())
+
+    # dedup: contra lo ya publicado y contra sí mismo (dos tarjetas, mismo título)
+    pendientes = []
+    vistos_en_lote = set()
+    for c in candidatos:
+        t = c.get("titulo") or ""
+        n = norm_titulo(t)
+        if not n or n in vistos_en_lote or registro.existe(t):
+            continue
+        vistos_en_lote.add(n)
+        pendientes.append(c)
     saltados = len(candidatos) - len(pendientes)
-    log.info("nuevos: %d  ya existen: %d", len(pendientes), saltados)
+    log.info("nuevos: %d  ya existen / repetidos: %d", len(pendientes), saltados)
 
     publicados = 0
     fallidos = 0
+    duplicados = 0
     lock = threading.Lock()
     stop = threading.Event()
 
     def _wrap(meta):
         if stop.is_set():
             return "skip"
-        r = _procesar(meta)
-        nonlocal publicados, fallidos
+        r = _procesar(meta, registro)
+        nonlocal publicados, fallidos, duplicados
         with lock:
             if r == "ok":
                 publicados += 1
@@ -87,6 +105,8 @@ def main() -> int:
                     stop.set()
             elif r == "fail":
                 fallidos += 1
+            elif r == "dup":
+                duplicados += 1
         return r
 
     with cf.ThreadPoolExecutor(max_workers=WORKERS) as ex:
@@ -98,9 +118,9 @@ def main() -> int:
                 break
 
     dt = time.time() - t_start
-    log.info("=== FIN  publicados=%d  fallidos=%d  saltados=%d  en %dm%02ds ===",
-             publicados, fallidos, saltados, int(dt // 60), int(dt % 60))
-    return 0 if (publicados > 0 or saltados > 0) else 1
+    log.info("=== FIN  publicados=%d  fallidos=%d  duplicados=%d  saltados=%d  en %dm%02ds ===",
+             publicados, fallidos, duplicados, saltados, int(dt // 60), int(dt % 60))
+    return 0 if (publicados > 0 or saltados > 0 or duplicados > 0) else 1
 
 
 if __name__ == "__main__":

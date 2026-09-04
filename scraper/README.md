@@ -8,7 +8,13 @@ cron diario 07:00 UTC, y también a mano con *Run workflow*.
 
 1. `scrape.py` — listado de `xmoviesforyou.com`; el detalle de cada tarjeta
    (streamtape, actriz, studio, tags) se baja en paralelo (`SCRAPE_WORKERS`).
-2. dedup en batch contra `posted_videos.titulo` (1 query para todos los candidatos).
+2. dedup por **título normalizado** (sin acentos/puntuación, minúsculas, espacios
+   colapsados): se baja la columna `titulo` de toda la tabla `posted_videos` una
+   vez, se descartan los candidatos que ya existen y los repetidos dentro del
+   propio lote. Además, antes de descargar cada video un worker lo *reserva* de
+   forma atómica (dos workers no procesan la misma peli en paralelo) y justo
+   antes del `INSERT` se vuelve a consultar la DB. Nada se descarga ni se
+   inserta dos veces.
 3. `WORKERS` videos a la vez. Por video:
    - `download.py` — resuelve el mp4 de streamtape (sin navegador) y lo baja con
      `DL_CONNS` conexiones en paralelo (streamtape estrangula por conexión a
