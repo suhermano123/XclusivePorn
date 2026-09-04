@@ -92,7 +92,7 @@ def subir_preview(video_id: str) -> tuple[str, str]:
     return f"{CDN_INFO}/{key}", key
 
 
-THUMB_MAX_WIDTH = 480  # el grid la muestra a ~200-300px CSS; cubre pantallas @2x sin pasarse
+THUMB_MAX_WIDTH = 400  # el grid la muestra a ~190px (mobile 2 col) - ~345px (desktop 4 col) CSS
 
 
 def _optimizar(image_bytes: bytes, calidad: int = 82):
