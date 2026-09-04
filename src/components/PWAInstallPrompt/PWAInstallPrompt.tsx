@@ -102,7 +102,7 @@ const PWAInstallPrompt: React.FC = () => {
             >
                 <Box
                     component="img"
-                    src="/favicon.ico"
+                    src="/assets/logo.png"
                     sx={{
                         width: 55,
                         height: 55,
