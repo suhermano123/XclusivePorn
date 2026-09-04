@@ -18,6 +18,15 @@ function MyApp({ Component, pageProps }: AppProps) {
         src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"
         strategy="lazyOnload"
       />
+    {/* Loader de ExoClick (AdProvider), una sola vez para todo el sitio.
+        Antes cada página repetía este <Script> por cada zona de anuncio;
+        next/script ya deduplica por src, pero cargarlo una vez acá evita
+        el ruido y dispara solo una descarga real. Las zonas se sirven cada
+        una con AdZone (src/components/AdZone), que hace su propio push(). */}
+    <Script
+        src="https://a.magsrv.com/ad-provider.js"
+        strategy="afterInteractive"
+      />
     <Component {...pageProps} />
   </Provider>
 }

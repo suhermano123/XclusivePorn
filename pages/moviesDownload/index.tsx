@@ -7,7 +7,7 @@ import { Box, Typography, Skeleton, Container, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
+import AdZone from "@/components/AdZone/AdZone";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const BASE_URL = "https://Novapornx.com";
@@ -115,18 +115,6 @@ export default function MoviesDownload() {
         }
         : null;
 
-    // ─── Ads Refresh ──────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            console.log("entro ad", window)
-            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-            // Push serve commands for the 3 ad zones present in this component
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-        }
-    }, [router.asPath]);
-
     return (
         <div style={{
             backgroundColor: "#050505",
@@ -187,19 +175,7 @@ export default function MoviesDownload() {
                     Now it's an explicit H1 — correct and visible.
                     The gradient text is purely cosmetic via CSS; the semantic tag is correct.
                 */}
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-
-                <ins
-                    className="eas6a97888e31"
-                    data-zoneid="5944646"
-                />
-
-                <Script id="magsrv-zone-5944646">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e31" zoneId="5944646" />
                 <Typography
                     component="h1"
                     sx={{
@@ -229,19 +205,7 @@ export default function MoviesDownload() {
                     ✅ <main> landmark wrapping the content grid.
                     Google uses the main landmark to identify the primary content area.
                 */}
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-
-                <ins
-                    className="eas6a97888e37"
-                    data-zoneid="5944642"
-                />
-
-                <Script id="magsrv-zone-5944642">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e37" zoneId="5944642" />
                 <Box component="main">
                     <Box sx={{
                         display: "grid",
@@ -389,19 +353,7 @@ export default function MoviesDownload() {
 
                     </Box>
                 </Box>
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-
-                <ins
-                    className="eas6a97888e20"
-                    data-zoneid="5944638"
-                />
-
-                <Script id="magsrv-zone-5944638">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e20" zoneId="5944638" />
                 {/* ─── Pagination ─────────────────────────────────────────────────── */}
                 {totalPages > 1 && (
                     <Box

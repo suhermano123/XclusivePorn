@@ -1,7 +1,6 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { createClient } from "@supabase/supabase-js";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { SupabaseVideo } from "@/api/videoSupabaseService";
 import { Box, Button, Typography, Container } from "@mui/material";
@@ -9,7 +8,7 @@ import FooterComponent from "@/components/footer/Footer";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
-import Script from "next/script";
+import AdZone from "@/components/AdZone/AdZone";
 
 // Cloudflare Pages requires the Edge runtime for pages using getServerSideProps.
 export const config = { runtime: "experimental-edge" };
@@ -66,8 +65,6 @@ const CategoryPage = ({
     initialTotalCount,
     page,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-    const router = useRouter();
-
     const [videoL, setVideoL] = useState<SupabaseVideo[]>(initialVideos || []);
     const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
     const [currentPreview, setCurrentPreview] = useState<{ [key: string]: number }>({});
@@ -119,18 +116,6 @@ const CategoryPage = ({
     }, [hoveredVideo, videoL]);
 
     const totalPages = Math.ceil(totalCount / videosPerPage);
-
-    // ─── Ads Refresh ──────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            console.log("entro ad", window)
-            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-            // Push serve commands for the 3 ad zones present in this component
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-        }
-    }, [router.asPath]);
 
     // Dynamic SEO strings
     const categoryTitle = categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1);
@@ -337,18 +322,7 @@ const CategoryPage = ({
                     </Box>
                 )}
 
-                <>
-                    <Script
-                        src="https://a.magsrv.com/ad-provider.js"
-                        strategy="afterInteractive"
-                    />
-
-                    <ins
-                        className="eas6a97888e31"
-                        data-zoneid="5941732"
-                    />
-
-                </>
+                <AdZone className="eas6a97888e31" zoneId="5941732" />
             </Container>
             <FooterComponent />
         </div>

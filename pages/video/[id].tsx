@@ -22,7 +22,7 @@ import {
 } from '@mui/icons-material';
 import { getVisitorId } from '@/api/visitorIdHelper';
 import { isValidEntityName, normalizeStreamUrl } from '@/api/ssrVideos';
-import Script from "next/script";
+import AdZone from '@/components/AdZone/AdZone';
 import TopVideosSlider from '@/components/TopVideosSlider/TopVideosSlider';
 import { styles } from '../../styles/videoStyles';
 
@@ -188,14 +188,6 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
     }, [hoveredVideo, relatedVideos]);
 
     useEffect(() => {
-        if (router.asPath && typeof window !== "undefined") {
-            console.log("entro ad", window)
-            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-            // Push serve commands for the 3 ad zones present in this component
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-        }
         return () => {
             if (touchPreviewTimeoutRef.current) clearTimeout(touchPreviewTimeoutRef.current);
         };
@@ -494,11 +486,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
             </Head>
 
             {/* Ads */}
-            <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
-            <ins className="eas6a97888e31" data-zoneid="5941732" />
-            <Script id="magsrv-zone-5941732">
-                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-            </Script>
+            <AdZone className="eas6a97888e31" zoneId="5941732" />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, px: { xs: 0, sm: 2, md: 3 }, py: { xs: 1, sm: 2, md: 4 } }}>
                 <Grid container rowSpacing={{ xs: 2, md: 4 }} columnSpacing={{ xs: 0, sm: 2, md: 4 }} sx={{ mx: 0, width: "100%" }}>
@@ -810,19 +798,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                     )}
                                 </Box>
                             </Box>
-                            <Script
-                                src="https://a.magsrv.com/ad-provider.js"
-                                strategy="afterInteractive"
-                            />
-
-                            <ins
-                                className="eas6a97888e37"
-                                data-zoneid="5944470"
-                            />
-
-                            <Script id="magsrv-zone-5944470">
-                                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                            </Script>
+                            <AdZone className="eas6a97888e37" zoneId="5944470" />
                         </Box>
                     </Grid>
 

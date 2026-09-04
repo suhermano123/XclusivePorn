@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Typography, Container, Grid, Box } from '@mui/material';
 import Head from 'next/head';
 import NavBar from '@/components/NavBar/NavBar';
@@ -7,7 +7,7 @@ import FooterComponent from '@/components/footer/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
-import { useRouter } from "next/router";
+import AdZone from '@/components/AdZone/AdZone';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const BASE_URL = "https://novapornx.com";
@@ -68,18 +68,6 @@ const breadcrumbSchema = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const CategoriesPage: React.FC = () => {
-    const router = useRouter();
-    // ─── Ads Refresh ──────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            console.log("entro ad", window)
-            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-            // Push serve commands for the 3 ad zones present in this component
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-        }
-    }, [router.asPath]);
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
@@ -132,19 +120,7 @@ const CategoriesPage: React.FC = () => {
             <NavMenu />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-
-                <ins
-                    className="eas6a97888e31"
-                    data-zoneid="5944560"
-                />
-
-                <Script id="magsrv-zone-5944560">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e31" zoneId="5944560" />
                 {/*
                     ✅ H1 visible — hierarchy: H1 (page title) → H2 (each category card)
                     Matches the pattern from the other optimized pages.
@@ -268,25 +244,9 @@ const CategoriesPage: React.FC = () => {
                         })}
                     </Grid>
                 </Box>
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-
-                <ins
-                    className="eas6a97888e20"
-                    data-zoneid="5944486"
-                />
-
-                <Script id={`magsrv-zone-5944486`}>
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e20" zoneId="5944486" />
                 {/* Ads */}
-                <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
-                <ins className="eas6a97888e37" data-zoneid="5941734" />
-                <Script id="magsrv-zone-5941734">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e37" zoneId="5941734" />
 
                 <Script
                     src="https://a.pemsrv.com/ad-provider.js"

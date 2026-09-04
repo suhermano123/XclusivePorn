@@ -11,7 +11,7 @@ import { getVisitorId } from "@/api/visitorIdHelper";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";
-import Script from "next/script";
+import AdZone from "@/components/AdZone/AdZone";
 import TopVideosSlider from "@/components/TopVideosSlider/TopVideosSlider";
 
 const SearchPage: React.FC = () => {
@@ -172,30 +172,6 @@ const SearchPage: React.FC = () => {
         return url;
     };
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (typeof window !== "undefined" && (window as any).AdProvider) {
-                (window as any).AdProvider.push({
-                    serve: {},
-                });
-            }
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    // ─── Ads Refresh ──────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            console.log("entro ad", window)
-            const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-            // Push serve commands for the 3 ad zones present in this component
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-            adProvider.push({ serve: {} });
-        }
-    }, [router.asPath]);
-
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Head>
@@ -206,11 +182,7 @@ const SearchPage: React.FC = () => {
             <NavMenu />
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
-                <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
-                <ins className="eas6a97888e31" data-zoneid="5941690" />
-                <Script id="magsrv-ad">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e31" zoneId="5941690" />
                 <Typography variant="h4" sx={{ color: '#fff', mb: 1, fontWeight: 'bold' }}>
                     Search Results for "{searchQuery}"
                 </Typography>
@@ -462,41 +434,12 @@ const SearchPage: React.FC = () => {
                     my: 2,
                 }}
             >
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-                <ins className="eas6a97888e20" data-zoneid="5944490" />
-                <Script id={`magsrv-native-5944490`}>
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e20" zoneId="5944490" />
             </Box>
             <TopVideosSlider />
-            <Script
-                src="https://a.magsrv.com/ad-provider.js"
-                strategy="afterInteractive"
-            />
-
-            <ins
-                className="eas6a97888e42"
-                data-zoneid="5944450"
-            />
-
-            <Script id="magsrv-zone-5944450">
-                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-            </Script>
-
-            <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
-            <ins className="eas6a97888e37" data-zoneid="5941734" />
-            <Script id="magsrv-zone-5941734">
-                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-            </Script>
-
-            <Script src="https://a.magsrv.com/ad-provider.js" strategy="afterInteractive" />
-            <ins className="eas6a97888e31" data-zoneid="5941732" />
-            <Script id="magsrv-zone-5941732">
-                {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-            </Script>
+            <AdZone className="eas6a97888e42" zoneId="5944450" />
+            <AdZone className="eas6a97888e37" zoneId="5941734" />
+            <AdZone className="eas6a97888e31" zoneId="5941732" />
 
             <FooterComponent />
         </div>

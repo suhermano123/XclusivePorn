@@ -14,7 +14,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import StorageIcon from "@mui/icons-material/Storage";
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
+import AdZone from "@/components/AdZone/AdZone";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const BASE_URL = "https://novapornx.com";
@@ -74,14 +74,6 @@ export default function MovieDetail() {
                 }
                 const data = await response.json();
                 setMovie(data as VideoDownload);
-                if (router.asPath && typeof window !== "undefined") {
-                    console.log("entro ad", window)
-                    const adProvider = (window as any).AdProvider = (window as any).AdProvider || [];
-                    // Push serve commands for the 3 ad zones present in this component
-                    adProvider.push({ serve: {} });
-                    adProvider.push({ serve: {} });
-                    adProvider.push({ serve: {} });
-                }
             } catch (error) {
                 console.error("Error fetching movie:", error);
             }
@@ -472,19 +464,7 @@ export default function MovieDetail() {
                             })}
                         </Box>
                     </Box>
-                    <Script
-                        src="https://a.magsrv.com/ad-provider.js"
-                        strategy="afterInteractive"
-                    />
-
-                    <ins
-                        className="eas6a97888e37"
-                        data-zoneid="5944648"
-                    />
-
-                    <Script id="magsrv-zone-5944648">
-                        {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                    </Script>
+                    <AdZone className="eas6a97888e37" zoneId="5944648" />
                     {/* ── Preview Gallery ────────────────────────────────── */}
                     {galleryImages.length > 0 && (
                         <Box
@@ -649,19 +629,7 @@ export default function MovieDetail() {
                         </Typography>
                     </Box>
                 </Box>
-                <Script
-                    src="https://a.magsrv.com/ad-provider.js"
-                    strategy="afterInteractive"
-                />
-
-                <ins
-                    className="eas6a97888e17"
-                    data-zoneid="5944650"
-                />
-
-                <Script id="magsrv-zone-5944650">
-                    {`(window.AdProvider = window.AdProvider || []).push({ serve: {} });`}
-                </Script>
+                <AdZone className="eas6a97888e17" zoneId="5944650" />
             </Container>
 
             <FooterComponent />
