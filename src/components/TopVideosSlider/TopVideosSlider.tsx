@@ -3,6 +3,7 @@ import { Box, Typography, IconButton } from '@mui/material';
 import { SupabaseVideo, getTopVideosByLikes } from '@/api/videoSupabaseService';
 import { useRouter } from 'next/router';
 import { ChevronLeft, ChevronRight, Visibility } from '@mui/icons-material';
+import { normalizeStreamUrl } from '@/api/ssrVideos';
 
 const TopVideosSlider: React.FC = () => {
     const [videos, setVideos] = useState<SupabaseVideo[]>([]);
@@ -225,8 +226,9 @@ const TopVideosSlider: React.FC = () => {
                         }}
                     >
                         <img
-                            src={video.imagen_url}
+                            src={normalizeStreamUrl(video.imagen_url) || "/assets/placeholder.png"}
                             alt={video.titulo}
+                            loading="lazy"
                             style={{
                                 width: '100%',
                                 height: '100%',
