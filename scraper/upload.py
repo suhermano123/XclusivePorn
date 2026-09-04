@@ -92,10 +92,16 @@ def subir_preview(video_id: str) -> tuple[str, str]:
     return f"{CDN_INFO}/{key}", key
 
 
+THUMB_MAX_WIDTH = 480  # el grid la muestra a ~200-300px CSS; cubre pantallas @2x sin pasarse
+
+
 def _optimizar(image_bytes: bytes, calidad: int = 82):
     img = Image.open(io.BytesIO(image_bytes))
     if img.mode in ("CMYK", "P"):
         img = img.convert("RGBA" if "transparency" in img.info else "RGB")
+    if img.width > THUMB_MAX_WIDTH:
+        alto = round(img.height * THUMB_MAX_WIDTH / img.width)
+        img = img.resize((THUMB_MAX_WIDTH, alto), Image.Resampling.LANCZOS)
     buf = io.BytesIO()
     img.save(buf, format="WEBP", quality=calidad, method=6)
     return buf.getvalue()
