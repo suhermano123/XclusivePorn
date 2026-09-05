@@ -16,11 +16,14 @@ on:
       clip_seconds:
         description: "Duración del clip (segundos)"
         required: false
-        default: "60"
+        default: "240"
 
 concurrency:
   group: social-teaser
   cancel-in-progress: false
+
+permissions:
+  contents: write   # necesario para commitear social/used_videos.json de vuelta
 
 jobs:
   teaser:
@@ -51,3 +54,11 @@ jobs:
       - name: Generar y enviar teaser
         working-directory: social
         run: python post_teaser.py
+
+      - name: Guardar registro de videos ya usados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add social/used_videos.json
+          git diff --cached --quiet || git commit -m "chore(social): registrar video usado en teaser"
+          git push
