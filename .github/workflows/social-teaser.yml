@@ -1,0 +1,53 @@
+name: teaser para X (semi-automático)
+
+# Corta un clip random de 60s de un video ya publicado y lo manda por
+# Telegram para revisión manual — NO publica solo en X (ver social/post_teaser.py
+# para el porqué: evita el costo de la API de pago y el riesgo de automatizar
+# el login de la cuenta).
+
+on:
+  schedule:
+    # 3 veces al día, horario UTC. Ajustar si hace falta otro horario.
+    - cron: "0 14 * * *"   # ~9am EST / 9am Colombia
+    - cron: "0 20 * * *"   # ~3pm EST / 3pm Colombia
+    - cron: "0 2 * * *"    # ~9pm EST (noche anterior) / 9pm Colombia
+  workflow_dispatch:
+    inputs:
+      clip_seconds:
+        description: "Duración del clip (segundos)"
+        required: false
+        default: "60"
+
+concurrency:
+  group: social-teaser
+  cancel-in-progress: false
+
+jobs:
+  teaser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: https://gegdnoqjglidnijpmhay.supabase.co
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      CLIP_SECONDS: ${{ github.event.inputs.clip_seconds || '60' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: social/requirements.txt
+
+      - name: Instalar ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Instalar dependencias Python
+        run: pip install -r social/requirements.txt
+
+      - name: Generar y enviar teaser
+        working-directory: social
+        run: python post_teaser.py
