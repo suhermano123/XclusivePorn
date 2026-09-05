@@ -8,8 +8,7 @@ Corre 6 veces al día (GitHub Actions). Cada corrida manda 1 video:
      ya se usaron todos, el ciclo se reinicia solo.
   2. Corta un clip de CLIP_SECONDS desde un punto random del HLS, con
      preferencia por la mitad del video (distribución triangular, no
-     uniforme), con el dominio quemado en pantalla (marca de agua) via
-     ffmpeg.
+     uniforme). Sin marca de agua -- el clip queda igual al video original.
   3. Sube el clip a R2 (bucket videos-info, el mismo de los previews de
      5s -- dominio público preview.novapornx.com) bajo teasers/. La API
      de bots de Telegram tiene un límite de 50MB por archivo subido
@@ -76,11 +75,6 @@ R2_BUCKET = "videos-info"
 R2_CDN = "https://preview.novapornx.com"
 R2_ENDPOINT = f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
 
-FONT_CANDIDATES = [
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",  # ubuntu-latest (GitHub runner)
-    "C:/Windows/Fonts/arialbd.ttf",  # por si se corre local en Windows
-]
-
 CAPTIONS = [
     "New upload just dropped 👀 full scene free, no signup: {url}",
     "This one's a favorite already. Watch the full video free: {url}",
@@ -103,13 +97,6 @@ CAPTIONS = [
     "{title} 🔥 full video, zero cost: {url}",
     "Found this one today, had to share. Full scene: {url}",
 ]
-
-
-def _pick_font() -> str | None:
-    for f in FONT_CANDIDATES:
-        if Path(f).exists():
-            return f
-    return None
 
 
 def cargar_usados() -> set:
@@ -179,14 +166,7 @@ def cortar_clip(video_url: str, duracion_total: int, dest: str) -> float:
         medio = (margen + max_inicio) / 2
         inicio = random.triangular(margen, max_inicio, medio)
 
-    font = _pick_font()
     vf = "scale='min(1280,iw)':-2"
-    if font:
-        vf += (
-            f",drawtext=fontfile='{font}':text='novapornx.com':"
-            "fontsize=28:fontcolor=white@0.85:borderw=2:bordercolor=black@0.6:"
-            "x=w-tw-20:y=h-th-20"
-        )
 
     cmd = [
         "ffmpeg", "-y", "-loglevel", "warning",
