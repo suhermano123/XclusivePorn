@@ -34,7 +34,12 @@ jobs:
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      CLIP_SECONDS: ${{ github.event.inputs.clip_seconds || '60' }}
+      R2_ACCOUNT_ID: 4e606a01f4fc407cb118d0fafbaee583
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      # nota: github.event.inputs solo existe en corridas manuales (workflow_dispatch);
+      # en las 3 corridas diarias por cron este fallback es el que realmente aplica.
+      CLIP_SECONDS: ${{ github.event.inputs.clip_seconds || '240' }}
 
     steps:
       - uses: actions/checkout@v4
