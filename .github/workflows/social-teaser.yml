@@ -4,13 +4,20 @@ name: teaser para X (semi-automático)
 # Telegram para revisión manual — NO publica solo en X (ver social/post_teaser.py
 # para el porqué: evita el costo de la API de pago y el riesgo de automatizar
 # el login de la cuenta).
+#
+# Cada corrida = 1 video. 6 corridas al día = 6 teasers diarios.
 
 on:
   schedule:
-    # 3 veces al día, horario UTC. Ajustar si hace falta otro horario.
-    - cron: "0 14 * * *"   # ~9am EST / 9am Colombia
-    - cron: "0 20 * * *"   # ~3pm EST / 3pm Colombia
-    - cron: "0 2 * * *"    # ~9pm EST (noche anterior) / 9pm Colombia
+    # 6 veces al día, horario UTC. Colombia es UTC-5: quedan cada 3 horas
+    # entre las 9am y la medianoche, y sin corridas de madrugada (la
+    # revisión es manual, no tiene sentido mandar teasers dormido).
+    - cron: "0 14 * * *"   # 9am Colombia
+    - cron: "0 17 * * *"   # 12pm Colombia (mediodía)
+    - cron: "0 20 * * *"   # 3pm Colombia
+    - cron: "0 23 * * *"   # 6pm Colombia
+    - cron: "0 2 * * *"    # 9pm Colombia (noche anterior en UTC)
+    - cron: "0 5 * * *"    # 12am Colombia (noche anterior en UTC)
   workflow_dispatch:
     inputs:
       clip_seconds:
@@ -38,7 +45,7 @@ jobs:
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       # nota: github.event.inputs solo existe en corridas manuales (workflow_dispatch);
-      # en las 3 corridas diarias por cron este fallback es el que realmente aplica.
+      # en las 6 corridas diarias por cron este fallback es el que realmente aplica.
       CLIP_SECONDS: ${{ github.event.inputs.clip_seconds || '240' }}
 
     steps:
@@ -66,4 +73,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add social/used_videos.json
           git diff --cached --quiet || git commit -m "chore(social): registrar video usado en teaser"
-          git push
+          # Con 6 corridas diarias sube la probabilidad de que el remoto se haya
+          # movido desde el checkout (otra corrida, el scraper o un push manual).
+          # Si el push se rechaza, rebasa y reintenta: perder este commit haría
+          # que el video se pueda repetir en una corrida futura.
+          for intento in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rechazado (intento $intento), rebasando sobre origin/master"
+            git pull --rebase origin master
+          done
+          echo "no se pudo guardar used_videos.json tras 3 intentos" >&2
+          exit 1

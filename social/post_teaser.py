@@ -1,6 +1,6 @@
 """Teaser semi-automático para X (Twitter).
 
-Corre 3 veces al día (GitHub Actions). Cada corrida:
+Corre 6 veces al día (GitHub Actions). Cada corrida manda 1 video:
   1. Elige un video al azar de `posted_videos` (duración >= 90s) que NO se
      haya usado antes -- el registro vive en used_videos.json, versionado
      en el repo (no hay acceso DDL al Postgres de Supabase para una tabla
