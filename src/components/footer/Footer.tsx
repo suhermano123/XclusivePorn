@@ -90,6 +90,11 @@ const FooterComponent: React.FC = () => {
           </MuiLink>
         </Typography>
 
+        {/* Partners */}
+        <Typography variant="body2" color="inherit" paragraph style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "10px", margin: "15px 0" }}>
+          <a href="https://urporn.com" rel="noopener" target="_blank" style={{ color: "inherit", margin: "0 10px" }}>Best Porn Sites</a>
+        </Typography>
+
         <Typography variant="body2" color="inherit" paragraph>
           {"© "} {new Date().getFullYear()} NovaPornX. All rights reserved.
         </Typography>
