@@ -1,5 +1,9 @@
 // pages/_app.tsx
-import '../styles/globals.css'
+// globals.css se inlinea en pages/_document.tsx (<style> en el <head>) en vez
+// de importarse aca -- son 17 lineas de reset, no vale la pena el request
+// bloqueante aparte (Lighthouse lo marcaba como "solicitud de bloqueo de
+// renderizacion", ~150ms). Si el archivo crece mucho, volver a un <link>
+// externo normal.
 import { Provider } from 'react-redux';
 import { store } from '../src/redux/store'
 import type { AppProps } from 'next/app';

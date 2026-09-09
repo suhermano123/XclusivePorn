@@ -1,7 +1,7 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { createClient } from "@supabase/supabase-js";
 import VideoGrid, { buildTitle, buildDescription, buildKeywords } from "@/components/ListVideos/ListVideos";
-import "../styles/globals.css";
+// globals.css se inlinea en pages/_document.tsx -- ver ese archivo.
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
 import Head from "next/head";

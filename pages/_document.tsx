@@ -28,6 +28,23 @@ export default function Document() {
                     name="juicyads-site-verification"
                     content="f483025e8fb2d3cfaa1a93f7fde3d85d"
                 />
+
+                {/* ── Global reset (antes styles/globals.css) ─────────────────
+                    Inline a proposito: es un reset de 17 lineas, no vale la
+                    pena el request bloqueante aparte que generaba como CSS
+                    externo (Lighthouse: "solicitud de bloqueo de renderizacion",
+                    ~0.8 KiB / ~150ms). Si crece, volver a un <link> normal. */}
+                <style dangerouslySetInnerHTML={{
+                    __html: `
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        html, body {
+                            background-color: #020202;
+                            font-family: Arial, Helvetica, sans-serif;
+                            max-width: 100%;
+                            overflow-x: hidden;
+                        }
+                    `
+                }} />
             </Head>
 
             <body>
