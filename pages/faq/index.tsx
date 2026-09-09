@@ -72,7 +72,7 @@ const FaqPage: React.FC = () => {
             </Head>
             <NavBar />
       <NavMenu />
-            <div style={styles.faqContainer}>
+            <main style={styles.faqContainer}>
                 <div style={styles.faqContent}>
                     <Typography component="h1" variant="h5" style={styles.title}>
                         Frequently Asked Questions
@@ -113,7 +113,7 @@ const FaqPage: React.FC = () => {
                     </Accordion>
 
                 </div>
-            </div>
+            </main>
             <FooterComponent />
         </div>
     );

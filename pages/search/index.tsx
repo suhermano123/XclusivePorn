@@ -181,7 +181,7 @@ const SearchPage: React.FC = () => {
             <NavBar />
             <NavMenu />
 
-            <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
+            <Container component="main" maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
                 <AdZone className="eas6a97888e31" zoneId="5941690" />
                 {/* component="h1": la pagina no tenia ningun h1 -- variant="h4"
                     sin override renderiza <h4>, dejando la pagina sin

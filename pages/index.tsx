@@ -72,6 +72,7 @@ export default function HomeIndex({
       <NavBar />
       <NavMenu />
 
+      <main>
       <Typography
         component="h1"
         sx={{
@@ -117,6 +118,7 @@ export default function HomeIndex({
           </Typography>
         </Box>
       </Container>
+      </main>
 
       <PWAInstallPrompt />
     </div>

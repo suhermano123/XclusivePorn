@@ -485,6 +485,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                 )}
             </Head>
 
+            <main>
             {/* Ads */}
             <AdZone className="eas6a97888e31" zoneId="5941732" />
 
@@ -1118,6 +1119,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                     <iframe src="//a.magsrv.com/iframe.php?idzone=5941728&size=300x100" width="300" height="100" scrolling="no" marginWidth={0} marginHeight={0} frameBorder={0} title="Advertisement" />
                 </Box>
             </Box>
+            </main>
 
             <FooterComponent />
         </div>

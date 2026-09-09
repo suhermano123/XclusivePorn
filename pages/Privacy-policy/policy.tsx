@@ -16,9 +16,9 @@ const PrivacyPolicyPage: React.FC = () => {
       </Head>
       <NavBar />
       <NavMenu />
-      <div style={styles.privacyContainer}>
+      <main style={styles.privacyContainer}>
         <div style={styles.privacyContent}>
-          <Typography variant="h5" style={styles.title}>
+          <Typography component="h1" variant="h5" style={styles.title}>
             Privacy Policy
           </Typography>
           <Typography variant="body1" style={styles.text}>
@@ -55,7 +55,7 @@ const PrivacyPolicyPage: React.FC = () => {
             When you use the "Report Video" tools available on our site for DMCA or content violation claims, we ask for your email address and a reason for the report. This email is securely safely and strictly used to contact you regarding the status of your claim or intellectual property protection matters. We do not sell or share this administrative data with third parties unless required by law. Check our <a href="/DMCA/Dmca" style={{ color: '#c00cb7', textDecoration: 'none' }}>DMCA Page</a> for instructions on filing notices.
           </Typography>
         </div>
-      </div>
+      </main>
       <FooterComponent />
     </div>
   );

@@ -86,7 +86,7 @@ export default function PremiumHDPornVideos({
             <NavBar />
             <NavMenu />
 
-            <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
+            <Container component="main" maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
                 <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #c00cb7', pl: 2 }}>
                     Premium HD Porn
                 </Typography>

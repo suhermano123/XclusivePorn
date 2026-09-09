@@ -188,7 +188,7 @@ const CategoryPage = ({
             <NavBar />
             <NavMenu />
 
-            <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
+            <Container component="main" maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
                 <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #c00cb7', pl: 2 }}>
                     {categoryQuery.toUpperCase()} PORN VIDEOS
                     <span style={{ fontSize: '16px', color: '#aaa', marginLeft: '10px' }}>({totalCount} videos){currentPage > 1 ? ` — Page ${currentPage}` : ''}</span>

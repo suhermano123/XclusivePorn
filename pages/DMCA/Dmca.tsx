@@ -37,7 +37,7 @@ const DmcaPage: React.FC = () => {
       </Head>
       <NavBar />
       <NavMenu />
-      <div style={styles.dmcaContainer}>
+      <main style={styles.dmcaContainer}>
         <div style={styles.dmcaContent}>
           <Typography component="h1" variant="h5" style={styles.title}>
             Legal Disclaimer
@@ -81,7 +81,7 @@ const DmcaPage: React.FC = () => {
             <li style={{ marginBottom: '10px' }}><strong>Step 6:</strong> Click <strong>Submit Report</strong>. Our moderation team reviews these reports promptly and will take the necessary actions to remove infringing content.</li>
           </ul>
         </div>
-      </div>
+      </main>
       <FooterComponent />
     </div>
   );

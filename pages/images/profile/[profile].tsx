@@ -86,7 +86,8 @@ export default function ProfilePage() {
     <Box >
       <NavBar />
       <NavMenu />
-      <Typography variant="h4" sx={{ mb: 3 }}>
+      <Box component="main">
+      <Typography component="h1" variant="h4" sx={{ mb: 3 }}>
         {profile}
       </Typography>
 
@@ -388,6 +389,7 @@ export default function ProfilePage() {
           )}
         </Box>
       </Modal>
+      </Box>
       <FooterComponent />
     </Box>
   );

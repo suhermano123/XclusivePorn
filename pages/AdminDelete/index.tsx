@@ -82,7 +82,7 @@ const DeleteMedia = () => {
                     <meta name="robots" content="noindex, nofollow" />
                 </Head>
                 <NavBar />
-                <Container maxWidth="xs" sx={{ flexGrow: 1, py: { xs: 4, md: 8 }, display: 'flex', alignItems: 'center' }}>
+                <Container component="main" maxWidth="xs" sx={{ flexGrow: 1, py: { xs: 4, md: 8 }, display: 'flex', alignItems: 'center' }}>
                     <Box component="form" onSubmit={handleLogin} sx={{
                         backgroundColor: '#111', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)',
                         p: 4, width: '100%', textAlign: 'center', boxShadow: '0 15px 35px rgba(0,0,0,0.9)'
@@ -130,7 +130,7 @@ const DeleteMedia = () => {
             <NavBar />
             <NavMenu />
 
-            <Container maxWidth="md" sx={{ flexGrow: 1, py: { xs: 4, md: 8 }, display: 'flex', justifyContent: 'center' }}>
+            <Container component="main" maxWidth="md" sx={{ flexGrow: 1, py: { xs: 4, md: 8 }, display: 'flex', justifyContent: 'center' }}>
                 <Box sx={{
                     backgroundColor: '#111',
                     borderRadius: '16px',

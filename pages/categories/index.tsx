@@ -119,7 +119,7 @@ const CategoriesPage: React.FC = () => {
             <NavBar />
             <NavMenu />
 
-            <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
+            <Container component="main" maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
                 <AdZone className="eas6a97888e31" zoneId="5944560" />
                 {/*
                     ✅ H1 visible — hierarchy: H1 (page title) → H2 (each category card)

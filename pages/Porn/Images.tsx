@@ -122,7 +122,7 @@ const ImagesPage: React.FC = () => {
             <NavBar />
             <NavMenu />
 
-            <Box sx={{ flexGrow: 1, px: { xs: 1, sm: 2, md: 3 }, py: 3 }}>
+            <Box component="main" sx={{ flexGrow: 1, px: { xs: 1, sm: 2, md: 3 }, py: 3 }}>
                 <Typography
                     variant="h5"
                     sx={{

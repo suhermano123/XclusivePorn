@@ -73,7 +73,7 @@ export default function PornstarPage({
       <NavBar />
       <NavMenu />
 
-      <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
+      <Container component="main" maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
         <Typography
           component="h1"
           sx={{ color: "#fff", fontWeight: "bold", fontSize: { xs: "1.6rem", md: "2.3rem" }, borderLeft: "4px solid #c00cb7", pl: 2, mb: 1 }}

@@ -159,7 +159,7 @@ export default function MovieDetail() {
                 </Head>
                 <NavBar />
                 <NavMenu />
-                <Container maxWidth="lg" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
+                <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
                         <Skeleton variant="rectangular" height={400} sx={{ bgcolor: "rgba(255,255,255,0.05)", borderRadius: 2 }} />
                         <Skeleton variant="text" height={60} width="60%" sx={{ bgcolor: "rgba(255,255,255,0.05)" }} />
@@ -181,7 +181,7 @@ export default function MovieDetail() {
                 </Head>
                 <NavBar />
                 <NavMenu />
-                <Container maxWidth="lg" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
+                <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: { xs: 2, md: 5 } }}>
                     <Typography variant="h5" color="error" align="center" sx={{ mt: 10 }}>
                         Movie not found.
                     </Typography>
