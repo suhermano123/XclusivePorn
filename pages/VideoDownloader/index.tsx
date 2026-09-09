@@ -286,7 +286,9 @@ const VideoDownloader: React.FC = () => {
 
                                                 return (
                                                     <Box sx={{ mb: 3 }}>
-                                                        <Typography variant="subtitle2" sx={{ color: "#fff", mb: 1 }}>
+                                                        {/* component="p": etiqueta de progreso por descarga, no
+                                                            una seccion (subtitle2 sin override renderiza <h6>). */}
+                                                        <Typography variant="subtitle2" component="p" sx={{ color: "#fff", mb: 1 }}>
                                                             {label}
                                                         </Typography>
                                                         <LinearProgress
@@ -356,7 +358,9 @@ const VideoDownloader: React.FC = () => {
                                         transform: "scale(1.05)"
                                     }
                                 }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                                    {/* component="p": etiqueta por tile de plataforma, no una
+                                        seccion (subtitle1 sin override renderiza <h6>). */}
+                                    <Typography variant="subtitle1" component="p" sx={{ fontWeight: "bold" }}>
                                         {platform}
                                     </Typography>
                                 </Box>

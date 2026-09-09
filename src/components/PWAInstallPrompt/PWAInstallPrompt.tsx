@@ -113,7 +113,10 @@ const PWAInstallPrompt: React.FC = () => {
                     }}
                 />
                 <Box sx={{ flexGrow: 1 }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: '800', color: '#fff', lineHeight: 1.2, mb: 0.5 }}>
+                    {/* component="p": es un banner flotante, no una seccion de la
+                        pagina -- MUI renderiza subtitle1 como <h6> por defecto,
+                        lo que rompia el orden de encabezados (Lighthouse). */}
+                    <Typography variant="subtitle1" component="p" sx={{ fontWeight: '800', color: '#fff', lineHeight: 1.2, mb: 0.5 }}>
                         Download novapornx
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', display: 'block', fontSize: '0.75rem' }}>

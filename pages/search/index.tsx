@@ -183,10 +183,15 @@ const SearchPage: React.FC = () => {
 
             <Container maxWidth={false} sx={{ flexGrow: 1, py: 4 }}>
                 <AdZone className="eas6a97888e31" zoneId="5941690" />
-                <Typography variant="h4" sx={{ color: '#fff', mb: 1, fontWeight: 'bold' }}>
+                {/* component="h1": la pagina no tenia ningun h1 -- variant="h4"
+                    sin override renderiza <h4>, dejando la pagina sin
+                    encabezado principal. */}
+                <Typography variant="h4" component="h1" sx={{ color: '#fff', mb: 1, fontWeight: 'bold' }}>
                     Search Results for "{searchQuery}"
                 </Typography>
-                <Typography variant="subtitle1" sx={{ color: 'rgba(255,255,255,0.5)', mb: 4 }}>
+                {/* component="p": subtitulo descriptivo, no una seccion nueva
+                    (subtitle1 sin override renderiza <h6>, salto desde el h1). */}
+                <Typography variant="subtitle1" component="p" sx={{ color: 'rgba(255,255,255,0.5)', mb: 4 }}>
                     Found {totalCount} videos
                 </Typography>
 

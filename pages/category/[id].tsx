@@ -243,7 +243,10 @@ const CategoryPage = ({
                                             )}
                                         </div>
                                         <div style={styles.metadataArea}>
-                                            <Typography variant="subtitle1" style={styles.videoTitle} title={title}>
+                                            {/* component="p": titulo de tarjeta repetido por video (hasta
+                                                30 por pagina) -- subtitle1 sin override renderiza <h6>,
+                                                lo que generaba decenas de saltos de nivel desde el <h1>. */}
+                                            <Typography variant="subtitle1" component="p" style={styles.videoTitle} title={title}>
                                                 {title}
                                             </Typography>
                                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>

@@ -76,7 +76,9 @@ export default function ProfileCard({
             justifyContent: "flex-end",
           }}
         >
-          <Typography variant="subtitle1" sx={{ color: "#fff", fontWeight: 700, textTransform: "capitalize", lineHeight: 1.2, mb: 0.5 }}>
+          {/* component="p": titulo de tarjeta repetido por perfil, no una
+              seccion (subtitle1 sin override renderiza <h6>). */}
+          <Typography variant="subtitle1" component="p" sx={{ color: "#fff", fontWeight: 700, textTransform: "capitalize", lineHeight: 1.2, mb: 0.5 }}>
             {profile}
           </Typography>
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>

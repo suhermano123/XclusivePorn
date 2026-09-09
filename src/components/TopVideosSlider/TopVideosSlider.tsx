@@ -92,8 +92,12 @@ const TopVideosSlider: React.FC = () => {
                 '&:hover .nav-btn': { opacity: 1 }
             }}
         >
+            {/* component="h2": es una seccion real de la pagina (titulo visual
+                h6 via variant, pero MUI la renderizaba como <h6> -- salto de
+                nivel desde el <h1> de la pagina que Lighthouse marcaba). */}
             <Typography
                 variant="h6"
+                component="h2"
                 sx={{
                     color: '#fff',
                     textAlign: 'center',
