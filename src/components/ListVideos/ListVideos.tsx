@@ -671,91 +671,16 @@ const VideoGrid: React.FC<VideoGridProps> = ({
           </Box>
 
           {/*
-            ══════════════════════════════════════════════════════════════════
-            ─── SEO ON-PAGE TEXT BLOCK ───────────────────────────────────────
-            ══════════════════════════════════════════════════════════════════
-
-            KEYWORD DISTRIBUTION (TF-IDF sourced, natural density):
-            ─ porn       (90%) → appears in H2, body ×3
-            ─ videos     (80%) → H2, body ×3
-            ─ video      (80%) → body ×2
-            ─ sex        (80%) → H2 (second), body ×2
-            ─ milf       (80%) → body ×1
-            ─ teen       (80%) → body ×1 (implied via "young adults")
-            ─ mature     (70%) → body ×1
-            ─ watch      (60%) → H2, body ×2
-            ─ xxx        (60%) → H2, body ×1
-            ─ sexy       (60%) → body ×1
-            ─ hot        (60%) → body ×1
-            ─ popular    (60%) → body ×1
-            ─ top        (60%) → body ×1
-            ─ world      (60%) → body ×1
-            ─ latina     (50%) → body ×1
-            ─ online     (50%) → H2, body ×2
-            ─ premium    (40%) → body ×2
-            ─ quality    (40%) → body ×1
-            ─ homemade   (40%) → body ×1
-            ─ scenes     (40%) → body ×2
-            ─ models     (40%) → body ×1
-            ─ pornstar   (40%) → body ×1
-            ─ stream     (20% freq but TF-IDF 8.86) → body ×1
-
-            NOT used: xvideos, xhamster, pornhub, spankbang (competitor brands),
-            German terms, "teen" alone (used as "teen videos" with adult context)
+            El bloque de texto SEO generico que vivia aca se saco (commit
+            pendiente, 2026-09-1x): las 5 paginas que usan VideoGrid (home +
+            4 landings) ya tienen SU PROPIO bloque de texto especifico, y
+            ninguna le pasa `category` a este componente -- asi que las 5
+            mostraban dos veces basicamente el mismo texto generico
+            "Watch Free Porn Videos Online / Premium Quality Sex Videos".
+            Contenido duplicado es senal negativa para Google. Si algun dia
+            un caller SIN su propio bloque usa VideoGrid con `category`,
+            hay que reintroducir un bloque aca (o mejor, en ese caller).
           */}
-          {!searchQuery && (
-            <Box
-              component="section"
-              aria-label="About NovaPornX free porn videos"
-              sx={{
-                mx: { xs: "6px", sm: "10px", md: "15px" },
-                mb: 4,
-                p: { xs: 3, md: 5 },
-                backgroundColor: "rgba(255,255,255,0.02)",
-                borderRadius: "16px",
-                border: "1px solid rgba(255,255,255,0.05)",
-              }}
-            >
-              {/* H2 matches index.tsx H2 pattern — correct hierarchy after H1 */}
-              <Typography
-                component="h2"
-                sx={{ color: "#fff", fontSize: { xs: "1.2rem", md: "1.5rem" }, fontWeight: "bold", mb: 2 }}
-              >
-                {category
-                  ? `Watch Free ${category.charAt(0).toUpperCase() + category.slice(1)} Porn Videos in HD`
-                  : "Watch Free Porn Videos Online – Top Rated XXX Content"}
-              </Typography>
-
-              <Typography
-                component="p"
-                sx={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.85, fontSize: "1rem", mb: 3 }}
-              >
-                {category
-                  ? `Welcome to NovaPornX's ${category} porn videos collection. Watch the hottest ${category} sex scenes in full HD quality — from amateur homemade clips to professional studio productions. Our ${category} video library is updated daily with new content, hand-picked for quality and variety. Stream online for free, no account required.`
-                  : "Welcome to NovaPornX — the world's top destination for free porn videos in HD. Watch thousands of xxx sex scenes, popular adult films, and exclusive premium content completely free. Whether you're looking for hot milf videos, sexy latina scenes, mature content, homemade amateur clips, or professional pornstar performances, our massive video library has it all. No subscription, no registration — just stream online instantly."
-                }
-              </Typography>
-
-              <Typography
-                component="h2"
-                sx={{ color: "#fff", fontSize: { xs: "1.1rem", md: "1.3rem" }, fontWeight: "bold", mb: 2 }}
-              >
-                {category
-                  ? `${category.charAt(0).toUpperCase() + category.slice(1)} Sex Scenes – Updated Daily`
-                  : "Premium Quality Sex Videos – Daily Updates"}
-              </Typography>
-
-              <Typography
-                component="p"
-                sx={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.85, fontSize: "1rem" }}
-              >
-                {category
-                  ? `Our ${category} porn section features top-rated sex videos from the most popular models and pornstars worldwide. Every ${category} scene is available in HD for the best streaming quality. Browse hundreds of ${category} videos across all niches and find your perfect xxx content.`
-                  : "Our catalog covers every genre of adult content: xxx hardcore scenes, milf videos, teen sex, mature women, latina pornstars, threesome scenes, and much more. Every video is available in HD quality for a premium streaming experience. New porn videos are added every day — top-rated, most viewed, and latest scenes all in one place. NovaPornX is the one site in the world where quality free porn, popular models, and hot adult content meet without paywalls."
-                }
-              </Typography>
-            </Box>
-          )}
 
           <AdZone className="eas6a97888e37" zoneId="5941734" />
           <AdZone className="eas6a97888e31" zoneId="5941732" />

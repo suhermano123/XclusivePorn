@@ -3,7 +3,6 @@ import React from "react";
 import Head from "next/head";
 import NavBar from "@/components/NavBar/NavBar";
 import NavMenu from "@/components/NavMenu/NavMenu";
-import FooterComponent from "@/components/footer/Footer";
 import VideoGrid from "@/components/ListVideos/ListVideos";
 import { landingVideosGSSP } from "@/api/ssrVideos";
 import { Container, Typography, Box } from "@mui/material";
@@ -104,8 +103,6 @@ export default function PremiumHDPornVideos({
                     ))}
                 </Box>
             </Container>
-
-            <FooterComponent />
         </div>
     );
 }
