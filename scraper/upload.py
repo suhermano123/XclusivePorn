@@ -92,10 +92,15 @@ def subir_preview(video_id: str) -> tuple[str, str]:
     return f"{CDN_INFO}/{key}", key
 
 
-THUMB_MAX_WIDTH = 400  # el grid la muestra a ~190px (mobile 2 col) - ~345px (desktop 4 col) CSS
+THUMB_MAX_WIDTH = 400  # cubre 2x retina del grid principal (~190px CSS, mobile 2 col) y se
+# queda corto para el TopVideosSlider (~300px CSS, necesitaría 600px a 2x) -- se
+# deja así a propósito: subirlo mejoraría la nitidez del slider pero pesaría más
+# en CADA card del grid, que es el uso mucho más frecuente. No hay ganancia limpia
+# por ese lado sin generar dos tamaños (uno por componente) + srcset, que es un
+# cambio de pipeline más grande (doble upload, VideoGrid/TopVideosSlider actualizados).
 
 
-def _optimizar(image_bytes: bytes, calidad: int = 82):
+def _optimizar(image_bytes: bytes, calidad: int = 74):
     img = Image.open(io.BytesIO(image_bytes))
     if img.mode in ("CMYK", "P"):
         img = img.convert("RGBA" if "transparency" in img.info else "RGB")
