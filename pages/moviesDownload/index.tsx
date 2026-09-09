@@ -183,7 +183,7 @@ export default function MoviesDownload() {
                         textAlign: "center",
                         fontWeight: 800,
                         fontSize: { xs: "1.8rem", md: "2.5rem" },
-                        background: "linear-gradient(90deg, #f013e5, #ff5e62)",
+                        background: "linear-gradient(90deg, #c00cb7, #ff5e62)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         textTransform: "uppercase",
@@ -255,8 +255,8 @@ export default function MoviesDownload() {
                                             cursor: "pointer",
                                             "&:hover": {
                                                 transform: "translateY(-5px)",
-                                                boxShadow: "0 10px 30px rgba(240,19,229,0.15)",
-                                                borderColor: "rgba(240,19,229,0.3)",
+                                                boxShadow: "0 10px 30px rgba(192,12,183,0.15)",
+                                                borderColor: "rgba(192,12,183,0.3)",
                                             },
                                         }}
                                     >
@@ -324,7 +324,7 @@ export default function MoviesDownload() {
                                                     variant="caption"
                                                     component="span"
                                                     aria-label={`File size: ${video.size || "unknown"}`}
-                                                    sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#f013e5", fontWeight: "bold" }}
+                                                    sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#c00cb7", fontWeight: "bold" }}
                                                 >
                                                     💾 {video.size || "N/A"}
                                                 </Typography>
@@ -337,7 +337,7 @@ export default function MoviesDownload() {
                                                     display: "flex",
                                                     alignItems: "center",
                                                     gap: 0.5,
-                                                    color: "#f013e5",
+                                                    color: "#c00cb7",
                                                     fontWeight: "bold"
                                                 }}
                                             >
@@ -384,7 +384,7 @@ export default function MoviesDownload() {
                                 sx={{
                                     backgroundColor: "rgba(255,255,255,0.1)",
                                     color: "#fff",
-                                    "&:hover": { backgroundColor: "#f013e5" },
+                                    "&:hover": { backgroundColor: "#c00cb7" },
                                 }}
                                 aria-label="Previous page"
                             >
@@ -416,13 +416,13 @@ export default function MoviesDownload() {
                                         sx={{
                                             backgroundColor:
                                                 pageNum === currentPage
-                                                    ? "#f013e5"
+                                                    ? "#c00cb7"
                                                     : "rgba(255,255,255,0.05)",
-                                            color: pageNum === currentPage ? "#fff" : "#f013e5",
-                                            borderColor: "#f013e5",
+                                            color: pageNum === currentPage ? "#fff" : "#c00cb7",
+                                            borderColor: "#c00cb7",
                                             "&:hover": {
-                                                borderColor: "#f013e5",
-                                                backgroundColor: pageNum === currentPage ? "#d00fd5" : "rgba(240,19,229,0.1)",
+                                                borderColor: "#c00cb7",
+                                                backgroundColor: pageNum === currentPage ? "#d00fd5" : "rgba(192,12,183,0.1)",
                                             }
                                         }}
                                     >
@@ -448,7 +448,7 @@ export default function MoviesDownload() {
                                 sx={{
                                     backgroundColor: "rgba(255,255,255,0.1)",
                                     color: "#fff",
-                                    "&:hover": { backgroundColor: "#f013e5" },
+                                    "&:hover": { backgroundColor: "#c00cb7" },
                                 }}
                                 aria-label="Next page"
                             >

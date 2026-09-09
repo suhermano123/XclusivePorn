@@ -333,7 +333,7 @@ const SearchPage: React.FC = () => {
                                                             transition: 'transform 0.2s'
                                                         }}
                                                     >
-                                                        <FavoriteIcon sx={{ fontSize: '14px', color: '#f013e5' }} />
+                                                        <FavoriteIcon sx={{ fontSize: '14px', color: '#c00cb7' }} />
                                                         <span style={styles.statsText}>{video.likes || 0}</span>
                                                     </Box>
                                                     <Box
@@ -405,9 +405,9 @@ const SearchPage: React.FC = () => {
                                     onClick={() => handlePageChange(pageNum)}
                                     sx={{
                                         ...styles.pageNumberBtnSx,
-                                        backgroundColor: pageNum === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
-                                        color: pageNum === currentPage ? "#fff" : "#f013e5",
-                                        borderColor: "#f013e5"
+                                        backgroundColor: pageNum === currentPage ? "#c00cb7" : "rgba(255,255,255,0.05)",
+                                        color: pageNum === currentPage ? "#fff" : "#c00cb7",
+                                        borderColor: "#c00cb7"
                                     }}
                                 >
                                     {pageNum}
@@ -510,14 +510,14 @@ const styles: { [key: string]: any } = {
         borderRadius: "4px",
     },
     paginationBtnSx: {
-        backgroundColor: "#f013e5",
+        backgroundColor: "#c00cb7",
         color: "#fff",
         borderRadius: "20px",
         padding: "8px 25px",
         fontWeight: "bold",
-        boxShadow: "0 4px 10px rgba(240, 19, 229, 0.3)",
+        boxShadow: "0 4px 10px rgba(192, 12, 183, 0.3)",
         "&:hover": {
-            backgroundColor: "#e91ec4",
+            backgroundColor: "#ba129b",
             transform: "scale(1.05)",
         },
         "&:disabled": {

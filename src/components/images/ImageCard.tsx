@@ -39,7 +39,7 @@ export default function ProfileCard({
         backgroundColor: "#111",
         "&:hover": {
           transform: "translateY(-6px)",
-          boxShadow: "0 16px 32px rgba(240, 19, 229, 0.25)",
+          boxShadow: "0 16px 32px rgba(192, 12, 183, 0.25)",
         },
       }}
     >

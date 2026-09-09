@@ -118,12 +118,12 @@ const TopVideosSlider: React.FC = () => {
                     top: '50%',
                     transform: 'translateY(-50%)',
                     bgcolor: 'rgba(0,0,0,0.7)',
-                    color: '#f013e5',
+                    color: '#c00cb7',
                     zIndex: 20,
                     opacity: 0,
                     transition: 'all 0.3s ease',
-                    border: '1px solid rgba(240, 19, 229, 0.3)',
-                    '&:hover': { bgcolor: 'rgba(240, 19, 229, 0.8)', color: '#fff' },
+                    border: '1px solid rgba(192, 12, 183, 0.3)',
+                    '&:hover': { bgcolor: 'rgba(192, 12, 183, 0.8)', color: '#fff' },
                     display: { xs: 'none', md: 'flex' }
                 }}
             >
@@ -139,12 +139,12 @@ const TopVideosSlider: React.FC = () => {
                     top: '50%',
                     transform: 'translateY(-50%)',
                     bgcolor: 'rgba(0,0,0,0.7)',
-                    color: '#f013e5',
+                    color: '#c00cb7',
                     zIndex: 20,
                     opacity: 0,
                     transition: 'all 0.3s ease',
-                    border: '1px solid rgba(240, 19, 229, 0.3)',
-                    '&:hover': { bgcolor: 'rgba(240, 19, 229, 0.8)', color: '#fff' },
+                    border: '1px solid rgba(192, 12, 183, 0.3)',
+                    '&:hover': { bgcolor: 'rgba(192, 12, 183, 0.8)', color: '#fff' },
                     display: { xs: 'none', md: 'flex' }
                 }}
             >
@@ -218,8 +218,8 @@ const TopVideosSlider: React.FC = () => {
                             border: '1px solid rgba(255,255,255,0.1)',
                             '&:hover': {
                                 transform: 'scale(1.05) translateY(-5px)',
-                                borderColor: '#f013e5',
-                                boxShadow: '0 10px 30px rgba(240, 19, 229, 0.3)',
+                                borderColor: '#c00cb7',
+                                boxShadow: '0 10px 30px rgba(192, 12, 183, 0.3)',
                                 zIndex: 5,
                                 '& .video-overlay': { opacity: 1 }
                             }

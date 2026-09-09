@@ -567,7 +567,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                                   transition: "transform 0.2s",
                                 }}
                               >
-                                <FavoriteIcon sx={{ fontSize: "14px", color: "#f013e5" }} />
+                                <FavoriteIcon sx={{ fontSize: "14px", color: "#c00cb7" }} />
                                 <span style={styles.statsText}>{video.likes || 0}</span>
                               </Box>
                               <Box
@@ -645,9 +645,9 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                     aria-current={pageNum === currentPage ? "page" : undefined}
                     sx={{
                       ...styles.pageNumberBtnSx,
-                      backgroundColor: pageNum === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
-                      color: pageNum === currentPage ? "#fff" : "#f013e5",
-                      borderColor: "#f013e5",
+                      backgroundColor: pageNum === currentPage ? "#c00cb7" : "rgba(255,255,255,0.05)",
+                      color: pageNum === currentPage ? "#fff" : "#c00cb7",
+                      borderColor: "#c00cb7",
                     }}
                   >
                     {pageNum}

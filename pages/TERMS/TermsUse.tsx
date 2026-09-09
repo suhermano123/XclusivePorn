@@ -52,7 +52,7 @@ const TermsUsePage: React.FC = () => {
             5. Intellectual Property & File Reporting
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            We respect the intellectual property rights of others. If you believe your rights have been violated, please refer to our <a href="/DMCA/Dmca" style={{ color: '#f013e5', textDecoration: 'none' }}>DMCA & Reporting Procedure</a>. We provide an easy-to-use "Report Video" button below every video for submitting Intellectual Property and DMCA complaints safely and securely.
+            We respect the intellectual property rights of others. If you believe your rights have been violated, please refer to our <a href="/DMCA/Dmca" style={{ color: '#c00cb7', textDecoration: 'none' }}>DMCA & Reporting Procedure</a>. We provide an easy-to-use "Report Video" button below every video for submitting Intellectual Property and DMCA complaints safely and securely.
           </Typography>
         </div>
       </div>
@@ -85,7 +85,7 @@ const styles: { [key: string]: CSSProperties } = {
     fontSize: '24px',
     marginBottom: '24px',
     textAlign: 'center',
-    color: '#f013e5',
+    color: '#c00cb7',
   },
   text: {
     fontSize: '16px',

@@ -87,7 +87,7 @@ const DeleteMedia = () => {
                         backgroundColor: '#111', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)',
                         p: 4, width: '100%', textAlign: 'center', boxShadow: '0 15px 35px rgba(0,0,0,0.9)'
                     }}>
-                        <LockIcon sx={{ fontSize: 48, color: '#f013e5', mb: 2 }} />
+                        <LockIcon sx={{ fontSize: 48, color: '#c00cb7', mb: 2 }} />
                         <Typography variant="h5" sx={{ color: '#fff', fontWeight: 'bold', mb: 3 }}>
                             Admin Access
                         </Typography>
@@ -99,17 +99,17 @@ const DeleteMedia = () => {
                                 '& .MuiOutlinedInput-root': {
                                     color: '#fff', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px',
                                     '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                                    '&:hover fieldset': { borderColor: '#f013e5' },
-                                    '&.Mui-focused fieldset': { borderColor: '#f013e5' },
+                                    '&:hover fieldset': { borderColor: '#c00cb7' },
+                                    '&.Mui-focused fieldset': { borderColor: '#c00cb7' },
                                 },
-                                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)', '&.Mui-focused': { color: '#f013e5' } }
+                                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)', '&.Mui-focused': { color: '#c00cb7' } }
                             }}
                         />
                         {message?.type === 'error' && (
                             <Typography sx={{ color: '#f44336', mb: 2, fontSize: '0.9rem' }}>{message.text}</Typography>
                         )}
                         <Button type="submit" fullWidth variant="contained" sx={{
-                            backgroundColor: '#f013e5', py: 1.5, fontWeight: 'bold', borderRadius: '8px',
+                            backgroundColor: '#c00cb7', py: 1.5, fontWeight: 'bold', borderRadius: '8px',
                             '&:hover': { backgroundColor: '#d011c5' }
                         }}>
                             Login
@@ -163,12 +163,12 @@ const DeleteMedia = () => {
                                         py: 1.5,
                                         px: 3,
                                         '&:hover': {
-                                            backgroundColor: 'rgba(240, 19, 229, 0.1)'
+                                            backgroundColor: 'rgba(192, 12, 183, 0.1)'
                                         },
                                         '&.Mui-selected': {
                                             color: '#fff',
-                                            backgroundColor: '#f013e5',
-                                            borderColor: '#f013e5',
+                                            backgroundColor: '#c00cb7',
+                                            borderColor: '#c00cb7',
                                             '&:hover': {
                                                 backgroundColor: '#d011c5'
                                             }
@@ -199,12 +199,12 @@ const DeleteMedia = () => {
                                     backgroundColor: 'rgba(0,0,0,0.5)',
                                     borderRadius: '8px',
                                     '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                                    '&:hover fieldset': { borderColor: '#f013e5' },
-                                    '&.Mui-focused fieldset': { borderColor: '#f013e5' },
+                                    '&:hover fieldset': { borderColor: '#c00cb7' },
+                                    '&.Mui-focused fieldset': { borderColor: '#c00cb7' },
                                 },
                                 '& .MuiInputLabel-root': {
                                     color: 'rgba(255,255,255,0.7)',
-                                    '&.Mui-focused': { color: '#f013e5' }
+                                    '&.Mui-focused': { color: '#c00cb7' }
                                 }
                             }}
                         />
@@ -229,7 +229,7 @@ const DeleteMedia = () => {
                             disabled={isSubmitting || !uuid}
                             startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <DeleteIcon />}
                             sx={{
-                                backgroundColor: actionType === 'video' ? '#f44336' : '#f013e5',
+                                backgroundColor: actionType === 'video' ? '#f44336' : '#c00cb7',
                                 py: 1.5,
                                 fontSize: '1.1rem',
                                 fontWeight: 'bold',

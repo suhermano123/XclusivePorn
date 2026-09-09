@@ -44,7 +44,7 @@ const FooterComponent: React.FC = () => {
       {/* Footer */}
       <footer
         style={{
-          backgroundColor: "#e91ec4",
+          backgroundColor: "#ba129b",
           color: "white",
           textAlign: "center",
           padding: "30px 10px",

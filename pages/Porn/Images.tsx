@@ -129,7 +129,7 @@ const ImagesPage: React.FC = () => {
                         color: "#fff",
                         fontWeight: "bold",
                         mb: 3,
-                        borderLeft: "4px solid #f013e5",
+                        borderLeft: "4px solid #c00cb7",
                         pl: 2,
                     }}
                 >
@@ -179,7 +179,7 @@ const ImagesPage: React.FC = () => {
                                     backgroundColor: "#111",
                                     transition: "box-shadow 0.2s",
                                     "&:hover": {
-                                        boxShadow: "0 0 0 2px #f013e5",
+                                        boxShadow: "0 0 0 2px #c00cb7",
                                         "& .img-overlay": { opacity: 1 },
                                         "& img": { transform: "scale(1.05)" },
                                     },
@@ -257,9 +257,9 @@ const ImagesPage: React.FC = () => {
                                         height: "36px",
                                         borderRadius: "50%",
                                         fontWeight: "bold",
-                                        backgroundColor: pageNum === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
-                                        color: pageNum === currentPage ? "#fff" : "#f013e5",
-                                        borderColor: "#f013e5",
+                                        backgroundColor: pageNum === currentPage ? "#c00cb7" : "rgba(255,255,255,0.05)",
+                                        color: pageNum === currentPage ? "#fff" : "#c00cb7",
+                                        borderColor: "#c00cb7",
                                         "&:hover": { transform: "scale(1.1)" },
                                         transition: "all 0.2s",
                                     }}
@@ -309,7 +309,7 @@ const ImagesPage: React.FC = () => {
                             right: 16,
                             color: "#fff",
                             backgroundColor: "rgba(255,255,255,0.1)",
-                            "&:hover": { backgroundColor: "#f013e5" },
+                            "&:hover": { backgroundColor: "#c00cb7" },
                             zIndex: 10,
                         }}
                     >
@@ -324,7 +324,7 @@ const ImagesPage: React.FC = () => {
                             left: { xs: 4, md: 24 },
                             color: "#fff",
                             backgroundColor: "rgba(255,255,255,0.1)",
-                            "&:hover": { backgroundColor: "#f013e5" },
+                            "&:hover": { backgroundColor: "#c00cb7" },
                             zIndex: 10,
                         }}
                     >
@@ -379,7 +379,7 @@ const ImagesPage: React.FC = () => {
                             right: { xs: 4, md: 24 },
                             color: "#fff",
                             backgroundColor: "rgba(255,255,255,0.1)",
-                            "&:hover": { backgroundColor: "#f013e5" },
+                            "&:hover": { backgroundColor: "#c00cb7" },
                             zIndex: 10,
                         }}
                     >
@@ -394,14 +394,14 @@ const ImagesPage: React.FC = () => {
 };
 
 const paginationBtnSx = {
-    backgroundColor: "#f013e5",
+    backgroundColor: "#c00cb7",
     color: "#fff",
     borderRadius: "20px",
     padding: "8px 25px",
     fontWeight: "bold",
-    boxShadow: "0 4px 10px rgba(240, 19, 229, 0.3)",
+    boxShadow: "0 4px 10px rgba(192, 12, 183, 0.3)",
     "&:hover": {
-        backgroundColor: "#e91ec4",
+        backgroundColor: "#ba129b",
         transform: "scale(1.05)",
     },
     "&:disabled": {

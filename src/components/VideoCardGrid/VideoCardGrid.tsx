@@ -143,9 +143,9 @@ const VideoCardGrid: React.FC<Props> = ({
                   minWidth: "40px",
                   fontWeight: "bold",
                   borderRadius: "10%",
-                  backgroundColor: n === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
-                  color: n === currentPage ? "#fff" : "#f013e5",
-                  borderColor: "#f013e5",
+                  backgroundColor: n === currentPage ? "#c00cb7" : "rgba(255,255,255,0.05)",
+                  color: n === currentPage ? "#fff" : "#c00cb7",
+                  borderColor: "#c00cb7",
                 }}
               >
                 {n}
@@ -164,12 +164,12 @@ const VideoCardGrid: React.FC<Props> = ({
 };
 
 const btnSx = {
-  backgroundColor: "#f013e5",
+  backgroundColor: "#c00cb7",
   color: "#fff",
   fontWeight: "bold",
   borderRadius: "20px",
   padding: "6px 16px",
-  "&:hover": { backgroundColor: "#e91ec4" },
+  "&:hover": { backgroundColor: "#ba129b" },
 };
 
 export default VideoCardGrid;

@@ -15,7 +15,7 @@ export default function Document() {
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
                 <meta name="apple-mobile-web-app-title" content="NovaPornX" />
                 <meta name="mobile-web-app-capable" content="yes" />
-                <meta name="theme-color" content="#e91ec4" />
+                <meta name="theme-color" content="#ba129b" />
 
                 {/* ── Icons & Manifest ─────────────────────────────────────── */}
                 <link rel="manifest" href="/site.webmanifest" />

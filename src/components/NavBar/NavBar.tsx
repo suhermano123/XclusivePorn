@@ -13,7 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { NAV_LINKS } from "../NavMenu/NavMenu";
 
-const PINK = "#f013e5";
+const PINK = "#c00cb7";
 const BAR_BG = "#0d0d0d";
 
 const TOP_BUTTONS = [
@@ -56,8 +56,8 @@ export default function NavBar() {
     fontWeight: 700,
     px: 2.5,
     whiteSpace: "nowrap",
-    boxShadow: "0 0 12px rgba(240,19,229,0.35)",
-    "&:hover": { backgroundColor: "#e91ec4" },
+    boxShadow: "0 0 12px rgba(192,12,183,0.35)",
+    "&:hover": { backgroundColor: "#ba129b" },
   } as const;
 
   const searchBox = (compact = false) => (
@@ -93,7 +93,7 @@ export default function NavBar() {
         }}
       />
       {compact ? (
-        <IconButton type="submit" aria-label="Search" sx={{ flexShrink: 0, borderRadius: 0, color: "#fff", backgroundColor: PINK, px: 1.5, "&:hover": { backgroundColor: "#e91ec4" } }}>
+        <IconButton type="submit" aria-label="Search" sx={{ flexShrink: 0, borderRadius: 0, color: "#fff", backgroundColor: PINK, px: 1.5, "&:hover": { backgroundColor: "#ba129b" } }}>
           <SearchIcon sx={{ fontSize: 20 }} />
         </IconButton>
       ) : (
@@ -108,7 +108,7 @@ export default function NavBar() {
             fontWeight: 700,
             textTransform: "none",
             whiteSpace: "nowrap",
-            "&:hover": { backgroundColor: "#e91ec4" },
+            "&:hover": { backgroundColor: "#ba129b" },
           }}
         >
           Search
@@ -124,7 +124,7 @@ export default function NavBar() {
         elevation={0}
         sx={{
           background: `linear-gradient(180deg, #161616 0%, ${BAR_BG} 100%)`,
-          borderBottom: "1px solid rgba(240,19,229,0.25)",
+          borderBottom: "1px solid rgba(192,12,183,0.25)",
           color: "#fff",
         }}
       >
@@ -221,7 +221,7 @@ export default function NavBar() {
                 fontSize: "0.9rem",
                 textTransform: "uppercase",
                 letterSpacing: "0.3px",
-                "&:hover": { backgroundColor: "rgba(240,19,229,0.12)", color: "#fff" },
+                "&:hover": { backgroundColor: "rgba(192,12,183,0.12)", color: "#fff" },
               }}
             >
               {l.Icon ? <l.Icon sx={{ fontSize: 20, color: PINK }} /> : <Box sx={{ width: 20 }} />}

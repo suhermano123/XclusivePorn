@@ -75,23 +75,23 @@ export const styles: { [key: string]: any } = {
     borderRadius: "4px",
   },
   sourceChip: {
-    backgroundColor: "rgba(240, 19, 229, 0.15)",
-    color: "#f013e5",
+    backgroundColor: "rgba(192, 12, 183, 0.15)",
+    color: "#c00cb7",
     fontSize: "0.65rem",
     height: "18px",
     fontWeight: "bold",
-    border: "1px solid rgba(240, 19, 229, 0.3)",
+    border: "1px solid rgba(192, 12, 183, 0.3)",
     '& .MuiChip-label': { padding: '0 6px' }
   },
   paginationBtnSx: {
-    backgroundColor: "#f013e5",
+    backgroundColor: "#c00cb7",
     color: "#fff",
     borderRadius: "20px",
     padding: "8px 25px",
     fontWeight: "bold",
-    boxShadow: "0 4px 10px rgba(240, 19, 229, 0.3)",
+    boxShadow: "0 4px 10px rgba(192, 12, 183, 0.3)",
     "&:hover": {
-      backgroundColor: "#e91ec4",
+      backgroundColor: "#ba129b",
       transform: "scale(1.05)",
     },
     "&:disabled": {

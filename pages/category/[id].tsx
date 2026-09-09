@@ -189,7 +189,7 @@ const CategoryPage = ({
             <NavMenu />
 
             <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
-                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #c00cb7', pl: 2 }}>
                     {categoryQuery.toUpperCase()} PORN VIDEOS
                     <span style={{ fontSize: '16px', color: '#aaa', marginLeft: '10px' }}>({totalCount} videos){currentPage > 1 ? ` — Page ${currentPage}` : ''}</span>
                 </Typography>
@@ -290,9 +290,9 @@ const CategoryPage = ({
                                     variant={pageNum === currentPage ? "contained" : "outlined"}
                                     sx={{
                                         ...styles.pageNumberBtnSx,
-                                        backgroundColor: pageNum === currentPage ? "#f013e5" : "rgba(255,255,255,0.05)",
-                                        color: pageNum === currentPage ? "#fff" : "#f013e5",
-                                        borderColor: "#f013e5"
+                                        backgroundColor: pageNum === currentPage ? "#c00cb7" : "rgba(255,255,255,0.05)",
+                                        color: pageNum === currentPage ? "#fff" : "#c00cb7",
+                                        borderColor: "#c00cb7"
                                     }}
                                 >
                                     {pageNum}
@@ -404,13 +404,13 @@ const styles: { [key: string]: any } = {
         borderRadius: "4px",
     },
     paginationBtnSx: {
-        backgroundColor: "#f013e5",
+        backgroundColor: "#c00cb7",
         color: "#fff",
         fontWeight: "bold",
         padding: "6px 16px",
         borderRadius: "20px",
         "&:hover": {
-            backgroundColor: "#e91ec4",
+            backgroundColor: "#ba129b",
         },
         "&:disabled": {
             backgroundColor: "rgba(255,255,255,0.1)",

@@ -70,10 +70,10 @@ export default function NavMenu() {
                 py: 1.25,
                 borderBottom: "2px solid transparent",
                 transition: "color .15s, border-color .15s",
-                "&:hover": { color: "#fff", borderColor: "#f013e5" },
+                "&:hover": { color: "#fff", borderColor: "#c00cb7" },
               }}
             >
-              <Icon aria-hidden="true" sx={{ fontSize: { xs: 16, md: 18 }, color: "#f013e5" }} />
+              <Icon aria-hidden="true" sx={{ fontSize: { xs: 16, md: 18 }, color: "#c00cb7" }} />
               {label}
             </Box>
           </Box>

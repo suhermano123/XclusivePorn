@@ -128,7 +128,7 @@ const CategoriesPage: React.FC = () => {
                 <Typography
                     component="h1"
                     variant="h4"
-                    sx={{ color: '#fff', mb: 1, fontWeight: 'bold', borderLeft: '4px solid #f013e5', pl: 2 }}
+                    sx={{ color: '#fff', mb: 1, fontWeight: 'bold', borderLeft: '4px solid #c00cb7', pl: 2 }}
                 >
                     Free HD Porn Categories
                 </Typography>
@@ -178,9 +178,9 @@ const CategoriesPage: React.FC = () => {
                                                 cursor: 'pointer',
                                                 transition: 'all 0.3s ease',
                                                 '&:hover': {
-                                                    borderColor: '#f013e5',
+                                                    borderColor: '#c00cb7',
                                                     transform: 'translateY(-5px)',
-                                                    boxShadow: '0 10px 20px rgba(240,19,229,0.3)',
+                                                    boxShadow: '0 10px 20px rgba(192,12,183,0.3)',
                                                     '& .categoryImage': { transform: 'scale(1.1)' },
                                                 },
                                             }}

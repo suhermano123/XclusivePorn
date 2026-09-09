@@ -182,12 +182,12 @@ export default function ImagesPage() {
                   variant="outlined"
                   aria-label="Go to previous page"
                   sx={{
-                    color: "#f013e5",
-                    borderColor: "#f013e5",
+                    color: "#c00cb7",
+                    borderColor: "#c00cb7",
                     fontWeight: "bold",
                     borderRadius: "20px",
                     padding: "8px 24px",
-                    "&:hover": { backgroundColor: "rgba(240,19,229,0.1)", borderColor: "#e91ec4" },
+                    "&:hover": { backgroundColor: "rgba(192,12,183,0.1)", borderColor: "#ba129b" },
                   }}
                 >
                   Previous Page
@@ -217,11 +217,11 @@ export default function ImagesPage() {
                 variant="contained"
                 aria-label={`Go to page ${page + 1}`}
                 sx={{
-                  backgroundColor: "#f013e5",
+                  backgroundColor: "#c00cb7",
                   fontWeight: "bold",
                   borderRadius: "20px",
                   padding: "8px 24px",
-                  "&:hover": { backgroundColor: "#e91ec4" },
+                  "&:hover": { backgroundColor: "#ba129b" },
                 }}
               >
                 Next Page

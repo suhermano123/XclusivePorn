@@ -18,7 +18,7 @@ export const styles: { [key: string]: any } = {
         "&:hover": {
             transform: "translateY(-4px)",
             boxShadow: "0 12px 24px rgba(0, 0, 0, 0.5)",
-            borderColor: "#f013e5",
+            borderColor: "#c00cb7",
             zIndex: 10,
         }
     },

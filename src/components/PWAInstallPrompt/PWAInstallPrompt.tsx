@@ -95,8 +95,8 @@ const PWAInstallPrompt: React.FC = () => {
                     bgcolor: '#111',
                     color: '#fff',
                     borderRadius: '16px',
-                    border: '2px solid #f013e5',
-                    boxShadow: '0 0 30px rgba(240, 19, 229, 0.4)',
+                    border: '2px solid #c00cb7',
+                    boxShadow: '0 0 30px rgba(192, 12, 183, 0.4)',
                     zIndex: 999999,
                 }}
             >
@@ -108,7 +108,7 @@ const PWAInstallPrompt: React.FC = () => {
                         width: 55,
                         height: 55,
                         borderRadius: '14px',
-                        boxShadow: '0 0 10px rgba(240, 19, 229, 0.5)',
+                        boxShadow: '0 0 10px rgba(192, 12, 183, 0.5)',
                         border: '1px solid rgba(255,255,255,0.1)'
                     }}
                 />
@@ -127,8 +127,8 @@ const PWAInstallPrompt: React.FC = () => {
                         onClick={handleInstallClick}
                         startIcon={platform === 'ios' ? <Share /> : <GetApp />}
                         sx={{
-                            bgcolor: '#f013e5',
-                            '&:hover': { bgcolor: '#e91ec4', transform: 'scale(1.05)' },
+                            bgcolor: '#c00cb7',
+                            '&:hover': { bgcolor: '#ba129b', transform: 'scale(1.05)' },
                             textTransform: 'none',
                             fontWeight: 'bold',
                             borderRadius: '10px',

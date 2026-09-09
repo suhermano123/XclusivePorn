@@ -165,7 +165,7 @@ const VideoDownloader: React.FC = () => {
                     overflow: "hidden"
                 }}>
                     <Box sx={{ position: "relative", zIndex: 1 }}>
-                        <CloudDownloadIcon sx={{ fontSize: 70, color: "#f013e5", mb: 2 }} />
+                        <CloudDownloadIcon sx={{ fontSize: 70, color: "#c00cb7", mb: 2 }} />
 
                         {/* Important SEO change: Every page must have ONE unique H1 element. component="h1" tells Google it is the main topic, but visually we keep variant="h3" */}
                         <Typography variant="h3" component="h1" sx={{
@@ -200,8 +200,8 @@ const VideoDownloader: React.FC = () => {
                                         py: 0.5,
                                         transition: "all 0.3s ease",
                                         "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
-                                        "&:hover fieldset": { borderColor: "rgba(240, 19, 229, 0.5)" },
-                                        "&.Mui-focused fieldset": { borderColor: "#f013e5" },
+                                        "&:hover fieldset": { borderColor: "rgba(192, 12, 183, 0.5)" },
+                                        "&.Mui-focused fieldset": { borderColor: "#c00cb7" },
                                     }
                                 }}
                             />
@@ -217,15 +217,15 @@ const VideoDownloader: React.FC = () => {
                                 borderRadius: "16px",
                                 fontSize: "1.1rem",
                                 fontWeight: "bold",
-                                backgroundColor: "#f013e5",
+                                backgroundColor: "#c00cb7",
                                 transition: "all 0.3s ease",
                                 "&:hover": {
-                                    backgroundColor: "#e91ec4",
+                                    backgroundColor: "#ba129b",
                                     transform: "translateY(-2px)",
-                                    boxShadow: "0 15px 30px rgba(240, 19, 229, 0.4)",
+                                    boxShadow: "0 15px 30px rgba(192, 12, 183, 0.4)",
                                 },
                                 "&:active": { transform: "translateY(0)" },
-                                boxShadow: "0 10px 20px rgba(240, 19, 229, 0.3)",
+                                boxShadow: "0 10px 20px rgba(192, 12, 183, 0.3)",
                                 textTransform: "none",
                                 letterSpacing: "1px"
                             }}
@@ -294,7 +294,7 @@ const VideoDownloader: React.FC = () => {
                                                             value={globalProgress}
                                                             sx={{
                                                                 height: 10, borderRadius: 5, backgroundColor: 'rgba(255,255,255,0.1)',
-                                                                '& .MuiLinearProgress-bar': { backgroundColor: taskStatus.status === 'processing' ? '#f013e5' : '#4caf50', transition: 'transform 0.4s linear' }
+                                                                '& .MuiLinearProgress-bar': { backgroundColor: taskStatus.status === 'processing' ? '#c00cb7' : '#4caf50', transition: 'transform 0.4s linear' }
                                                             }}
                                                         />
                                                     </Box>
@@ -351,7 +351,7 @@ const VideoDownloader: React.FC = () => {
                                     transition: "all 0.3s ease",
                                     "&:hover": {
                                         backgroundColor: "rgba(255,255,255,0.07)",
-                                        borderColor: "rgba(240, 19, 229, 0.3)",
+                                        borderColor: "rgba(192, 12, 183, 0.3)",
                                         color: "#fff",
                                         transform: "scale(1.05)"
                                     }

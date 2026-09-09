@@ -60,7 +60,7 @@ export default function PornstarsIndex({
       <Container maxWidth="xl" sx={{ py: 4, flexGrow: 1 }}>
         <Typography
           component="h1"
-          sx={{ color: "#fff", fontWeight: "bold", fontSize: { xs: "1.6rem", md: "2.3rem" }, borderLeft: "4px solid #f013e5", pl: 2, mb: 1 }}
+          sx={{ color: "#fff", fontWeight: "bold", fontSize: { xs: "1.6rem", md: "2.3rem" }, borderLeft: "4px solid #c00cb7", pl: 2, mb: 1 }}
         >
           All Pornstars
           <span style={{ fontSize: "16px", color: "#aaa", marginLeft: "10px" }}>({entries.length})</span>
@@ -82,11 +82,11 @@ export default function PornstarsIndex({
                   py: 0.8,
                   borderRadius: "8px",
                   backgroundColor: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(240,19,229,0.25)",
+                  border: "1px solid rgba(192,12,183,0.25)",
                   color: "#fff",
                   fontSize: "0.9rem",
                   transition: "all 0.2s",
-                  "&:hover": { borderColor: "#f013e5", backgroundColor: "rgba(240,19,229,0.12)" },
+                  "&:hover": { borderColor: "#c00cb7", backgroundColor: "rgba(192,12,183,0.12)" },
                 }}
               >
                 {e.name}

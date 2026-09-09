@@ -80,7 +80,7 @@ export default function HomeIndex({
           px: { xs: 1.5, sm: 2, md: 2.5 },
           pt: { xs: 2, md: 3 },
           fontSize: { xs: "1.35rem", md: "1.9rem" },
-          borderLeft: "4px solid #f013e5",
+          borderLeft: "4px solid #c00cb7",
           ml: { xs: 1, md: 1.5 },
           lineHeight: 1.25,
         }}

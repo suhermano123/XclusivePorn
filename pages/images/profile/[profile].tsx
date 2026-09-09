@@ -118,7 +118,7 @@ export default function ProfilePage() {
               transition: "all 0.3s ease",
               "&:hover": {
                 transform: "translateY(-4px)",
-                boxShadow: "0 12px 24px rgba(240, 19, 229, 0.2)",
+                boxShadow: "0 12px 24px rgba(192, 12, 183, 0.2)",
               },
             }}
           >
@@ -173,7 +173,7 @@ export default function ProfilePage() {
                         </Typography>
                       )}
                       {tags.profile && (
-                        <Typography variant="caption" sx={{ backgroundColor: "rgba(240, 19, 229, 0.4)", px: 1, py: 0.2, borderRadius: "10px", fontSize: "0.65rem", backdropFilter: "blur(4px)" }}>
+                        <Typography variant="caption" sx={{ backgroundColor: "rgba(192, 12, 183, 0.4)", px: 1, py: 0.2, borderRadius: "10px", fontSize: "0.65rem", backdropFilter: "blur(4px)" }}>
                           @{tags.profile}
                         </Typography>
                       )}
@@ -184,7 +184,7 @@ export default function ProfilePage() {
               })()}
               <Box sx={{ display: "flex", gap: 1.5 }}>
                 <Typography variant="caption" sx={{ display: "flex", alignItems: "center", gap: 0.5, fontWeight: 600 }}>
-                  <ThumbUpIcon sx={{ fontSize: "1rem", color: "#f013e5" }} /> {image.like || 0}
+                  <ThumbUpIcon sx={{ fontSize: "1rem", color: "#c00cb7" }} /> {image.like || 0}
                 </Typography>
                 <Typography variant="caption" sx={{ display: "flex", alignItems: "center", gap: 0.5, fontWeight: 600 }}>
                   <ThumbDownIcon sx={{ fontSize: "1rem", color: "#bbb" }} /> {image.dislike || 0}
@@ -204,11 +204,11 @@ export default function ProfilePage() {
             color="primary"
             sx={{
               "& .MuiPaginationItem-root": {
-                color: "#f013e5",
-                borderColor: "#f013e5",
+                color: "#c00cb7",
+                borderColor: "#c00cb7",
               },
               "& .Mui-selected": {
-                backgroundColor: "#f013e5 !important",
+                backgroundColor: "#c00cb7 !important",
                 color: "#fff",
               },
             }}
@@ -249,7 +249,7 @@ export default function ProfilePage() {
               right: 16,
               color: "#fff",
               backgroundColor: "rgba(255,255,255,0.1)",
-              "&:hover": { backgroundColor: "#f013e5" },
+              "&:hover": { backgroundColor: "#c00cb7" },
               zIndex: 10,
             }}
           >
@@ -318,10 +318,10 @@ export default function ProfilePage() {
                     startIcon={<ThumbUpIcon />}
                     onClick={(e) => handleVote(e, selectedImage, "like")}
                     sx={{
-                      color: "#f013e5",
+                      color: "#c00cb7",
                       borderColor: "transparent",
                       borderRadius: "20px",
-                      "&:hover": { backgroundColor: "rgba(240, 19, 229, 0.15)", borderColor: "transparent" }
+                      "&:hover": { backgroundColor: "rgba(192, 12, 183, 0.15)", borderColor: "transparent" }
                     }}
                   >
                     {selectedImage.like || 0}
@@ -346,11 +346,11 @@ export default function ProfilePage() {
                     startIcon={<DownloadIcon />}
                     onClick={(e) => handleDownload(e, selectedImage)}
                     sx={{
-                      backgroundColor: "#f013e5",
+                      backgroundColor: "#c00cb7",
                       borderRadius: "20px",
                       textTransform: "none",
                       fontWeight: 600,
-                      "&:hover": { backgroundColor: "#e91ec4" },
+                      "&:hover": { backgroundColor: "#ba129b" },
                       ml: 1
                     }}
                   >
@@ -375,7 +375,7 @@ export default function ProfilePage() {
                           <Chip
                             icon={<PersonIcon sx={{ color: '#fff !important', fontSize: '1.2rem' }} />}
                             label={`@${tags.profile}`}
-                            sx={{ backgroundColor: 'rgba(240, 19, 229, 0.2)', backdropFilter: 'blur(10px)', color: '#fff', border: '1px solid rgba(240, 19, 229, 0.3)' }}
+                            sx={{ backgroundColor: 'rgba(192, 12, 183, 0.2)', backdropFilter: 'blur(10px)', color: '#fff', border: '1px solid rgba(192, 12, 183, 0.3)' }}
                           />
                         )}
                       </Box>

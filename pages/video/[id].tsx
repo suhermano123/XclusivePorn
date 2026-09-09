@@ -602,7 +602,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                     aria-label="Download this video"
                                     sx={{
                                         gridColumn: { xs: "1 / -1", sm: "auto" },
-                                        backgroundColor: "#f013e5",
+                                        backgroundColor: "#c00cb7",
                                         "&:hover": { backgroundColor: "#d011c5" },
                                         borderRadius: "10px", textTransform: "none", fontWeight: "bold",
                                         px: { xs: 2, sm: 3 }, display: "flex", alignItems: "center", justifyContent: "center", gap: 1,
@@ -631,7 +631,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
 
                             {/* ── Description + Tags ───────────────────────── */}
                             <Box
-                                sx={{ p: 2.5, backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "12px", borderLeft: "4px solid #f013e5", mb: 4 }}
+                                sx={{ p: 2.5, backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "12px", borderLeft: "4px solid #c00cb7", mb: 4 }}
                             >
                                 <Typography variant="body1" sx={{ lineHeight: 1.6, color: "#ccc", mb: 2 }}>
                                     {video.descripcion || "No description available."}
@@ -652,11 +652,11 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                             href={`/studio/${buildSlug(studioName)}`}
                                             clickable
                                             sx={{
-                                                backgroundColor: "rgba(240,19,229,0.1)",
-                                                color: "#f013e5",
+                                                backgroundColor: "rgba(192,12,183,0.1)",
+                                                color: "#c00cb7",
                                                 fontWeight: "bold",
                                                 borderRadius: "6px",
-                                                border: "1px solid rgba(240,19,229,0.3)",
+                                                border: "1px solid rgba(192,12,183,0.3)",
                                                 textDecoration: "none",
                                             }}
                                         />
@@ -681,13 +681,13 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                                     href={`/pornstar/${buildSlug(actress)}`}
                                                     clickable
                                                     sx={{
-                                                        backgroundColor: "rgba(240,19,229,0.1)",
-                                                        color: "#f013e5",
+                                                        backgroundColor: "rgba(192,12,183,0.1)",
+                                                        color: "#c00cb7",
                                                         fontWeight: "bold",
                                                         borderRadius: "6px",
-                                                        border: "1px solid rgba(240,19,229,0.3)",
+                                                        border: "1px solid rgba(192,12,183,0.3)",
                                                         textDecoration: "none",
-                                                        "&:hover": { backgroundColor: "rgba(240,19,229,0.2)", borderColor: "#f013e5" },
+                                                        "&:hover": { backgroundColor: "rgba(192,12,183,0.2)", borderColor: "#c00cb7" },
                                                     }}
                                                 />
                                             ))}
@@ -706,14 +706,14 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                                 component="a"
                                                 href={`/category/${encodeURIComponent(tag.toLowerCase())}`}
                                                 clickable
-                                                icon={<Favorite sx={{ fontSize: "14px !important", color: "#f013e5 !important" }} />}
+                                                icon={<Favorite sx={{ fontSize: "14px !important", color: "#c00cb7 !important" }} />}
                                                 sx={{
                                                     backgroundColor: "rgba(255,255,255,0.05)",
                                                     color: "#fff",
                                                     borderRadius: "6px",
-                                                    border: "1px solid rgba(240,19,229,0.2)",
+                                                    border: "1px solid rgba(192,12,183,0.2)",
                                                     textDecoration: "none",
-                                                    "&:hover": { backgroundColor: "rgba(240,19,229,0.1)", borderColor: "#f013e5" },
+                                                    "&:hover": { backgroundColor: "rgba(192,12,183,0.1)", borderColor: "#c00cb7" },
                                                     "& .MuiChip-icon": { marginLeft: "8px" },
                                                 }}
                                             />
@@ -726,7 +726,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                             <Box component="section" id="comments-section" aria-label="Comments" sx={{ mt: 6, mb: 6 }}>
                                 <Typography
                                     component="h2"
-                                    sx={{ color: "#fff", mb: 3, fontWeight: "bold", borderLeft: "4px solid #f013e5", pl: 2, fontSize: "1.1rem" }}
+                                    sx={{ color: "#fff", mb: 3, fontWeight: "bold", borderLeft: "4px solid #c00cb7", pl: 2, fontSize: "1.1rem" }}
                                 >
                                     Comments ({comments.length})
                                 </Typography>
@@ -743,8 +743,8 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                             "& .MuiOutlinedInput-root": {
                                                 color: "#fff",
                                                 "& fieldset": { borderColor: "rgba(255,255,255,0.1)" },
-                                                "&:hover fieldset": { borderColor: "#f013e5" },
-                                                "&.Mui-focused fieldset": { borderColor: "#f013e5" },
+                                                "&:hover fieldset": { borderColor: "#c00cb7" },
+                                                "&.Mui-focused fieldset": { borderColor: "#c00cb7" },
                                             },
                                         }}
                                     />
@@ -753,7 +753,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                             variant="contained"
                                             onClick={handleAddComment}
                                             disabled={isSubmittingComment || !newCommentText.trim()}
-                                            sx={{ backgroundColor: "#f013e5", "&:hover": { backgroundColor: "#e91ec4" }, fontWeight: "bold", borderRadius: "20px", px: 4 }}
+                                            sx={{ backgroundColor: "#c00cb7", "&:hover": { backgroundColor: "#ba129b" }, fontWeight: "bold", borderRadius: "20px", px: 4 }}
                                         >
                                             {isSubmittingComment ? "Posting..." : "Post Comment"}
                                         </Button>
@@ -769,10 +769,10 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                                 sx={{ p: 2, backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)" }}
                                             >
                                                 <Box sx={{ display: "flex", gap: 2 }}>
-                                                    <Avatar sx={{ bgcolor: "#f013e5", fontSize: "14px" }}>U</Avatar>
+                                                    <Avatar sx={{ bgcolor: "#c00cb7", fontSize: "14px" }}>U</Avatar>
                                                     <Box sx={{ flexGrow: 1 }}>
                                                         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                                                            <Typography variant="subtitle2" sx={{ color: "#f013e5", fontWeight: "bold" }}>
+                                                            <Typography variant="subtitle2" sx={{ color: "#c00cb7", fontWeight: "bold" }}>
                                                                 Anonymous
                                                             </Typography>
                                                             <Typography
@@ -811,7 +811,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                             overflowY: { lg: "auto" },
                             pr: { lg: 1 },
                             "&::-webkit-scrollbar": { width: "9px" },
-                            "&::-webkit-scrollbar-thumb": { bgcolor: "rgba(240,19,229,0.3)", borderRadius: "10px" },
+                            "&::-webkit-scrollbar-thumb": { bgcolor: "rgba(192,12,183,0.3)", borderRadius: "10px" },
                         }}>
                             <Box sx={{ display: "flex", justifyContent: "center", width: "100%", overflow: "hidden" }}>
                                 <iframe src="//a.magsrv.com/iframe.php?idzone=5941696&size=300x250" width="300" height="250" scrolling="no" marginWidth={0} marginHeight={0} frameBorder={0} style={{ maxWidth: "100%" }} title="Advertisement" />
@@ -823,7 +823,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                             */}
                             <Typography
                                 component="h2"
-                                sx={{ color: "#fff", mb: 2, fontWeight: "bold", borderLeft: "4px solid #f013e5", pl: 2, fontSize: { xs: "1rem", sm: "1.1rem" } }}
+                                sx={{ color: "#fff", mb: 2, fontWeight: "bold", borderLeft: "4px solid #c00cb7", pl: 2, fontSize: { xs: "1rem", sm: "1.1rem" } }}
                             >
                                 Related Porn Videos
                             </Typography>
@@ -931,7 +931,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                         variant="outlined" size="small"
                                         disabled={relatedPage === 1}
                                         onClick={() => setRelatedPage((p) => Math.max(1, p - 1))}
-                                        sx={{ borderColor: "rgba(240,19,229,0.5)", color: "#f013e5", "&:disabled": { borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.3)" } }}
+                                        sx={{ borderColor: "rgba(192,12,183,0.5)", color: "#c00cb7", "&:disabled": { borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.3)" } }}
                                     >
                                         Previous
                                     </Button>
@@ -942,7 +942,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                         variant="outlined" size="small"
                                         disabled={relatedPage >= Math.ceil(relatedVideos.length / videosPerRelatedPage)}
                                         onClick={() => setRelatedPage((p) => Math.min(Math.ceil(relatedVideos.length / videosPerRelatedPage), p + 1))}
-                                        sx={{ borderColor: "rgba(240,19,229,0.5)", color: "#f013e5", "&:disabled": { borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.3)" } }}
+                                        sx={{ borderColor: "rgba(192,12,183,0.5)", color: "#c00cb7", "&:disabled": { borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.3)" } }}
                                     >
                                         Next
                                     </Button>
@@ -972,11 +972,11 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                     bgcolor: "#111",
                     backgroundImage: 'linear-gradient(rgba(17,17,17,0.85),rgba(17,17,17,0.85)),url("/assets/imgReport.jpg")',
                     backgroundSize: "cover", backgroundPosition: "center",
-                    borderRadius: "20px", boxShadow: "0 0 30px rgba(240,19,229,0.3)",
-                    p: 4, border: "1px solid rgba(240,19,229,0.2)", outline: "none",
+                    borderRadius: "20px", boxShadow: "0 0 30px rgba(192,12,183,0.3)",
+                    p: 4, border: "1px solid rgba(192,12,183,0.2)", outline: "none",
                 }}>
                     <Box sx={{ textAlign: "center", mb: 3 }}>
-                        <Flag sx={{ color: "#f013e5", fontSize: 40, mb: 1 }} />
+                        <Flag sx={{ color: "#c00cb7", fontSize: 40, mb: 1 }} />
                         <Typography id="report-modal-title" variant="h5" sx={{ color: "#fff", fontWeight: "bold" }}>
                             Report Video
                         </Typography>
@@ -1010,17 +1010,17 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                         borderColor: "rgba(255,255,255,0.1)"
                                     },
                                     "&:hover fieldset": {
-                                        borderColor: "#f013e5"
+                                        borderColor: "#c00cb7"
                                     },
                                     "&.Mui-focused fieldset": {
-                                        borderColor: "#f013e5"
+                                        borderColor: "#c00cb7"
                                     }
                                 },
                                 "& .MuiInputLabel-root": {
                                     color: "rgba(255,255,255,0.5)"
                                 },
                                 "& .MuiInputLabel-root.Mui-focused": {
-                                    color: "#f013e5"
+                                    color: "#c00cb7"
                                 }
                             }}
                         />
@@ -1032,14 +1032,14 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                             <RadioGroup value={reportReason} onChange={(e) => setReportReason(e.target.value)} sx={{ gap: 1 }}>
                                 {["Violent or Abusive", "Young, Minor or Underage", "Contains Non-consensual acts", "Not a Porn Video", "Spam or Misleading", "Wrong Categories or Tags", "Other Reasons"].map((option) => (
                                     <Paper key={option} onClick={() => setReportReason(option)} sx={{
-                                        backgroundColor: reportReason === option ? "rgba(240,19,229,0.1)" : "rgba(255,255,255,0.02)",
-                                        border: reportReason === option ? "1px solid #f013e5" : "1px solid rgba(255,255,255,0.05)",
+                                        backgroundColor: reportReason === option ? "rgba(192,12,183,0.1)" : "rgba(255,255,255,0.02)",
+                                        border: reportReason === option ? "1px solid #c00cb7" : "1px solid rgba(255,255,255,0.05)",
                                         borderRadius: "12px", cursor: "pointer", transition: "all 0.2s",
-                                        "&:hover": { backgroundColor: "rgba(255,255,255,0.05)", borderColor: reportReason === option ? "#f013e5" : "rgba(255,255,255,0.2)" },
+                                        "&:hover": { backgroundColor: "rgba(255,255,255,0.05)", borderColor: reportReason === option ? "#c00cb7" : "rgba(255,255,255,0.2)" },
                                     }}>
                                         <FormControlLabel
                                             value={option}
-                                            control={<Radio sx={{ color: "rgba(255,255,255,0.3)", "&.Mui-checked": { color: "#f013e5" } }} />}
+                                            control={<Radio sx={{ color: "rgba(255,255,255,0.3)", "&.Mui-checked": { color: "#c00cb7" } }} />}
                                             label={option}
                                             sx={{ width: "100%", m: 0, p: 1.5, color: "#fff", "& .MuiFormControlLabel-label": { fontWeight: 500 } }}
                                         />
@@ -1052,9 +1052,9 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                             fullWidth multiline rows={3} label="Additional details (optional)" variant="outlined"
                             value={reportDescription} onChange={(e) => setReportDescription(e.target.value)}
                             sx={{
-                                "& .MuiOutlinedInput-root": { color: "#fff", "& fieldset": { borderColor: "rgba(255,255,255,0.1)" }, "&:hover fieldset": { borderColor: "#f013e5" }, "&.Mui-focused fieldset": { borderColor: "#f013e5" } },
+                                "& .MuiOutlinedInput-root": { color: "#fff", "& fieldset": { borderColor: "rgba(255,255,255,0.1)" }, "&:hover fieldset": { borderColor: "#c00cb7" }, "&.Mui-focused fieldset": { borderColor: "#c00cb7" } },
                                 "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.5)" },
-                                "& .MuiInputLabel-root.Mui-focused": { color: "#f013e5" },
+                                "& .MuiInputLabel-root.Mui-focused": { color: "#c00cb7" },
                             }}
                         />
 
@@ -1065,7 +1065,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                             </Button>
                             <Button fullWidth variant="contained" onClick={handleSubmitReport}
                                 disabled={isSubmittingReport || !reportEmail.trim() || !reportReason}
-                                sx={{ backgroundColor: "#f013e5", borderRadius: "12px", fontWeight: "bold", "&:hover": { backgroundColor: "#e91ec4" } }}>
+                                sx={{ backgroundColor: "#c00cb7", borderRadius: "12px", fontWeight: "bold", "&:hover": { backgroundColor: "#ba129b" } }}>
                                 {isSubmittingReport ? "Sending..." : "Submit Report"}
                             </Button>
                         </Box>

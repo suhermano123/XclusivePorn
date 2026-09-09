@@ -77,7 +77,7 @@ export default function StudioPage({
       <Container maxWidth={false} sx={{ py: 4, flexGrow: 1 }}>
         <Typography
           component="h1"
-          sx={{ color: "#fff", fontWeight: "bold", fontSize: { xs: "1.6rem", md: "2.3rem" }, borderLeft: "4px solid #f013e5", pl: 2, mb: 1 }}
+          sx={{ color: "#fff", fontWeight: "bold", fontSize: { xs: "1.6rem", md: "2.3rem" }, borderLeft: "4px solid #c00cb7", pl: 2, mb: 1 }}
         >
           {name} Porn Videos
           <span style={{ fontSize: "16px", color: "#aaa", marginLeft: "10px" }}>
@@ -100,11 +100,11 @@ export default function StudioPage({
                 href={`/pornstar/${slugifyName(p)}`}
                 clickable
                 sx={{
-                  backgroundColor: "rgba(240,19,229,0.1)",
-                  color: "#f013e5",
+                  backgroundColor: "rgba(192,12,183,0.1)",
+                  color: "#c00cb7",
                   fontWeight: "bold",
                   borderRadius: "6px",
-                  border: "1px solid rgba(240,19,229,0.3)",
+                  border: "1px solid rgba(192,12,183,0.3)",
                   textDecoration: "none",
                 }}
               />
@@ -121,7 +121,7 @@ export default function StudioPage({
         />
 
         <Box sx={{ mt: 6 }}>
-          <Link href="/studios" style={{ color: "#f013e5", textDecoration: "none", fontWeight: "bold" }}>
+          <Link href="/studios" style={{ color: "#c00cb7", textDecoration: "none", fontWeight: "bold" }}>
             ← Browse all studios
           </Link>
         </Box>

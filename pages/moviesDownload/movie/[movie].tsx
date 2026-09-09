@@ -272,8 +272,8 @@ export default function MovieDetail() {
                             height: { xs: "180px", sm: "350px" },
                             borderRadius: "10px",
                             overflow: "hidden",
-                            boxShadow: "0 10px 30px rgba(240,19,229,0.15)",
-                            border: "1px solid rgba(240,19,229,0.2)",
+                            boxShadow: "0 10px 30px rgba(192,12,183,0.15)",
+                            border: "1px solid rgba(192,12,183,0.2)",
                             flexShrink: 0,
                         }}>
                             <Image
@@ -333,9 +333,9 @@ export default function MovieDetail() {
                                 <Box
                                     component="span"
                                     aria-label={`Duration: ${movie.duration || "unknown"}`}
-                                    sx={{ display: "flex", alignItems: "center", gap: 1, bgcolor: "rgba(240,19,229,0.1)", px: 2, py: 1, borderRadius: 2, border: "1px solid rgba(240,19,229,0.3)" }}
+                                    sx={{ display: "flex", alignItems: "center", gap: 1, bgcolor: "rgba(192,12,183,0.1)", px: 2, py: 1, borderRadius: 2, border: "1px solid rgba(192,12,183,0.3)" }}
                                 >
-                                    <PlayArrowIcon sx={{ color: "#f013e5" }} />
+                                    <PlayArrowIcon sx={{ color: "#c00cb7" }} />
                                     <Typography component="span" sx={{ color: "#fff", fontWeight: 600 }}>
                                         {movie.duration || "N/A"}
                                     </Typography>
@@ -343,9 +343,9 @@ export default function MovieDetail() {
                                 <Box
                                     component="span"
                                     aria-label={`File size: ${movie.size || "unknown"}`}
-                                    sx={{ display: "flex", alignItems: "center", gap: 1, bgcolor: "rgba(240,19,229,0.1)", px: 2, py: 1, borderRadius: 2, border: "1px solid rgba(240,19,229,0.3)" }}
+                                    sx={{ display: "flex", alignItems: "center", gap: 1, bgcolor: "rgba(192,12,183,0.1)", px: 2, py: 1, borderRadius: 2, border: "1px solid rgba(192,12,183,0.3)" }}
                                 >
-                                    <DownloadIcon sx={{ color: "#f013e5" }} />
+                                    <DownloadIcon sx={{ color: "#c00cb7" }} />
                                     <Typography component="span" sx={{ color: "#fff", fontWeight: 600 }}>
                                         {movie.size || "N/A"}
                                     </Typography>
@@ -364,7 +364,7 @@ export default function MovieDetail() {
                                 component="div"
                                 sx={{
                                     fontSize: "1rem",
-                                    color: "#f013e5",
+                                    color: "#c00cb7",
                                     fontWeight: "bold",
                                     mb: 2,
                                     overflowWrap: "break-word",
@@ -386,9 +386,9 @@ export default function MovieDetail() {
                                 const url = item.url;
                                 const title = (item.title || "").toLowerCase();
 
-                                let buttonBg = "linear-gradient(90deg, #f013e5, #ff5e62)";
-                                let buttonShadowHover = "rgba(240,19,229,0.6)";
-                                let buttonShadow = "rgba(240,19,229,0.4)";
+                                let buttonBg = "linear-gradient(90deg, #c00cb7, #ff5e62)";
+                                let buttonShadowHover = "rgba(192,12,183,0.6)";
+                                let buttonShadow = "rgba(192,12,183,0.4)";
                                 let buttonLabel = `Download Link ${idx + 1}`;
 
                                 let ServerIcon = DownloadIcon;
@@ -479,7 +479,7 @@ export default function MovieDetail() {
                             */}
                             <Typography
                                 component="h2"
-                                sx={{ color: "#fff", mb: 4, fontWeight: "bold", fontSize: "1.5rem", borderLeft: "4px solid #f013e5", pl: 2 }}
+                                sx={{ color: "#fff", mb: 4, fontWeight: "bold", fontSize: "1.5rem", borderLeft: "4px solid #c00cb7", pl: 2 }}
                             >
                                 Preview Gallery
                             </Typography>
@@ -525,12 +525,12 @@ export default function MovieDetail() {
                                 variant="outlined"
                                 aria-label="Back to all downloadable movies"
                                 sx={{
-                                    color: "#f013e5",
-                                    borderColor: "#f013e5",
+                                    color: "#c00cb7",
+                                    borderColor: "#c00cb7",
                                     borderRadius: "20px",
                                     fontWeight: "bold",
                                     px: 4,
-                                    "&:hover": { backgroundColor: "rgba(240,19,229,0.08)", borderColor: "#e91ec4" },
+                                    "&:hover": { backgroundColor: "rgba(192,12,183,0.08)", borderColor: "#ba129b" },
                                 }}
                             >
                                 ← Browse All Movies

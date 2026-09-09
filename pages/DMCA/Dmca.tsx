@@ -111,7 +111,7 @@ const styles: { [key: string]: CSSProperties } = {
     fontSize: '24px',
     marginBottom: '24px',
     textAlign: 'center',
-    color: '#f013e5',
+    color: '#c00cb7',
   },
   text: {
     fontSize: '16px',

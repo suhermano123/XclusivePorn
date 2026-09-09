@@ -85,7 +85,7 @@ const FaqPage: React.FC = () => {
                         <AccordionDetails sx={styles.accordionDetails}>
                             <Typography variant="body1" sx={styles.answer}>
                                 We take Copyright violations seriously. Every video features a "Report Video" button (flag icon) just below the player.
-                                Click it, select "Other Reasons" or another appropriate option, enter your email, and provide all necessary information as specified on our <a href="/DMCA/Dmca" style={{ color: '#f013e5', textDecoration: 'none' }}>DMCA Page</a> in the "Additional details" text box.
+                                Click it, select "Other Reasons" or another appropriate option, enter your email, and provide all necessary information as specified on our <a href="/DMCA/Dmca" style={{ color: '#c00cb7', textDecoration: 'none' }}>DMCA Page</a> in the "Additional details" text box.
                             </Typography>
                         </AccordionDetails>
                     </Accordion>
@@ -143,7 +143,7 @@ const styles: { [key: string]: CSSProperties | any } = {
         fontSize: '24px',
         marginBottom: '32px',
         textAlign: 'center',
-        color: '#f013e5',
+        color: '#c00cb7',
     },
     accordion: {
         backgroundColor: 'transparent',

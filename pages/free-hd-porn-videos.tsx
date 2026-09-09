@@ -87,7 +87,7 @@ export default function FreeHDPornVideos({
             <NavMenu />
 
             <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
-                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #f013e5', pl: 2 }}>
+                <Typography component="h1" sx={{ color: '#fff', mb: 4, fontWeight: 'bold', fontSize: '2.5rem', borderLeft: '4px solid #c00cb7', pl: 2 }}>
                     Free HD Porn Videos
                 </Typography>
 
