@@ -34,8 +34,12 @@ jobs:
           cache-dependency-path: scraper/requirements.txt
 
       - name: Instalar dependencias Python
-        run: pip install boto3 supabase requests pillow
+        # Mismas versiones que scraper/requirements.txt (probadas en el
+        # pipeline diario) pero sin cloudscraper/bs4/nltk -- ese trio es
+        # solo para scrape.py, que este script no toca, y bajar el
+        # NLTK punkt/stopwords no hace falta aca.
+        run: pip install boto3==1.35.99 supabase==2.31.0 requests==2.32.3 pillow==11.0.0
 
       - name: Migrar miniaturas
         working-directory: scraper
-        run: python backfill_thumbnails.py --limite "${{ github.event.inputs.limite }}"
+        run: python backfill_thumbnails.py --limite "${{ github.event.inputs.limite || '0' }}"

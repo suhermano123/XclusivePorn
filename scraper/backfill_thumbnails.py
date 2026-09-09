@@ -52,7 +52,7 @@ def videos_pendientes() -> list[dict]:
     while True:
         res = (
             supabase.table("posted_videos")
-            .select("uuid,imagen_url,img_src")
+            .select("uuid,imagen_url")
             .range(desde, desde + paso - 1)
             .execute()
         )
@@ -64,7 +64,7 @@ def videos_pendientes() -> list[dict]:
 
     pendientes = []
     for f in out:
-        origen = f.get("imagen_url") or f.get("img_src") or ""
+        origen = f.get("imagen_url") or ""
         if _es_legacy(origen):
             pendientes.append({"uuid": f["uuid"], "origen": origen})
     return pendientes
