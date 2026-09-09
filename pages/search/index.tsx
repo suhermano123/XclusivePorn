@@ -300,6 +300,7 @@ const SearchPage: React.FC = () => {
                                                     <Box
                                                         component="img"
                                                         src="/assets/loader.png"
+                                                        alt=""
                                                         sx={{
                                                             width: "50px",
                                                             height: "50px",

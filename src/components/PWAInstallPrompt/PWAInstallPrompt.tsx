@@ -103,6 +103,7 @@ const PWAInstallPrompt: React.FC = () => {
                 <Box
                     component="img"
                     src="/assets/logo.png"
+                    alt="NovaPornX"
                     sx={{
                         width: 55,
                         height: 55,

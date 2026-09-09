@@ -610,7 +610,7 @@ const VideoPage = ({ video: initialVideo, related }: InferGetServerSidePropsType
                                 >
                                     {isDownloading
                                         ? <CircularProgress size={20} sx={{ color: "#fff" }} />
-                                        : <Box component="img" src="/assets/loader.png" sx={{ width: 20, height: 20 }} />}
+                                        : <Box component="img" src="/assets/loader.png" alt="" sx={{ width: 20, height: 20 }} />}
                                     {isDownloading ? "Generating..." : "Download"}
                                     {!isDownloading && <Favorite sx={{ fontSize: 16, ml: 0.5 }} />}
                                 </Button>
