@@ -1,0 +1,53 @@
+name: recomprimir miniaturas en R2 (manual)
+
+# Baja a calidad 74 las miniaturas que ya estaban en R2 antes del commit
+# 44a453c (2026-09-09, que bajo la calidad por defecto de 82 a 74 para
+# lo que se sube de ahora en adelante). Ver scraper/recompress_thumbnails.py
+# para el detalle -- en particular, el aviso sobre Cache-Control immutable:
+# esto sobreescribe R2, pero Cloudflare puede seguir sirviendo la version
+# vieja cacheada hasta purgar el cache a mano.
+#
+# Manual a proposito, no es un job recurrente -- es un backfill de una vez
+# (re-correrlo despues no rompe nada).
+
+on:
+  workflow_dispatch:
+    inputs:
+      limite:
+        description: "Procesar como maximo N miniaturas (0 = todas las del bucket)"
+        required: false
+        default: "10"
+
+jobs:
+  recompress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      R2_ACCOUNT_ID: 4e606a01f4fc407cb118d0fafbaee583
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      # SUPABASE_KEY no se usa para nada en este script (no toca ninguna
+      # fila de posted_videos) pero config.py explota con KeyError si el
+      # env var no existe -- upload.py, de donde se importa _optimizar(),
+      # crea un cliente de Supabase al importarse (nunca se llama, pero
+      # tiene que poder construirse). Cualquier string sirve.
+      SUPABASE_URL: https://gegdnoqjglidnijpmhay.supabase.co
+      SUPABASE_KEY: dummy-no-se-usa
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scraper/requirements.txt
+
+      - name: Instalar dependencias Python
+        # Mismas versiones que scraper/requirements.txt, sin cloudscraper/
+        # bs4/nltk (son solo para scrape.py, que este script no usa).
+        run: pip install boto3==1.35.99 supabase==2.31.0 requests==2.32.3 pillow==11.0.0
+
+      - name: Recomprimir miniaturas
+        working-directory: scraper
+        run: python recompress_thumbnails.py --limite "${{ github.event.inputs.limite || '0' }}"
